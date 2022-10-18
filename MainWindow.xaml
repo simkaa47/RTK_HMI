@@ -5,8 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RTK_HMI"
         mc:Ignorable="d"
+        xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
+        xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-
-    </Grid>
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+    <TabControl TabStripPlacement="Bottom">
+        <!--#region Главная -->
+        <TabItem Header="Главная"></TabItem>
+        <!--#endregion-->
+        <!--#region Параметры -->
+        <TabItem Header="Параметры">
+            <uc:ParametersControl DataContext="{Binding ParameterVm}"/>
+        </TabItem>
+        <!--#endregion-->
+    </TabControl>
 </Window>

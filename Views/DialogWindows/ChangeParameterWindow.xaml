@@ -1,0 +1,66 @@
+﻿<Window x:Class="RTK_HMI.Views.DialogWindows.ChangeParameterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:data="clr-namespace:DataAccess.Models;assembly=DataAccess"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib" 
+        xmlns:local="clr-namespace:RTK_HMI.Views.DialogWindows"
+        d:DataContext="{d:DesignData Type=data:Parameter}"
+        mc:Ignorable="d"
+        
+        Title="ChangeParameterWindow" Height="300"  Width="300">
+    <Grid>
+        
+        <Grid.Resources>
+            <ObjectDataProvider x:Key="DataTypes"
+                            ObjectType="{x:Type sys:Enum}"
+                            MethodName="GetValues">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="data:DataType" />
+            </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+            <Style TargetType="TextBox">
+                <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Width" Value="100"/>
+            </Style>
+            <Style TargetType="TextBlock">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+            </Style>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="200"/>            
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Описание"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Width ="200" Text="{Binding Description}"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Номер регистра"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding RegNum}"/>
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Тип данных"/>
+        <ComboBox Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Right" 
+                  ItemsSource="{Binding Source={StaticResource DataTypes}}"
+                  SelectedItem="{Binding Type}"
+                  HorizontalContentAlignment="Center"
+                  VerticalContentAlignment="Center"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Длина(если строка)"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Length}"/>
+
+        <Button Width="100" Grid.Column="0" Grid.Row="4" IsDefault="True" Click="Accept_Click"  Margin="5">OK</Button>
+        <Button Width="100"  Grid.Column="1" Grid.Row="4" IsCancel="True"  Margin="5" >Отмена</Button>
+    </Grid>
+    
+</Window>
