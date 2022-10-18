@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32228.430
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RTK_HMI", "RTK_HMI.csproj", "{818B6ED9-987E-487F-BE9B-B3BEBF5370F4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "..\DataAccess\DataAccess.csproj", "{91A681AD-2786-4BD7-B189-2A9B75D15099}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{818B6ED9-987E-487F-BE9B-B3BEBF5370F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{818B6ED9-987E-487F-BE9B-B3BEBF5370F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{818B6ED9-987E-487F-BE9B-B3BEBF5370F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{818B6ED9-987E-487F-BE9B-B3BEBF5370F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91A681AD-2786-4BD7-B189-2A9B75D15099}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91A681AD-2786-4BD7-B189-2A9B75D15099}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91A681AD-2786-4BD7-B189-2A9B75D15099}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91A681AD-2786-4BD7-B189-2A9B75D15099}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1D3187A1-6E02-466D-AD42-1783CFDE7171}
+	EndGlobalSection
+EndGlobal
