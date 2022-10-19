@@ -13,7 +13,9 @@
     </Window.DataContext>
     <TabControl TabStripPlacement="Bottom">
         <!--#region Главная -->
-        <TabItem Header="Главная"></TabItem>
+        <TabItem Header="Главная">
+            <uc:MainPageControl/>
+        </TabItem>
         <!--#endregion-->
         <!--#region Параметры -->
         <TabItem Header="Параметры">
