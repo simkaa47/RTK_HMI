@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
              xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -26,10 +27,17 @@
             <ToggleButton Grid.Column="1" x:Name="ShowCommSettinsButton">
                 <fa:ImageAwesome Icon="Sliders" Rotation="90"/>
             </ToggleButton>
-            <Popup Height="300" Width="300"
+            <Button Command="{Binding ConnectVM.ConnectCommand}" Background="{Binding ConnectVM.RtkExchange.Connected, Converter={StaticResource BoolToColor}, ConverterParameter=#FF00FF00}">
+                <fa:ImageAwesome Icon="Link"/>
+                <Button.ToolTip>                    
+                    <TextBlock Text="Установить-разорвать соединение"/>
+                </Button.ToolTip>
+            </Button>
+            <Popup Height="200" Width="300"
                    IsOpen="{Binding ElementName=ShowCommSettinsButton, Path=IsChecked}"
+                   StaysOpen="False"
                    Placement="Right">
-                
+                <uc:CommSettingsPageControl DataContext="{Binding ConnectVM}"/>
             </Popup>
         </Grid>
         

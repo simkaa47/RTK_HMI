@@ -3,10 +3,69 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
+             xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
+             xmlns:com="clr-namespace:System.IO.Ports;assembly=System"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
-    </Grid>
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=vm:ConnectViewModel}">
+    <ListBox HorizontalContentAlignment="Stretch">
+        <ListBox.Resources>
+            <ObjectDataProvider x:Key="Parities"
+                            ObjectType="{x:Type com:Parity}"
+                            MethodName="GetValues">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="com:Parity" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+        </ListBox.Resources>
+        <!--#region COM порт -->
+        <DockPanel>
+            <TextBlock Text="COM порт"/>
+            <ComboBox SelectedItem="{Binding ConnectSettings.ComName}"
+                      Width="100"
+                      HorizontalAlignment="Right"
+                      ItemsSource="{Binding ComPorts}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="DropDownOpened">
+                        <i:InvokeCommandAction Command="{Binding UpdateComPortsCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
+        </DockPanel>
+        <!--#endregion-->
+        <!--#region Баудрейт -->
+        <DockPanel>
+            <TextBlock Text="Байдрейт"/>
+            <ComboBox ItemsSource="{StaticResource PortSpeeds}"
+                      HorizontalAlignment="Right"
+                      Width="100"
+                      SelectedItem="{Binding ConnectSettings.Baudrate}"/>
+        </DockPanel>
+        <!--#endregion-->
+        <!--#region Паритет-->
+        <DockPanel>
+            <TextBlock Text="Паритет"/>
+            <ComboBox HorizontalAlignment="Right"
+                      Width="100"
+                      ItemsSource="{Binding Source={StaticResource Parities}}"
+                      SelectedItem="{Binding ConnectSettings.Parity}"/>
+        </DockPanel>
+        <!--#endregion-->
+        <!--#region Тайм-аут ответа -->
+        <DockPanel>
+            <TextBlock Text="Тайм-аут ответа, мс"/>
+            <TextBox Text="{Binding ConnectSettings.ConnectionTimeout}" Width="100"
+                     HorizontalAlignment="Right"/>
+        </DockPanel>
+        <!--#endregion-->
+        <!--#region Адрес в сети Modbus -->
+        <DockPanel>
+            <TextBlock Text="Адрес в сети Modbus"/>
+            <TextBox Text="{Binding ConnectSettings.ModbAddr}" Width="100"
+                     HorizontalAlignment="Right"/>
+        </DockPanel>
+        <!--#endregion-->
+    </ListBox>
 </UserControl>

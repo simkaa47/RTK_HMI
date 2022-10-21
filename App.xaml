@@ -4,6 +4,11 @@
              xmlns:local="clr-namespace:RTK_HMI"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Views\Resourses\Enums.xaml"/>
+                <ResourceDictionary Source="Views\Resourses\Converters\GlobalConverters.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

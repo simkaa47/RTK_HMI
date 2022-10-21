@@ -17,8 +17,11 @@
             <uc:MainPageControl/>
         </TabItem>
         <!--#endregion-->
-        <!--#region Параметры -->
-        <TabItem Header="Параметры">
+        <TabItem Header="Параметры РТК">
+            <uc:ReadWriteParametersControl/>
+        </TabItem>
+        <!--#region Настройки -->
+        <TabItem Header="Настройки">
             <uc:ParametersControl DataContext="{Binding ParameterVm}"/>
         </TabItem>
         <!--#endregion-->
