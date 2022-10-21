@@ -10,14 +10,17 @@ namespace RTK_HMI.ViewModels
 
         public ParameterVm ParameterVm { get; set; }
         public ConnectViewModel ConnectVM { get; set; }
+        public SaveLoadViewModel SaveLoadVM { get; set; }
 
 
         public MainViewModel()
         {
             ParameterVm = new ParameterVm(this);
             ConnectVM = new ConnectViewModel(this);
+            SaveLoadVM = new SaveLoadViewModel(this);
         }
 
-        
+
+
     }
 }

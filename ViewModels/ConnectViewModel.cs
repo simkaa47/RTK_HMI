@@ -5,6 +5,7 @@ using RTK_HMI.Infrastructure.Commands;
 using RTK_HMI.Services;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -104,7 +105,7 @@ namespace RTK_HMI.ViewModels
         void InitConnectService()
         {
             ExchangeService = new ExchangeService(RtkExchange, ConnectSettings);
-            ExchangeService.ErrorEvent += (s) => MessageBox.Show(s);
+           // ExchangeService.ErrorEvent += (s) => MessageBox.Show(s);
 
         }
 
@@ -112,10 +113,23 @@ namespace RTK_HMI.ViewModels
         {
             SafetyAction(() =>
             {
-                ReadFromEeprom();
-                var addr = CalculateRegAdressService.GetStartAndCount(MainView.ParameterVm.Parameters);
-                var buf = ExchangeService.ReadRegisters(addr.Item1, addr.Item2);
-                if (buf is null) return;
+                //ReadFromEeprom();
+                //var addr = CalculateRegAdressService.GetStartAndCount(MainView.ParameterVm.Parameters);
+                //var buf = ExchangeService.ReadRegisters(addr.Item1, addr.Item2);
+                //if (buf is null) return;
+                //int temp = 0;
+                string text;
+                int temp = 0;
+                using (StreamReader reader = new StreamReader("arr.txt"))
+                {
+                    text = reader.ReadToEnd();
+                    Console.WriteLine(text);
+                }
+                var arr = text.Split(new char[] { ' ', '\n','\t','\r' }, StringSplitOptions.RemoveEmptyEntries)
+                .Where(s => int.TryParse(s, out temp))
+                .Select(s => temp)
+                .ToArray();
+                RecognizeParameterFromArrService.Recongnize(MainView.ParameterVm.Parameters, arr, 65);
             });
            
         }

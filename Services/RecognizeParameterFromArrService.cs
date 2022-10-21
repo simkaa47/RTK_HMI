@@ -16,7 +16,7 @@ namespace RTK_HMI.Services
                 switch (param.Type)
                 {
                     case DataType.String:
-                        param.Value = GetStringFromUshorts(ushortArr, param.RegNum - offset);
+                        param.Value = GetStringFromUshorts(ushortArr, param.RegNum - offset, param.Length);
                         break;
                     case DataType.Float32:
                         param.Value = GetFloatFromUshorts(ushortArr, param.RegNum - offset);
@@ -46,8 +46,8 @@ namespace RTK_HMI.Services
         #region Получить float из 2х регистров
         static float GetFloatFromUshorts(ushort[] regs, int regNum)
         {
-            ushort[] arr = new ushort[] { regs[regNum], regs[regNum + 1] };
-            return BitConverter.ToSingle(arr.SelectMany(num => BitConverter.GetBytes(num)).ToArray(), 0);
+            ushort[] arr = new ushort[] { regs[regNum], regs[regNum+1] };
+            return BitConverter.ToSingle(arr.SelectMany(num => BitConverter.GetBytes(num).Reverse()).ToArray(), 0);
         }
         #endregion
 
@@ -86,10 +86,15 @@ namespace RTK_HMI.Services
         #endregion
 
         #region Получить строку из байт
-        static string GetStringFromUshorts(ushort[] regs, int regNum)
+        static string GetStringFromUshorts(ushort[] regs, int regNum, int lenght)
         {
-            ushort[] arr = new ushort[] { regs[regNum], regs[regNum + 1] };
-            return Encoding.GetEncoding(1251).GetString(arr.SelectMany(num => BitConverter.GetBytes(num)).ToArray());            
+            
+            var bytes = regs.Skip(regNum)
+                .SelectMany(num => BitConverter.GetBytes(num).Reverse())
+                .Take(lenght)
+                .ToArray();
+            var name = Encoding.ASCII.GetString(bytes, 0, 4);
+            return name;
         }
         #endregion
     }

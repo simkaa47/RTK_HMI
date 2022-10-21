@@ -21,6 +21,12 @@
                     <TextBlock Text="Загрузить все"/>
                 </Button.ToolTip>
             </Button>
+            <Button Command="{Binding SaveLoadVM.SaveCommand}">
+                <fa:ImageAwesome Icon="Save"/>
+                <Button.ToolTip>
+                    <TextBlock Text="Сохранить"/>
+                </Button.ToolTip>
+            </Button>
         </StackPanel>
         <DataGrid ItemsSource="{Binding ParameterVm.Parameters}"
                   AutoGenerateColumns="False"
@@ -32,7 +38,7 @@
                 <DataGridTemplateColumn Header="Значение">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Value}" Width="200">
+                            <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200">
                                 
                             </TextBox>
                         </DataTemplate>
