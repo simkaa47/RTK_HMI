@@ -42,6 +42,7 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <TextBlock Text="Описание"/>
         <TextBox Grid.Row="0" Grid.Column="1" Width ="200" Text="{Binding Description}"/>
@@ -59,8 +60,11 @@
         <TextBlock Grid.Row="3" Grid.Column="0" Text="Длина(если строка)"/>
         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Length}"/>
 
-        <Button Width="100" Grid.Column="0" Grid.Row="4" IsDefault="True" Click="Accept_Click"  Margin="5">OK</Button>
-        <Button Width="100"  Grid.Column="1" Grid.Row="4" IsCancel="True"  Margin="5" >Отмена</Button>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Примечание"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Notification}"/>
+
+        <Button Width="100" Grid.Column="0" Grid.Row="5" IsDefault="True" Click="Accept_Click"  Margin="5">OK</Button>
+        <Button Width="100"  Grid.Column="1" Grid.Row="5" IsCancel="True"  Margin="5" >Отмена</Button>
     </Grid>
     
 </Window>

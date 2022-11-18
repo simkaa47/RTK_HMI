@@ -18,11 +18,11 @@ namespace RTK_HMI.Views.DialogWindows
     public partial class SaveToJsonWindow : Window
     {
         public string Name { get; set; } = String.Empty;
-        public SaveToJsonWindow()
+        public SaveToJsonWindow(string fileName)
         {
             InitializeComponent();
-            Path.Text = $"data_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}";
-           
+            if(string.IsNullOrEmpty(fileName))Path.Text = $"data_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss")}";
+            else Path.Text = fileName;
         }
 
         private void Accept_Click(object sender, RoutedEventArgs e)

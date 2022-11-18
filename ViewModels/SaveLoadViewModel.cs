@@ -13,6 +13,7 @@ namespace RTK_HMI.ViewModels
         public SaveLoadViewModel(MainViewModel vm)
         {
             Vm = vm;
+            Init();
         }
 
         public MainViewModel Vm { get; }
@@ -29,7 +30,7 @@ namespace RTK_HMI.ViewModels
         /// </summary>
         public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(execPar => { SafetyAction(Save); }, canExecPar => true));
         #endregion
-
+               
         #endregion
 
         void SafetyAction(Action action)
@@ -43,7 +44,6 @@ namespace RTK_HMI.ViewModels
                 MessageBox.Show(ex.Message);                
             }
         }
-
 
         #region Имя текущего набора данных
         /// <summary>
@@ -60,8 +60,6 @@ namespace RTK_HMI.ViewModels
         }
         #endregion
 
-
-
         #region Коллекция наборов
         /// <summary>
         /// Коллекция наборов
@@ -77,16 +75,49 @@ namespace RTK_HMI.ViewModels
         }
         #endregion
 
+        #region Выбранный набор
+        /// <summary>
+        /// Выбранный набор
+        /// </summary>
+        private JsonData _selectedFileInfo;
+        /// <summary>
+        /// Выбранный набор
+        /// </summary>
+        public JsonData SelectedFileInfo
+        {
+            get => _selectedFileInfo;
+            set
+            {
+                if(Set(ref _selectedFileInfo, value))
+                {
+                    SafetyAction(Load);
+                }
+            } 
+        }
+        #endregion
+
+
         void Init()
         { 
-        
+            SafetyAction(Refresh);
+        }
+
+        void Refresh()
+        {
+            JsonDataCollection = JsonSaveLoadService.GetFilesInfo();
         }
 
 
         void Save()
         {
-            JsonSaveLoadService.Save(Vm.ParameterVm.Parameters);
+            JsonSaveLoadService.Save(Vm.ParameterVm.Parameters, SelectedFileInfo);
+            Refresh();
+        }
 
+        void Load()
+        {
+            if (SelectedFileInfo is null) return;
+            Vm.ParameterVm.Parameters = JsonSaveLoadService.LoadFromJson(SelectedFileInfo.Name);
         }
 
 

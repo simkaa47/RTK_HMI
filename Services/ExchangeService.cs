@@ -3,6 +3,7 @@ using EasyModbus;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace RTK_HMI.Services
 {
@@ -20,9 +21,9 @@ namespace RTK_HMI.Services
             _connectSettings = connectSettings;
         }
 
-        public async void Connect()
+        public void Connect()
         {
-            await Task.Run(() => PortInit());
+            PortInit();
         }
 
         public   void Disconnect()
@@ -37,7 +38,13 @@ namespace RTK_HMI.Services
 
         public int[] ReadRegisters(int startNum, int count)
         {
-            var result =  ReadHoldingRegisters(startNum, count);
+            int[] result = new int[count];
+            for (int i = 0; i < count; i+=100)
+            {
+                var num = Math.Min(100, count - i);
+                var temp = ReadHoldingRegisters(startNum+i, num);
+                temp.CopyTo(result, i);
+            }            
             return result;
         }
 
@@ -50,14 +57,21 @@ namespace RTK_HMI.Services
         #region Инициализаця порта
         void PortInit()
         {
+            try
+            {
+                _client = new ModbusClient(_connectSettings.ComName);
+                _client.ConnectionTimeout = _connectSettings.ConnectionTimeout;
+                _client.Baudrate = _connectSettings.Baudrate; ;
+                _client.UnitIdentifier = _connectSettings.ModbAddr;
+                _client.Parity = _connectSettings.Parity;
+                _client.Connect();
+                _connectData.Connected = _client.Connected;
+            }
+            catch (Exception ex)
+            {
 
-            _client = new ModbusClient(_connectSettings.ComName);
-            _client.ConnectionTimeout = _connectSettings.ConnectionTimeout;
-            _client.Baudrate = _connectSettings.Baudrate; ;
-            _client.UnitIdentifier = _connectSettings.ModbAddr;
-            _client.Parity = _connectSettings.Parity;
-            _client.Connect();
-            _connectData.Connected = _client.Connected; 
+                MessageBox.Show(ex.Message);
+            }
 
 
         }

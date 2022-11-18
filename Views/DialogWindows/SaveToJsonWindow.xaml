@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RTK_HMI.Views.DialogWindows"
         mc:Ignorable="d"
-        Title="SaveToJsonWindow" Height="100" Width="300">
+        Title="SaveToJsonWindow" Height="120" Width="300">
     <Grid>
         <StackPanel>
             <TextBlock Text="Введите имя файла"/>

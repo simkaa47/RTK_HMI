@@ -9,6 +9,18 @@
              d:DataContext="{d:DesignInstance Type=vm:SaveLoadViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-            
+        <DataGrid AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  IsReadOnly="True"
+                  CanUserDeleteRows="False"
+                  SelectionMode="Single"
+                  ItemsSource="{Binding JsonDataCollection}"
+                  SelectedItem="{Binding SelectedFileInfo}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Имя файла" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Дата  изменения" Binding="{Binding ChangeTime, StringFormat=F, ConverterCulture=ru-RU}"/>
+            </DataGrid.Columns>
+
+        </DataGrid>
     </Grid>
 </UserControl>
