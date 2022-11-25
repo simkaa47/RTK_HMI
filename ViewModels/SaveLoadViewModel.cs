@@ -2,8 +2,11 @@
 using DataAccess.Models;
 using RTK_HMI.Infrastructure.Commands;
 using RTK_HMI.Services;
+using RTK_HMI.Views.DialogWindows;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 
 namespace RTK_HMI.ViewModels
@@ -30,7 +33,73 @@ namespace RTK_HMI.ViewModels
         /// </summary>
         public RelayCommand SaveCommand => _saveCommand ?? (_saveCommand = new RelayCommand(execPar => { SafetyAction(Save); }, canExecPar => true));
         #endregion
-               
+
+        #region Редактировать запись
+        /// <summary>
+        /// Редактировать запись
+        /// </summary>
+        RelayCommand _editCommand;
+        /// <summary>
+        /// Редактировать запись
+        /// </summary>
+        public RelayCommand EditCommand => _editCommand ?? (_editCommand = new RelayCommand(execPar => 
+        {
+            if (Vm.ConnectVM.SelectedParameter is null) return;
+            SafetyAction(() =>
+            {
+                ChangeParameterWindow dialog = new ChangeParameterWindow(Vm.ConnectVM.SelectedParameter);
+                if (dialog.ShowDialog() == true)
+                {
+                   
+                }
+            });
+        }, canExecPar => true));
+        #endregion
+
+        #region Удалить запись
+        /// <summary>
+        /// Удалить запись
+        /// </summary>
+        RelayCommand _deleteCommand;
+        /// <summary>
+        /// Удалить запись
+        /// </summary>
+        public RelayCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new RelayCommand(execPar => 
+        {
+            if (Vm.ConnectVM.SelectedParameter is null) return;
+            var parameter = Vm.ConnectVM.SelectedParameter;
+            Vm.ParameterVm.Parameters.Remove(parameter);           
+        }, canExecPar => true));
+        #endregion
+
+        #region Добавить запись
+        /// <summary>
+        /// Добавить запись
+        /// </summary>
+        RelayCommand _addCommand;
+        /// <summary>
+        /// Добавить запись
+        /// </summary>
+        public RelayCommand AddCommand => _addCommand ?? (_addCommand = new RelayCommand(execPar => 
+        {
+            var parameter = new Parameter
+            {
+                Description = "Параметр",
+                RegNum = 100,
+                Type = DataType.Float32
+            };
+            ChangeParameterWindow dialog = new ChangeParameterWindow(parameter);
+            if (dialog.ShowDialog() == true)
+            {
+                Vm.ParameterVm.Parameters.Add(parameter);
+            }
+        }, canExecPar => true));
+        #endregion
+
+
+
+
+
         #endregion
 
         void SafetyAction(Action action)
@@ -117,7 +186,7 @@ namespace RTK_HMI.ViewModels
         void Load()
         {
             if (SelectedFileInfo is null) return;
-            Vm.ParameterVm.Parameters = JsonSaveLoadService.LoadFromJson(SelectedFileInfo.Name);
+            Vm.ParameterVm.Parameters = new ObservableCollection<Parameter>(JsonSaveLoadService.LoadFromJson(SelectedFileInfo.Name));
         }
 
 

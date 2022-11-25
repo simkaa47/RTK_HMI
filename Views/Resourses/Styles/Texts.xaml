@@ -3,8 +3,9 @@
     <Style TargetType="TextBlock" x:Key="TextBlockCommonStyle">
         <Setter Property="Foreground" Value="#ADADAD"/>
     </Style>
-    <Style TargetType="TextBox">
+    <Style TargetType="TextBox" x:Key="TextBoxCommonStyle">
         <Setter Property="Foreground" Value="#ADADAD"/>
         <Setter Property="Background" Value="#323232"/>
     </Style>
+    <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxCommonStyle}"/>
 </ResourceDictionary>

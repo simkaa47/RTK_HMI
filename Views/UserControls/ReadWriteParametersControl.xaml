@@ -55,6 +55,30 @@
                 </Button.ToolTip>
             </Button>
             <!--#endregion-->
+            <!--#region Редактировать параметр -->
+            <Button Command="{Binding SaveLoadVM.EditCommand}">
+                <fa:ImageAwesome Icon="Edit"/>
+                <Button.ToolTip>
+                    <TextBlock Text="Редактировать параметр"/>
+                </Button.ToolTip>
+            </Button>
+            <!--#endregion-->
+            <!--#region Удалить параметр -->
+            <Button Command="{Binding SaveLoadVM.DeleteCommand}">
+                <fa:ImageAwesome Icon="Remove"/>
+                <Button.ToolTip>
+                    <TextBlock Text="Удалить параметр"/>
+                </Button.ToolTip>
+            </Button>
+            <!--#endregion-->
+            <!--#region Добавить параметр -->
+            <Button Command="{Binding SaveLoadVM.AddCommand}">
+                <fa:ImageAwesome Icon="PlusCircle"/>
+                <Button.ToolTip>
+                    <TextBlock Text="Добавить параметр"/>
+                </Button.ToolTip>
+            </Button>
+            <!--#endregion-->
         </StackPanel>
         <!--#region Параметры -->
         <DataGrid ItemsSource="{Binding ParameterVm.Parameters}"

@@ -8,10 +8,9 @@
         xmlns:local="clr-namespace:RTK_HMI.Views.DialogWindows"
         d:DataContext="{d:DesignData Type=data:Parameter}"
         mc:Ignorable="d"
-        
-        Title="ChangeParameterWindow" Height="300"  Width="300">
-    <Grid>
-        
+        Background="#262626"
+        Title="ChangeParameterWindow" Height="420"  Width="300">
+    <Grid>        
         <Grid.Resources>
             <ObjectDataProvider x:Key="DataTypes"
                             ObjectType="{x:Type sys:Enum}"
@@ -20,23 +19,28 @@
                 <x:Type TypeName="data:DataType" />
             </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
-            <Style TargetType="TextBox">
+            <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxCommonStyle}">
                 <Setter Property="HorizontalContentAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Right"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Width" Value="100"/>
             </Style>
-            <Style TargetType="TextBlock">
+            <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockCommonStyle}">
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="HorizontalAlignment" Value="Left"/>
                 <Setter Property="TextWrapping" Value="Wrap"/>
             </Style>
+            <!--<Style TargetType="Button">
+                <Setter Property="Height" Value="Auto"/>
+            </Style>-->
+            
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="200"/>            
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
@@ -62,9 +66,19 @@
 
         <TextBlock Grid.Row="4" Grid.Column="0" Text="Примечание"/>
         <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Notification}"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Циклический опрос"/>
+        <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding IsCyclic}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <UniformGrid Grid.Row="6" Grid.ColumnSpan="2">
+            <Button Width="80" IsDefault="True" Click="Accept_Click" Height="20"  Margin="5">
+                <TextBlock Text="OK"/>                
+            </Button>
+            <Button Width="80" VerticalAlignment="Center" HorizontalAlignment="Center"  Grid.Column="1" Grid.Row="5" IsCancel="True" Height="20"  Margin="5" >
+                <TextBlock Text="Отмена"/>
+            </Button>
+        </UniformGrid>
+                   
 
-        <Button Width="100" Grid.Column="0" Grid.Row="5" IsDefault="True" Click="Accept_Click"  Margin="5">OK</Button>
-        <Button Width="100"  Grid.Column="1" Grid.Row="5" IsCancel="True"  Margin="5" >Отмена</Button>
+        
     </Grid>
     
 </Window>

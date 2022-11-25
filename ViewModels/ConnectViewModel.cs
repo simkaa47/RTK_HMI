@@ -1,6 +1,7 @@
 ﻿using DataAccess;
 using DataAccess.Models;
 using DataAccess.Repositories;
+using RTK_HMI.Infrastructure;
 using RTK_HMI.Infrastructure.Commands;
 using RTK_HMI.Services;
 using System;
@@ -23,9 +24,12 @@ namespace RTK_HMI.ViewModels
             _connectRepository = new EfRepository<ConnectSettings>();
             InitParameters();
             InitConnectService();
-
-
+            Task.Factory.StartNew(() => CuclicProcess());
         }
+
+        private Queue<Request> _requests = new Queue<Request>();    
+
+
 
         public MainViewModel MainView { get; }
 
@@ -85,7 +89,7 @@ namespace RTK_HMI.ViewModels
         /// </summary>
         public RelayCommand ReadAllParamsCommand => _readAllParamsCommand ?? (_readAllParamsCommand = new RelayCommand(execPar =>
         {
-            Task.Run(() => ReadAllRegs());
+            _requests.Enqueue(new Request(()=>ReadAllRegs(MainView.ParameterVm.Parameters)));
 
         }, canExecPar => true));
         #endregion
@@ -100,7 +104,7 @@ namespace RTK_HMI.ViewModels
         /// </summary>
         public RelayCommand WriteAllCommand => _writeAllCommand ?? (_writeAllCommand = new RelayCommand(execPar =>
         {
-            Task.Run(() => WriteAllRegs());
+            _requests.Enqueue(new Request(WriteAllRegs));
         }, canExecPar => true));
         #endregion
 
@@ -114,7 +118,7 @@ namespace RTK_HMI.ViewModels
         /// </summary>
         public RelayCommand WriteParameterCommand => _writeParameterCommand ?? (_writeParameterCommand = new RelayCommand(execPar =>
         {
-            Task.Run(() =>
+            _requests.Enqueue(new Request(() =>
             {
                 SafetyAction(() =>
                 {
@@ -123,7 +127,7 @@ namespace RTK_HMI.ViewModels
                     ExchangeService.WriteRegisters(bytes, SelectedParameter.RegNum);
                     WriteToEeprom();
                 });
-            });
+            }));            
 
         }, canExecPar => true));
         #endregion
@@ -158,7 +162,7 @@ namespace RTK_HMI.ViewModels
 
         }
 
-        void ReadAllRegs()
+        void ReadAllRegs(IEnumerable<Parameter> parameters)
         {
             SafetyAction(() =>
             {
@@ -168,7 +172,7 @@ namespace RTK_HMI.ViewModels
                 }
                 
                 ReadFromEeprom();
-                var addr = CalculateRegAdressService.GetStartAndCount(MainView.ParameterVm.Parameters);
+                var addr = CalculateRegAdressService.GetStartAndCount(parameters);
                 var buf = ExchangeService.ReadRegisters(addr.Item1, addr.Item2);
                 if (buf is null) return;
 
@@ -231,13 +235,13 @@ namespace RTK_HMI.ViewModels
 
         void ReadFromEeprom()
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
             ExchangeService.WriteRegisters(new ushort[] { 100 }, ConnectSettings.StartReg);
         }
 
         void WriteToEeprom()
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
             ExchangeService.WriteRegisters(new ushort[] { 200 }, ConnectSettings.StartReg);
         }
 
@@ -254,6 +258,28 @@ namespace RTK_HMI.ViewModels
                 else ExchangeService.Disconnect();
 
             });
+        }
+
+        void CuclicProcess()
+        {
+            while (true)
+            {
+                if(RtkExchange.Connected)
+                {
+                    var cyclicParameters = MainView.ParameterVm.Parameters.Where(p=>p.IsCyclic).ToList();
+                    if(cyclicParameters.Count>0)
+                    {
+                        ReadAllRegs(cyclicParameters);
+                    }
+                    while(_requests.Count>0)
+                    {
+                        var request = _requests.Dequeue();
+                        request.Action?.Invoke();
+                    }
+                }
+                else Thread.Sleep(500);
+            }
+            
         }
 
 

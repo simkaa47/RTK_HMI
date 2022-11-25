@@ -5,6 +5,8 @@ using RTK_HMI.Infrastructure.Commands;
 using RTK_HMI.Views.DialogWindows;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 
 namespace RTK_HMI.ViewModels
@@ -20,12 +22,12 @@ namespace RTK_HMI.ViewModels
 
         void InitParameters()
         {
-            Parameters = _parameterRepository.Init(ParameterDataFactory.Get());
+            Parameters = new ObservableCollection<Parameter>(_parameterRepository.Init(ParameterDataFactory.Get())); 
         }
 
         #region Параметры
-        private IEnumerable<Parameter> _parameters;
-        public IEnumerable<Parameter> Parameters
+        private ObservableCollection<Parameter> _parameters;
+        public ObservableCollection<Parameter> Parameters
         {
             get => _parameters;
             set => Set(ref _parameters, value);
