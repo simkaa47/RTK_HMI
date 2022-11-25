@@ -5,12 +5,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
              xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
+             xmlns:data="clr-namespace:DataAccess.Models;assembly=DataAccess"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
+              xmlns:sys="clr-namespace:System;assembly=mscorlib" 
              d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.Resources>
+            <ObjectDataProvider x:Key="DataTypes"
+                            ObjectType="{x:Type sys:Enum}"
+                            MethodName="GetValues">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="data:DataType" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -21,8 +32,7 @@
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
             <!--#region Загрузить из РТК -->
-            <Button Command="{Binding ConnectVM.ReadAllParamsCommand}"
-                    >
+            <Button Command="{Binding ConnectVM.ReadAllParamsCommand}">
                 <fa:ImageAwesome Icon="Download"/>
                 <Button.ToolTip>
                     <TextBlock Text="Выгрузить из РТК"/>
@@ -38,8 +48,7 @@
             </Button>
             <!--#endregion-->
             <!--#region Записать все параметры  в память -->
-            <Button Command="{Binding ConnectVM.WriteAllCommand}"
-                    IsEnabled="{Binding ConnectVM.RtkExchange.Connected}">
+            <Button Command="{Binding ConnectVM.WriteAllCommand}">
                 <fa:ImageAwesome Icon="Upload"/>
                 <Button.ToolTip>
                     <TextBlock Text="Загрузить в РТК"/>
@@ -84,6 +93,9 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Тип данных" IsReadOnly="True" Binding="{Binding Type}"/>
+                <DataGridTextColumn Header="№ регистра" IsReadOnly="True" Binding="{Binding RegNum}"/>
+                <DataGridCheckBoxColumn Header="Циклический опрос" Binding="{Binding IsCyclic}"/>
             </DataGrid.Columns>
         </DataGrid>
         <!--#endregion-->

@@ -10,10 +10,10 @@ namespace RTK_HMI.Views.Resourses.Converters
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(!(value is bool condition))return Brushes.Transparent;
-            if(!condition)return Brushes.Transparent;
-            if (parameter == null) return Brushes.Red;
-            return parameter;
+            if(!(value is bool condition))return parameter;
+            if(!condition)return parameter;
+            if (parameter == null) return parameter;
+            return Brushes.LightGreen;
         }
     }
 }

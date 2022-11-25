@@ -10,7 +10,10 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=vm:ConnectViewModel}">
-    <ListBox HorizontalContentAlignment="Stretch">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockCommonStyle}"/>
+    </UserControl.Resources>
+    <ListBox  HorizontalContentAlignment="Stretch">
         <ListBox.Resources>
             <ObjectDataProvider x:Key="Parities"
                             ObjectType="{x:Type com:Parity}"
@@ -23,7 +26,7 @@
         <!--#region COM порт -->
         <DockPanel>
             <TextBlock Text="COM порт"/>
-            <ComboBox SelectedItem="{Binding ConnectSettings.ComName}"
+            <ComboBox SelectedItem="{Binding ConnectSettings.ComName}"                                           
                       Width="100"
                       HorizontalAlignment="Right"
                       ItemsSource="{Binding ComPorts}">

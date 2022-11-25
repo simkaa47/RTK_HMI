@@ -5,7 +5,6 @@ using RTK_HMI.Infrastructure.Commands;
 using RTK_HMI.Services;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Threading;
@@ -15,7 +14,7 @@ using System.Windows;
 namespace RTK_HMI.ViewModels
 {
     internal class ConnectViewModel : PropertyChangedBase
-    {       
+    {
 
         private readonly IRepository<ConnectSettings> _connectRepository;
         public ConnectViewModel(MainViewModel mainView)
@@ -163,6 +162,11 @@ namespace RTK_HMI.ViewModels
         {
             SafetyAction(() =>
             {
+                if (!RtkExchange.Connected) 
+                {
+                    throw new Exception("Необходимо подключиться");                    
+                }
+                
                 ReadFromEeprom();
                 var addr = CalculateRegAdressService.GetStartAndCount(MainView.ParameterVm.Parameters);
                 var buf = ExchangeService.ReadRegisters(addr.Item1, addr.Item2);
@@ -189,6 +193,10 @@ namespace RTK_HMI.ViewModels
         {
             SafetyAction(() =>
             {
+                if (!RtkExchange.Connected)
+                {
+                    throw new Exception("Необходимо подключиться");
+                }
                 var addr = CalculateRegAdressService.GetStartAndCount(MainView.ParameterVm.Parameters);
                 var arr = new ushort[addr.Item2];
                 foreach (var par in MainView.ParameterVm.Parameters)
@@ -199,7 +207,7 @@ namespace RTK_HMI.ViewModels
                 for (int i = 0; i < addr.Item2; i += 27)
                 {
                     int count = Math.Min(27, addr.Item2 - i);
-                    ExchangeService.WriteRegisters(arr.Skip(i).Take(count).ToArray(), i+addr.Item1);
+                    ExchangeService.WriteRegisters(arr.Skip(i).Take(count).ToArray(), i + addr.Item1);
                 }
 
                 WriteToEeprom();
@@ -215,7 +223,7 @@ namespace RTK_HMI.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
-                ExchangeService.Disconnect();
+                if(RtkExchange.Connected)ExchangeService.Disconnect();
             }
 
         }
@@ -240,7 +248,7 @@ namespace RTK_HMI.ViewModels
 
                 if (!RtkExchange.Connected)
                 {
-                    if (!ComPorts.Contains(ConnectSettings.ComName)) throw new Exception("Левый компорт какой то");
+                    if (!ComPorts.Contains(ConnectSettings.ComName)) throw new Exception("Выберите COM порт");
                     ExchangeService.Connect();
                 }
                 else ExchangeService.Disconnect();

@@ -8,6 +8,21 @@ namespace RTK_HMI.ViewModels
     internal class MainViewModel : PropertyChangedBase
     {
 
+        #region Версия ПО
+        /// <summary>
+        /// Версия ПО
+        /// </summary>
+        private string _version="1.0";
+        /// <summary>
+        /// Версия ПО
+        /// </summary>
+        public string Version
+        {
+            get => _version;
+            set => Set(ref _version, value);
+        }
+        #endregion
+
         public ParameterVm ParameterVm { get; set; }
         public ConnectViewModel ConnectVM { get; set; }
         public SaveLoadViewModel SaveLoadVM { get; set; }

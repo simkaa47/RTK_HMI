@@ -8,6 +8,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Views\Resourses\Enums.xaml"/>
                 <ResourceDictionary Source="Views\Resourses\Converters\GlobalConverters.xaml"/>
+                <ResourceDictionary Source="Views\Resourses\Styles\TabControls.xaml"/>
+                <ResourceDictionary Source="Views\Resourses\Styles\TabItems.xaml"/>
+                <ResourceDictionary Source="Views\Resourses\Styles\Buttons.xaml"/>
+                <ResourceDictionary Source="Views\Resourses\Styles\Texts.xaml"/>
+                <ResourceDictionary Source="Views\Resourses\Styles\Tables.xaml"/>
+                <ResourceDictionary Source="Views\Resourses\Styles\ComboBoxes.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

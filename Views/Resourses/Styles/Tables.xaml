@@ -1,0 +1,17 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style TargetType="ListBox">
+        <Setter Property="Background" Value="#262626"/>
+    </Style>
+    <Style TargetType="DataGrid">
+        <Setter Property="Background" Value="#262626"/>        
+    </Style>
+    <Style TargetType="DataGridColumnHeader">
+        <Setter Property="Background" Value="#323232"/>
+        <Setter Property="Foreground" Value="#ADADAD"/>
+    </Style>
+    <Style TargetType="DataGridRow">
+        <Setter Property="Background" Value="#323232"/>
+        <Setter Property="Foreground" Value="#ADADAD"/>
+    </Style>
+</ResourceDictionary>

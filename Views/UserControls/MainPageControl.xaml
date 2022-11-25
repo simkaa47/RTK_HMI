@@ -20,47 +20,44 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
         <!--#region Коннект -->
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="0.3*"/>
-            </Grid.ColumnDefinitions>
-            <ToggleButton Grid.Column="1" x:Name="ShowCommSettinsButton">
-                <fa:ImageAwesome Icon="Sliders" Rotation="90"/>
-            </ToggleButton>
-            <Button Command="{Binding ConnectVM.ConnectCommand}" Background="{Binding ConnectVM.RtkExchange.Connected, Converter={StaticResource BoolToColor}, ConverterParameter=#FF00FF00}">
-                <fa:ImageAwesome Icon="Link"/>
+        <Grid>            
+            
+            <Button Command="{Binding ConnectVM.ConnectCommand}" >
+                <fa:ImageAwesome Icon="Link"     
+                                  Stretch="None"
+                                 Foreground="{Binding ConnectVM.RtkExchange.Connected, Converter={StaticResource BoolToColor}, ConverterParameter=#ADADAD}"/>
                 <Button.ToolTip>
                     <TextBlock Text="Установить-разорвать соединение"/>
                 </Button.ToolTip>
-            </Button>
-            <Popup Height="200" Width="300"
-                   IsOpen="{Binding ElementName=ShowCommSettinsButton, Path=IsChecked}"
-                   StaysOpen="False"
-                   Placement="Right">
-                <uc:CommSettingsPageControl DataContext="{Binding ConnectVM}"/>
-            </Popup>
+            </Button>            
         </Grid>
         <!--#endregion-->
         <!--#region Загрузить из РТК -->
-        <Button  Grid.Column="1" Grid.Row="0"
-                 Command="{Binding ConnectVM.ReadAllParamsCommand}"
-                 IsEnabled="{Binding ConnectVM.RtkExchange.Connected}">
-            <fa:ImageAwesome Icon="Download"/>
+        <Button  Grid.Column="0" Grid.Row="1"
+                 Command="{Binding ConnectVM.ReadAllParamsCommand}">
+            <fa:ImageAwesome Icon="Download"  Stretch="None"/>
             <Button.ToolTip>
-                <TextBlock Text="Выгрузить из РТК"/>
+                <TextBlock Text="Выгрузить из РТК" />
             </Button.ToolTip>
         </Button>
         <!--#endregion-->
         <!--#region Записать все параметры  в память -->
-        <Button Grid.Column="0" Grid.Row="1"
-                Command="{Binding ConnectVM.WriteAllCommand}"
-                IsEnabled="{Binding ConnectVM.RtkExchange.Connected}">
-            <fa:ImageAwesome Icon="Upload"/>
+        <Button Grid.Column="1" Grid.Row="1"
+                Command="{Binding ConnectVM.WriteAllCommand}">
+            <fa:ImageAwesome Icon="Upload"  Stretch="None"/>
             <Button.ToolTip>
                 <TextBlock Text="Загрузить в РТК"/>
             </Button.ToolTip>
         </Button>
         <!--#endregion-->
+        <ToggleButton Grid.Column="1" Grid.Row="0" x:Name="ShowCommSettinsButton" Margin="5" Background="#323232" >
+            <fa:ImageAwesome Icon="Sliders" Rotation="90"  Stretch="None"/>
+        </ToggleButton>
+        <Popup Height="200" Width="300"
+                   IsOpen="{Binding ElementName=ShowCommSettinsButton, Path=IsChecked}"                   
+                   StaysOpen="False"                   
+                   Placement="Right">
+            <uc:CommSettingsPageControl DataContext="{Binding ConnectVM}"/>
+        </Popup>
     </Grid>
 </UserControl>

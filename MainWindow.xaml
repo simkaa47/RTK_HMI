@@ -7,23 +7,31 @@
         mc:Ignorable="d"
         xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
         xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
-        Title="MainWindow" Height="450" Width="800">
+        Title="RTKCOMM" Height="450" Width="800"
+        Background="#262626">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
-    <TabControl TabStripPlacement="Bottom">
-        <!--#region Главная -->
-        <TabItem Header="Главная">
-            <uc:MainPageControl/>
-        </TabItem>
-        <!--#endregion-->
-        <TabItem Header="Параметры РТК">
-            <uc:ReadWriteParametersControl/>
-        </TabItem>
-        <!--#region Настройки -->
-        <TabItem Header="Настройки">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>           
+        </Grid.RowDefinitions>
+        <TabControl TabStripPlacement="Bottom">
+            <!--#region Главная -->
+            <TabItem Header="Главная">
+                <uc:MainPageControl/>
+            </TabItem>
+            <!--#endregion-->
+            <TabItem Header="Параметры РТК">
+                <uc:ReadWriteParametersControl/>
+            </TabItem>
+            <!--#region Настройки -->
+            <!--<TabItem Header="Настройки">
             <uc:ParametersControl DataContext="{Binding ParameterVm}"/>
-        </TabItem>
-        <!--#endregion-->
-    </TabControl>
+        </TabItem>-->
+            <!--#endregion-->
+        </TabControl>
+        <TextBlock VerticalAlignment="Bottom" Text="{Binding Version, StringFormat=Версия ПО : {0}}" Style="{StaticResource TextBlockCommonStyle}" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+    </Grid>
+    
 </Window>
