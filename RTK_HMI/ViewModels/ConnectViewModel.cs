@@ -188,7 +188,7 @@ namespace RTK_HMI.ViewModels
                 //.Select(s => temp)
                 //.ToArray();
                 //RecognizeParameterFromArrService.Recongnize(MainView.ParameterVm.Parameters, buf, 65);
-                RecognizeParameterFromArrService.Recongnize(MainView.ParameterVm.Parameters, buf, addr.Item1);
+                RecognizeParameterFromArrService.Recongnize(parameters, buf, addr.Item1);
             });
 
         }
@@ -266,16 +266,16 @@ namespace RTK_HMI.ViewModels
             {
                 if(RtkExchange.Connected)
                 {
-                    var cyclicParameters = MainView.ParameterVm.Parameters.Where(p=>p.IsCyclic).ToList();
-                    if(cyclicParameters.Count>0)
+                    var cyclicParameters = MainView.ParameterVm.Parameters.Where(p => p.IsCyclic).ToList();
+                    if (cyclicParameters.Count > 0)
                     {
                         ReadAllRegs(cyclicParameters);
                     }
-                    while(_requests.Count>0)
-                    {
-                        var request = _requests.Dequeue();
-                        request.Action?.Invoke();
-                    }
+                    //while (_requests.Count > 0)
+                    //{
+                    //    var request = _requests.Dequeue();
+                    //    request.Action?.Invoke();
+                    //}
                 }
                 else Thread.Sleep(500);
             }
