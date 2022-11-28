@@ -33,6 +33,21 @@ namespace RTK_HMI.ViewModels
 
         public MainViewModel MainView { get; }
 
+        #region Индикатор загрузки параметра
+        /// <summary>
+        /// Индикатор загрузки параметра
+        /// </summary>
+        private bool _loadIndicator;
+        /// <summary>
+        /// Индикатор загрузки параметра
+        /// </summary>
+        public bool LoadIndicator
+        {
+            get => _loadIndicator;
+            set => Set(ref _loadIndicator, value);
+        }
+        #endregion
+
         #region Данные обмена с RTK
         public ConnectData RtkExchange { get; } = new ConnectData();
         #endregion
@@ -122,10 +137,12 @@ namespace RTK_HMI.ViewModels
             {
                 SafetyAction(() =>
                 {
+                    LoadIndicator = true;
                     if (SelectedParameter is null) return;
                     var bytes = RecognizeParameterFromArrService.GetRegisters(SelectedParameter);
                     ExchangeService.WriteRegisters(bytes, SelectedParameter.RegNum);
                     WriteToEeprom();
+                    LoadIndicator = false;
                 });
             }));            
 
@@ -170,6 +187,7 @@ namespace RTK_HMI.ViewModels
                 {
                     throw new Exception("Необходимо подключиться");                    
                 }
+                LoadIndicator = true;
                 
                 ReadFromEeprom();
                 var addr = CalculateRegAdressService.GetStartAndCount(parameters);
@@ -189,6 +207,7 @@ namespace RTK_HMI.ViewModels
                 //.ToArray();
                 //RecognizeParameterFromArrService.Recongnize(MainView.ParameterVm.Parameters, buf, 65);
                 RecognizeParameterFromArrService.Recongnize(parameters, buf, addr.Item1);
+                LoadIndicator = false;
             });
 
         }
@@ -201,6 +220,7 @@ namespace RTK_HMI.ViewModels
                 {
                     throw new Exception("Необходимо подключиться");
                 }
+                LoadIndicator = true;
                 var addr = CalculateRegAdressService.GetStartAndCount(MainView.ParameterVm.Parameters);
                 var arr = new ushort[addr.Item2];
                 foreach (var par in MainView.ParameterVm.Parameters)
@@ -215,6 +235,7 @@ namespace RTK_HMI.ViewModels
                 }
 
                 WriteToEeprom();
+                LoadIndicator = false;
             });
         }
 
@@ -226,6 +247,7 @@ namespace RTK_HMI.ViewModels
             }
             catch (Exception ex)
             {
+                LoadIndicator = false;
                 MessageBox.Show(ex.Message);
                 if(RtkExchange.Connected)ExchangeService.Disconnect();
             }

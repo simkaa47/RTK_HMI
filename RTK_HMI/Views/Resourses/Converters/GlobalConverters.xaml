@@ -2,4 +2,5 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:conv ="clr-namespace:RTK_HMI.Views.Resourses.Converters">
     <conv:BoolToColorConverter x:Key="BoolToColor"/>
+    <conv:VisibleIfEqualConverter x:Key="VisibleIfEqual"/>
 </ResourceDictionary>
