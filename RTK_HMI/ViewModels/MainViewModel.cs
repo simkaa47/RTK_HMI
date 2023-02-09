@@ -12,7 +12,7 @@ namespace RTK_HMI.ViewModels
         /// <summary>
         /// Версия ПО
         /// </summary>
-        private string _version="1.0";
+        private string _version="1.1";
         /// <summary>
         /// Версия ПО
         /// </summary>

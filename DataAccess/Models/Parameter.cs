@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 using System.Runtime.Serialization;
 using System.Text;
+
 
 namespace DataAccess.Models
 {
@@ -91,8 +93,37 @@ namespace DataAccess.Models
         }
         #endregion
 
+        #region Register Type
+        /// <summary>
+        /// Register Type
+        /// </summary>
+        private Registers _regType;
+        /// <summary>
+        /// Register Type
+        /// </summary>
+        [DataMember]
+        public Registers RegType
+        {
+            get => _regType;
+            set => Set(ref _regType, value);
+        }
+        #endregion
 
-
+        #region Byte Order
+        /// <summary>
+        /// Byte Order
+        /// </summary>
+        private ByteOrder _order;
+        /// <summary>
+        /// Byte Order
+        /// </summary>
+        [DataMember]
+        public ByteOrder Order
+        {
+            get => _order;
+            set => Set(ref _order, value);
+        }
+        #endregion
 
 
         object Convert(object writeValue)
@@ -104,7 +135,7 @@ namespace DataAccess.Models
                     return writeValue.ToString();
                 case DataType.Float32:
                     float tempFloat = 0;
-                    float.TryParse(writeValue.ToString(), out tempFloat);
+                    float.TryParse(writeValue.ToString().Replace(",","."), NumberStyles.Any, CultureInfo.InvariantCulture, out tempFloat);
                     return tempFloat;                   
                 case DataType.Int32:
                     int tempInt = 0;

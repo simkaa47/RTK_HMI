@@ -6,6 +6,7 @@
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
              xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
+             xmlns:m="clr-namespace:DataAccess.Models;assembly=DataAccess"
              xmlns:com="clr-namespace:System.IO.Ports;assembly=System.IO.Ports"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
@@ -23,8 +24,23 @@
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
         </ListBox.Resources>
-        <!--#region COM порт -->
+        <!--#region Conn Way -->
         <DockPanel>
+            <TextBlock Text="Способ подключения"/>
+            <ComboBox SelectedIndex="{Binding ConnectSettings.Way, Converter={StaticResource EnumToInt}}"                                           
+                      Width="100"
+                      HorizontalAlignment="Right"
+                      ItemsSource="{StaticResource ConnWays}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="DropDownOpened">
+                        <i:InvokeCommandAction Command="{Binding UpdateCommMethodCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
+        </DockPanel>
+        <!--#endregion-->
+        <!--#region COM порт -->
+        <DockPanel Visibility="{Binding ConnectSettings.Way, Converter={StaticResource VisibleIfEqual}, ConverterParameter=SerialPort}">
             <TextBlock Text="COM порт"/>
             <ComboBox SelectedItem="{Binding ConnectSettings.ComName}"                                           
                       Width="100"
@@ -39,7 +55,7 @@
         </DockPanel>
         <!--#endregion-->
         <!--#region Баудрейт -->
-        <DockPanel>
+        <DockPanel Visibility="{Binding ConnectSettings.Way, Converter={StaticResource VisibleIfEqual}, ConverterParameter=SerialPort}">
             <TextBlock Text="Байдрейт"/>
             <ComboBox ItemsSource="{StaticResource PortSpeeds}"
                       HorizontalAlignment="Right"
@@ -48,12 +64,28 @@
         </DockPanel>
         <!--#endregion-->
         <!--#region Паритет-->
-        <DockPanel>
+        <DockPanel Visibility="{Binding ConnectSettings.Way, Converter={StaticResource VisibleIfEqual}, ConverterParameter=SerialPort}">
             <TextBlock Text="Паритет"/>
             <ComboBox HorizontalAlignment="Right"
                       Width="100"
                       ItemsSource="{Binding Source={StaticResource Parities}}"
                       SelectedItem="{Binding ConnectSettings.Parity}"/>
+        </DockPanel>
+        <!--#endregion-->
+        <!--#region Ip -->
+        <DockPanel Visibility="{Binding ConnectSettings.Way, Converter={StaticResource VisibleIfNotEqual}, ConverterParameter=SerialPort}">
+            <TextBlock Text="IP"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <TextBox Text="{Binding Ip3}" Width="40"
+                     HorizontalAlignment="Right"/>
+                <TextBox Text="{Binding Ip2}" Width="40"
+                     HorizontalAlignment="Right"/>
+                <TextBox Text="{Binding Ip1}" Width="40"
+                     HorizontalAlignment="Right"/>
+                <TextBox Text="{Binding Ip0}" Width="40"
+                     HorizontalAlignment="Right"/>
+            </StackPanel>
+            
         </DockPanel>
         <!--#endregion-->
         <!--#region Тайм-аут ответа -->
@@ -77,5 +109,6 @@
                      HorizontalAlignment="Right"/>
         </DockPanel>
         <!--#endregion-->
+        
     </ListBox>
 </UserControl>

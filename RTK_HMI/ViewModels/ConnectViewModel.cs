@@ -24,7 +24,7 @@ namespace RTK_HMI.ViewModels
             _connectRepository = new EfRepository<ConnectSettings>();
             InitParameters();
             InitConnectService();
-            Task.Factory.StartNew(() => CuclicProcess());
+            Task.Factory.StartNew(() => CyclicProcess());
         }
 
         private Queue<Request> _requests = new Queue<Request>();    
@@ -54,7 +54,9 @@ namespace RTK_HMI.ViewModels
 
         #region Сервисы
 
+        #region Communication Service
         public ExchangeService ExchangeService { get; private set; }
+        #endregion        
 
         #endregion
 
@@ -80,6 +82,101 @@ namespace RTK_HMI.ViewModels
         {
             ComPorts = SerialPort.GetPortNames();
         }, canExec => true));
+        #endregion
+
+        #region Update comm purpose
+        /// <summary>
+        /// Update comm purpose
+        /// </summary>
+        RelayCommand _updateCommMethodCommand;
+        /// <summary>
+        /// Update comm purpose
+        /// </summary>
+        public RelayCommand UpdateCommMethodCommand => _updateCommMethodCommand ?? (_updateCommMethodCommand = new RelayCommand(execPar => 
+        { 
+
+        }, canExecPar => true));
+        #endregion
+
+        #region ip0
+        /// <summary>
+        /// ip0
+        /// </summary>
+        private byte _ip0;
+        /// <summary>
+        /// ip0
+        /// </summary>
+        public byte Ip0
+        {
+            get => _ip0;
+            set
+            {
+                if(Set(ref _ip0, value))
+                {
+                    RecalculateIpFromBytes();
+                }
+            }
+        }
+        #endregion
+        #region ip1
+        /// <summary>
+        /// ip0
+        /// </summary>
+        private byte _ip1;
+        /// <summary>
+        /// ip0
+        /// </summary>
+        public byte Ip1
+        {
+            get => _ip1;
+            set
+            {
+                if (Set(ref _ip1, value))
+                {
+                    RecalculateIpFromBytes();
+                }
+            }
+        }
+        #endregion
+        #region ip2
+        /// <summary>
+        /// ip0
+        /// </summary>
+        private byte _ip2;
+        /// <summary>
+        /// ip0
+        /// </summary>
+        public byte Ip2
+        {
+            get => _ip2;
+            set
+            {
+                if (Set(ref _ip2, value))
+                {
+                    RecalculateIpFromBytes();
+                }
+            }
+        }
+        #endregion
+        #region ip3
+        /// <summary>
+        /// ip0
+        /// </summary>
+        private byte _ip3;
+        /// <summary>
+        /// ip0
+        /// </summary>
+        public byte Ip3
+        {
+            get => _ip3;
+            set
+            {
+                if (Set(ref _ip3, value))
+                {
+                    RecalculateIpFromBytes();
+                }
+            }
+        }
         #endregion
 
         #region Connect
@@ -169,13 +266,19 @@ namespace RTK_HMI.ViewModels
         void InitParameters()
         {
             ConnectSettings = _connectRepository.Init(new List<ConnectSettings> { new ConnectSettings() }).FirstOrDefault();
-            ConnectSettings.PropertyChanged += (o, e) => _connectRepository.Update(ConnectSettings);
+            ConnectSettings.PropertyChanged += (o, e) => 
+            {
+                _connectRepository.Update(ConnectSettings);
+                if(RtkExchange.Connected)ExchangeService.Reconnect();
+            } ;
+            GetBytesFromIp();
+
         }
 
         void InitConnectService()
         {
-            ExchangeService = new ExchangeService(RtkExchange, ConnectSettings);
 
+            ExchangeService = new ExchangeService(RtkExchange, ConnectSettings);
 
         }
 
@@ -190,23 +293,23 @@ namespace RTK_HMI.ViewModels
                 LoadIndicator = true;
                 
                 ReadFromEeprom();
-                var addr = CalculateRegAdressService.GetStartAndCount(parameters);
-                var buf = ExchangeService.ReadRegisters(addr.Item1, addr.Item2);
+                
+                var holdings = parameters.Where(p => p.RegType == Registers.Holding);
+                var readings = parameters.Where(p => p.RegType == Registers.Reading);
+                // Holding Regs;
+                
+                var addr = CalculateRegAdressService.GetStartAndCount(holdings);
+                var buf = ExchangeService.ReadRegisters(addr.Item1, addr.Item2, Registers.Holding);
                 if (buf is null) return;
+                RecognizeParameterFromArrService.Recongnize(holdings, buf, addr.Item1);
 
-                //string text;
-                //int temp = 0;
-                //using (StreamReader reader = new StreamReader("arr.txt"))
-                //{
-                //    text = reader.ReadToEnd();
-                //    Console.WriteLine(text);
-                //}
-                //var buf = text.Split(new char[] { ' ', '\n', '\t', '\r' }, StringSplitOptions.RemoveEmptyEntries)
-                //.Where(s => int.TryParse(s, out temp))
-                //.Select(s => temp)
-                //.ToArray();
-                //RecognizeParameterFromArrService.Recongnize(MainView.ParameterVm.Parameters, buf, 65);
-                RecognizeParameterFromArrService.Recongnize(parameters, buf, addr.Item1);
+                // Reading Regs;
+                addr = CalculateRegAdressService.GetStartAndCount(readings);
+                buf = ExchangeService.ReadRegisters(addr.Item1, addr.Item2, Registers.Reading);
+                if (buf is null) return;
+                RecognizeParameterFromArrService.Recongnize(readings, buf, addr.Item1);
+
+
                 LoadIndicator = false;
             });
 
@@ -239,6 +342,19 @@ namespace RTK_HMI.ViewModels
             });
         }
 
+        void RecalculateIpFromBytes()
+        {
+            ConnectSettings.Ip = Ip0 + (Ip1<<8) + (Ip2 << 16) + (Ip3 << 24);
+        }
+
+        void GetBytesFromIp()
+        {
+            _ip0 = (byte)(ConnectSettings.Ip & 255);
+            _ip1 = (byte)((ConnectSettings.Ip & (255<<8))>>8);
+            _ip2 = (byte)((ConnectSettings.Ip & (255 << 16))>>16);
+            _ip3 = (byte)((ConnectSettings.Ip & (255 << 24))>>24);
+        }
+
         void SafetyAction(Action action)
         {
             try
@@ -257,14 +373,21 @@ namespace RTK_HMI.ViewModels
 
         void ReadFromEeprom()
         {
-            Thread.Sleep(500);
-            ExchangeService.WriteRegisters(new ushort[] { 100 }, ConnectSettings.StartReg);
+            if(_connectSettings.CommandFlag)
+            {
+                Thread.Sleep(500);
+                ExchangeService.WriteRegisters(new ushort[] { 100 }, ConnectSettings.StartReg);
+            }
+            
         }
 
         void WriteToEeprom()
         {
-            Thread.Sleep(500);
-            ExchangeService.WriteRegisters(new ushort[] { 200 }, ConnectSettings.StartReg);
+            if(_connectSettings.CommandFlag)
+            {
+                Thread.Sleep(500);
+                ExchangeService.WriteRegisters(new ushort[] { 200 }, ConnectSettings.StartReg);
+            }           
         }
 
         void Connect()
@@ -282,24 +405,25 @@ namespace RTK_HMI.ViewModels
             });
         }
 
-        void CuclicProcess()
+        void CyclicProcess()
         {
             while (true)
             {
                 if(RtkExchange.Connected)
                 {
+                    while (_requests.Count > 0)
+                    {
+                        var request = _requests.Dequeue();
+                        request.Action?.Invoke();
+                    }
                     var cyclicParameters = MainView.ParameterVm.Parameters.Where(p => p.IsCyclic).ToList();
                     if (cyclicParameters.Count > 0)
                     {
                         ReadAllRegs(cyclicParameters);
                     }
-                    //while (_requests.Count > 0)
-                    //{
-                    //    var request = _requests.Dequeue();
-                    //    request.Action?.Invoke();
-                    //}
+                    
                 }
-                else Thread.Sleep(500);
+                Thread.Sleep(500);
             }
             
         }

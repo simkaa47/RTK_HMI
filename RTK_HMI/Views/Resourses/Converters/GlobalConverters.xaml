@@ -3,4 +3,6 @@
                     xmlns:conv ="clr-namespace:RTK_HMI.Views.Resourses.Converters">
     <conv:BoolToColorConverter x:Key="BoolToColor"/>
     <conv:VisibleIfEqualConverter x:Key="VisibleIfEqual"/>
+    <conv:VisibleIfNotEqual x:Key="VisibleIfNotEqual"/>
+    <conv:EnumToIntConverter x:Key="EnumToInt"/>
 </ResourceDictionary>

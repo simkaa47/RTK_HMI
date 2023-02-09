@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Controls;
 
 namespace RTK_HMI.Services
 {
@@ -19,46 +20,82 @@ namespace RTK_HMI.Services
                         param.Value = GetStringFromUshorts(ushortArr, param.RegNum - offset, param.Length);
                         break;
                     case DataType.Float32:
-                        param.Value = GetFloatFromUshorts(ushortArr, param.RegNum - offset);
+                        param.Value = GetFloatFromUshorts(ushortArr, param.RegNum - offset, param.Order);
                         break;
                     case DataType.Int32:
-                        param.Value = GetInt32FromUshorts(ushortArr, param.RegNum - offset);
+                        param.Value = GetInt32FromUshorts(ushortArr, param.RegNum - offset, param.Order);
                         break;
                     case DataType.Uint32:
-                        param.Value = GetUInt32FromUshorts(ushortArr, param.RegNum - offset);
+                        param.Value = GetUInt32FromUshorts(ushortArr, param.RegNum - offset, param.Order);
                         break;
                     case DataType.Int16:
-                        param.Value = GetShortFromUshorts(ushortArr, param.RegNum - offset);
+                        param.Value = GetShortFromUshorts(ushortArr, param.RegNum - offset, param.Order);
                         break;
                     case DataType.Uint16:
-                        param.Value = GetUshortFromUshorts(ushortArr, param.RegNum - offset);
+                        param.Value = GetUshortFromUshorts(ushortArr, param.RegNum - offset, param.Order);
                         break;
                     default:
                         break;
                 }
             }
 
-
-
-
         }
 
         #region Получить float из 2х регистров
-        static float GetFloatFromUshorts(ushort[] regs, int regNum)
+        static float GetFloatFromUshorts(ushort[] regs, int regNum, ByteOrder order)
         {
-            ushort[] arr = new ushort[] { regs[regNum], regs[regNum+1] };
-            var bytes = arr.SelectMany(num => BitConverter.GetBytes(num).Reverse()).ToArray();
+            ushort[] arr = null;
+            byte[] bytes = null;
+            switch (order)
+            {
+                case ByteOrder.ABCD:
+                    arr = new ushort[] { regs[regNum], regs[regNum+1] };
+                    bytes = arr.SelectMany(num => BitConverter.GetBytes(num)).ToArray();
+                    break;
+                case ByteOrder.CDAB:
+                    arr = new ushort[] { regs[regNum + 1], regs[regNum] };
+                    bytes = arr.SelectMany(num => BitConverter.GetBytes(num)).ToArray();
+                    break;
+                case ByteOrder.BADC:
+                    arr = new ushort[] { regs[regNum], regs[regNum + 1] };
+                    bytes = arr.SelectMany(num => BitConverter.GetBytes(num).Reverse()).ToArray();
+                    break;
+                case ByteOrder.DCBA:
+                    arr = new ushort[] { regs[regNum + 1], regs[regNum] };
+                    bytes = arr.SelectMany(num => BitConverter.GetBytes(num).Reverse()).ToArray();
+                    break;
+                default:
+                    break;
+            }
+
+            
             return BitConverter.ToSingle(bytes, 0);
         }
         #endregion
 
         #region Получить uint32 из 2х регистров
-        static uint GetUInt32FromUshorts(ushort[] regs, int regNum)
+        static uint GetUInt32FromUshorts(ushort[] regs, int regNum, ByteOrder order)
         {
+            ushort[] arr = null;
             try
             {
-                ushort[] arr = new ushort[] { regs[regNum], regs[regNum+1] };
-                return BitConverter.ToUInt32(arr.SelectMany(num => BitConverter.GetBytes(num).Reverse()).ToArray(), 0);
+                switch (order)
+                {
+                    case ByteOrder.ABCD:
+                        arr = new ushort[] { regs[regNum], regs[regNum + 1] };
+                        return BitConverter.ToUInt32(arr.SelectMany(num => BitConverter.GetBytes(num)).ToArray(), 0);
+                    case ByteOrder.CDAB:
+                        arr = new ushort[] { regs[regNum+1], regs[regNum] };
+                        return BitConverter.ToUInt32(arr.SelectMany(num => BitConverter.GetBytes(num)).ToArray(), 0);
+                    case ByteOrder.BADC:
+                        arr = new ushort[] { regs[regNum], regs[regNum + 1] };
+                        return BitConverter.ToUInt32(arr.SelectMany(num => BitConverter.GetBytes(num).Reverse()).ToArray(), 0);
+                    case ByteOrder.DCBA:
+                        arr = new ushort[] { regs[regNum + 1], regs[regNum] };
+                        return BitConverter.ToUInt32(arr.SelectMany(num => BitConverter.GetBytes(num).Reverse()).ToArray(), 0);
+                }
+                return 0;
+                
             }
             catch (Exception)
             {
@@ -70,12 +107,27 @@ namespace RTK_HMI.Services
         #endregion
 
         #region Получить int32 из 2х регистров
-        static int GetInt32FromUshorts(ushort[] regs, int regNum)
+        static int GetInt32FromUshorts(ushort[] regs, int regNum, ByteOrder order)
         {
+            ushort[] arr = null;
             try
             {
-                ushort[] arr = new ushort[] { regs[regNum], regs[regNum + 1] };
-                return BitConverter.ToInt32(arr.SelectMany(num => BitConverter.GetBytes(num).Reverse()).ToArray(), 0);
+                switch (order)
+                {
+                    case ByteOrder.ABCD:
+                        arr = new ushort[] { regs[regNum], regs[regNum + 1] };
+                        return BitConverter.ToInt32(arr.SelectMany(num => BitConverter.GetBytes(num)).ToArray(), 0);
+                    case ByteOrder.CDAB:
+                        arr = new ushort[] { regs[regNum + 1], regs[regNum] };
+                        return BitConverter.ToInt32(arr.SelectMany(num => BitConverter.GetBytes(num)).ToArray(), 0);
+                    case ByteOrder.BADC:
+                        arr = new ushort[] { regs[regNum], regs[regNum + 1] };
+                        return BitConverter.ToInt32(arr.SelectMany(num => BitConverter.GetBytes(num).Reverse()).ToArray(), 0);
+                    case ByteOrder.DCBA:
+                        arr = new ushort[] { regs[regNum + 1], regs[regNum] };
+                        return BitConverter.ToInt32(arr.SelectMany(num => BitConverter.GetBytes(num).Reverse()).ToArray(), 0);
+                }
+                return 0;
             }
             catch (Exception)
             {
@@ -100,18 +152,40 @@ namespace RTK_HMI.Services
         #endregion
 
         #region Получить ushort из байт
-        static ushort GetUshortFromUshorts(ushort[] regs, int regNum)
+        static ushort GetUshortFromUshorts(ushort[] regs, int regNum, ByteOrder order)
         {
             ushort temp = regs[regNum];
-            return BitConverter.ToUInt16(BitConverter.GetBytes(temp).Reverse().ToArray(), 0);
+            switch (order)
+            {
+                case ByteOrder.ABCD:
+                case ByteOrder.CDAB:
+                    return BitConverter.ToUInt16(BitConverter.GetBytes(temp).ToArray(), 0);
+                case ByteOrder.BADC:
+                case ByteOrder.DCBA:
+                    return BitConverter.ToUInt16(BitConverter.GetBytes(temp).Reverse().ToArray(), 0);
+                default:
+                    break;
+            }
+            return 0;
         }
         #endregion
 
         #region Получить short из байт
-        static short GetShortFromUshorts(ushort[] regs, int regNum)
+        static short GetShortFromUshorts(ushort[] regs, int regNum, ByteOrder order)
         {
             ushort temp = regs[regNum];
-            return BitConverter.ToInt16(BitConverter.GetBytes(temp).Reverse().ToArray(), 0);
+            switch (order)
+            {
+                case ByteOrder.ABCD:                    
+                case ByteOrder.CDAB:
+                    return BitConverter.ToInt16(BitConverter.GetBytes(temp).ToArray(), 0);
+                case ByteOrder.BADC:                   
+                case ByteOrder.DCBA:
+                    return BitConverter.ToInt16(BitConverter.GetBytes(temp).Reverse().ToArray(), 0);
+                default:
+                    break;
+            }
+            return 0;
         }
         #endregion
 
@@ -125,17 +199,19 @@ namespace RTK_HMI.Services
                     return GetRegistersFromString(parameter.Value.ToString(), parameter.Length);
                 case DataType.Float32:
                     if (parameter.Value is null) return new ushort[2];
-                    return GetRegsFromFloat((float)parameter.Value);
+                    return GetRegsFromFloat((float)parameter.Value, parameter.Order);
                 case DataType.Int32:
                     if (parameter.Value is null) return new ushort[2];
-                    return GetRegsFromInt32((int)parameter.Value);
+                    return GetRegsFromInt32((int)parameter.Value, parameter.Order);
                 case DataType.Uint32:
                     if (parameter.Value is null) return new ushort[2];
-                    return GetRegsFromUInt32((uint)parameter.Value);
+                    return GetRegsFromUInt32((uint)parameter.Value, parameter.Order);
                 case DataType.Int16:
-                    return new ushort[] { BitConverter.ToUInt16(BitConverter.GetBytes((short)parameter.Value).Reverse().ToArray()) };
+                    if (parameter.Value is null) return new ushort[2];
+                    return GetRegsFromShort((short)parameter.Value, parameter.Order);
                 case DataType.Uint16:
-                    return new ushort[] { BitConverter.ToUInt16(BitConverter.GetBytes((ushort)parameter.Value).Reverse().ToArray()) };
+                    if (parameter.Value is null) return new ushort[2];
+                    return GetRegsFromUshort((ushort)parameter.Value, parameter.Order);
                 default:
                     break;
             }
@@ -161,42 +237,75 @@ namespace RTK_HMI.Services
         #endregion
 
         #region Получить регистры из float
-        static ushort[] GetRegsFromFloat(float value)
+        static ushort[] GetRegsFromFloat(float value, ByteOrder order)
         {
-            var output = new ushort[2];
             var bytes = BitConverter.GetBytes(value).ToArray();
-            for (int i = 0; i < 4; i+=2)
-            {
-                var reverse = new byte[] {bytes[i+1], bytes[i]};
-                output[i/2] = BitConverter.ToUInt16(reverse, 0);
-            }
-            return output;
-;        }
+            return GetRegistersFromBytes(bytes, order);                  
+        }
         #endregion
 
         #region Получить регистры из Int32
-        static ushort[] GetRegsFromInt32(int value)
-        {
-            var output = new ushort[2];
+        static ushort[] GetRegsFromInt32(int value, ByteOrder order)
+        {            
             var bytes = BitConverter.GetBytes(value).ToArray();
-            for (int i = 0; i < 4; i += 2)
-            {
-                var reverse = new byte[] { bytes[i + 1], bytes[i] };
-                output[i / 2] = BitConverter.ToUInt16(reverse, 0);
-            }
-            return output;            
+            return GetRegistersFromBytes(bytes, order);            
         }
         #endregion
 
         #region Получить регистры из UInt32
-        static ushort[] GetRegsFromUInt32(uint value)
+        static ushort[] GetRegsFromUInt32(uint value, ByteOrder order)
         {
-            var output = new ushort[2];
             var bytes = BitConverter.GetBytes(value).ToArray();
-            for (int i = 0; i < 4; i += 2)
+            return GetRegistersFromBytes(bytes, order);
+        }
+        #endregion
+
+        #region Получить регистры из short
+        static ushort[] GetRegsFromShort(short value, ByteOrder order)
+        {
+            var bytes = BitConverter.GetBytes(value).ToArray();
+            return GetRegistersFromBytes(bytes, order);            
+        }
+        #endregion
+
+        #region Получить регистры из ushort
+        static ushort[] GetRegsFromUshort(ushort value, ByteOrder order)
+        {
+            var bytes = BitConverter.GetBytes(value).ToArray();
+            return GetRegistersFromBytes(bytes, order);
+        }
+        #endregion
+
+        #region Получить регистры из байт
+        private static ushort[] GetRegistersFromBytes(byte[] arr, ByteOrder order)
+        {
+            var output = new ushort[arr.Length/2];
+            if(arr.Length<2 || arr.Length>4 || arr.Length %2 !=0) return output;
+            byte[] couple = null;
+            for (int i = 0; i < arr.Length; i += 2)
             {
-                var reverse = new byte[] { bytes[i + 1], bytes[i] };
-                output[i / 2] = BitConverter.ToUInt16(reverse, 0);
+                switch (order)
+                {
+                    case ByteOrder.ABCD:
+                        couple = new byte[] { arr[i], arr[i + 1] };
+                        output[i / 2] = BitConverter.ToUInt16(couple, 0);
+                        break;
+                    case ByteOrder.CDAB:
+                        couple = new byte[] { arr[i], arr[i + 1] };
+                        output[output.Length - 1 - (i / 2)] = BitConverter.ToUInt16(couple, 0);
+                        break;
+                    case ByteOrder.BADC:
+                        couple = new byte[] { arr[i + 1], arr[i] };
+                        output[i / 2] = BitConverter.ToUInt16(couple, 0);
+                        break;
+                    case ByteOrder.DCBA:
+                        couple = new byte[] { arr[i + 1], arr[i] };
+                        output[output.Length - 1 - (i / 2)] = BitConverter.ToUInt16(couple, 0);
+                        break;
+                    default:
+                        break;
+                }               
+                
             }
             return output;
         }

@@ -7,7 +7,8 @@ namespace RTK_HMI.Services
     internal static class CalculateRegAdressService
     {
         public static (int, int) GetStartAndCount(IEnumerable<Parameter> parameters)
-        { 
+        {
+            if (parameters.Count() == 0) return (0, 0);
             var start = CalulateStartAddr(parameters);
             var finish = CalculateFinishAddr(parameters);
             return (start, finish-start+1);

@@ -2,14 +2,16 @@
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20230206121829_Add_Ethernet_Comm_Ways1")]
+    partial class Add_Ethernet_Comm_Ways1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,9 +28,6 @@ namespace DataAccess.Migrations
 
                     b.Property<string>("ComName")
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("CommandFlag")
-                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ConnectionTimeout")
                         .HasColumnType("INTEGER");
@@ -74,13 +73,7 @@ namespace DataAccess.Migrations
                     b.Property<string>("Notification")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Order")
-                        .HasColumnType("INTEGER");
-
                     b.Property<int>("RegNum")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("RegType")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Type")

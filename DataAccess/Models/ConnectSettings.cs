@@ -5,6 +5,13 @@ using System.Text;
 
 namespace DataAccess.Models
 {
+    public enum ConnectWays
+    {
+        SerialPort,
+        Udp,
+        Tcp
+    }
+
     public class ConnectSettings :PropertyChangedBase, IDatabased
     {
         public int Id { get ; set ; }
@@ -50,6 +57,66 @@ namespace DataAccess.Models
         {
             get => _startReg;
             set => Set(ref _startReg, value);
+        }
+        #endregion
+
+        #region Communication Way
+        /// <summary>
+        /// Communication Way
+        /// </summary>
+        private ConnectWays _way;
+        /// <summary>
+        /// Communication Way
+        /// </summary>
+        public ConnectWays Way
+        {
+            get => _way;
+            set => Set(ref _way, value);
+        }
+        #endregion
+
+        #region Port Number
+        /// <summary>
+        /// Port Number
+        /// </summary>
+        private int _portNumber;
+        /// <summary>
+        /// Port Number
+        /// </summary>
+        public int PortNumber
+        {
+            get => _portNumber;
+            set => Set(ref _portNumber, value);
+        }
+        #endregion
+
+        #region IP
+        /// <summary>
+        /// IP
+        /// </summary>
+        private int _ip;
+        /// <summary>
+        /// IP
+        /// </summary>
+        public int Ip
+        {
+            get => _ip;
+            set => Set(ref _ip, value);
+        }
+        #endregion
+
+        #region There are command for read-write
+        /// <summary>
+        /// There are command for read-write
+        /// </summary>
+        private bool _commandFlag;
+        /// <summary>
+        /// There are command for read-write
+        /// </summary>
+        public bool CommandFlag
+        {
+            get => _commandFlag;
+            set => Set(ref _commandFlag, value);
         }
         #endregion
 

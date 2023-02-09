@@ -23,7 +23,20 @@ namespace RTK_HMI.Services
 
         public void Connect()
         {
-            PortInit();
+            switch (_connectSettings.Way)
+            {
+                case ConnectWays.SerialPort:
+                    PortInit();
+                    break;
+                case ConnectWays.Udp:
+                    ConnectUdp();
+                    break;
+                case ConnectWays.Tcp:
+                    break;
+                default:
+                    break;
+            }
+            _connectData.Connected = _client.Connected;
         }
 
         public   void Disconnect()
@@ -31,19 +44,37 @@ namespace RTK_HMI.Services
             if(_client!=null)
             {
                 _client.Disconnect();
-                _connectData.Connected = _client.Connected;
+                _connectData.Connected = false;
             }
             
         }
 
-        public int[] ReadRegisters(int startNum, int count)
+        public void Reconnect() 
+        {
+            Disconnect();
+            Connect();
+        }
+
+        public int[] ReadRegisters(int startNum, int count, Registers type)
         {
             int[] result = new int[count];
             for (int i = 0; i < count; i+=100)
             {
                 var num = Math.Min(100, count - i);
-                var temp = ReadHoldingRegisters(startNum+i, num);
-                temp.CopyTo(result, i);
+                int[] temp = null;
+                if(type == Registers.Holding)
+                {
+                    temp = ReadHoldingRegisters(startNum + i, num);
+                }
+                else
+                {
+                    temp = ReadInputRegisters(startNum + i, num);
+                }
+                if(temp!=null)
+                {
+                    temp.CopyTo(result, i);
+                }
+                
             }            
             return result;
         }
@@ -57,45 +88,50 @@ namespace RTK_HMI.Services
         #region Инициализаця порта
         void PortInit()
         {
-            try
-            {
-                _client = new ModbusClient(_connectSettings.ComName);
-                _client.ConnectionTimeout = _connectSettings.ConnectionTimeout;
-                _client.Baudrate = _connectSettings.Baudrate; ;
-                _client.UnitIdentifier = _connectSettings.ModbAddr;
-                _client.Parity = _connectSettings.Parity;
-                _client.Connect();
-                _connectData.Connected = _client.Connected;
-            }
-            catch (Exception ex)
-            {
-
-                MessageBox.Show(ex.Message);
-            }
-
-
+            _client = new ModbusClient(_connectSettings.ComName);
+            _client.ConnectionTimeout = _connectSettings.ConnectionTimeout;
+            _client.Baudrate = _connectSettings.Baudrate; ;
+            _client.UnitIdentifier = _connectSettings.ModbAddr;
+            _client.Parity = _connectSettings.Parity;
+            _client.Connect();
         }
         #endregion
-        
 
-        
+        #region Покдлючение UDP
+        void ConnectUdp()
+        {
+            _client = new ModbusClient();
+            _client.UDPFlag = true;
+            _client.IPAddress = GetStringFromIp(_connectSettings.Ip);
+            _client.Port = 502;
+            _client.Connect();
+        }
+        #endregion
+
+        static string GetStringFromIp(int ip)
+        {
+            byte[] addr = new byte[4];
+            addr[0] = (byte)(ip & 255);
+            addr[1] = (byte)((ip & (255 << 8)) >> 8);
+            addr[2] = (byte)((ip & (255 << 16)) >> 16);
+            addr[3] = (byte)((ip & (255 << 24)) >> 24);
+            return $"{addr[3]}.{addr[2]}.{addr[1]}.{addr[0]}";
+        }
+
 
         int[] ReadHoldingRegisters(int startNum, int count)
         {
             int[] registers = null;
-            try
-            {
-                
-                if (_client is null || !_client.Connected) throw new Exception("Необходимо сначала подключиться");
-                registers =  _client.ReadHoldingRegisters(startNum, count);
-            }
-            catch (Exception ex)
-            {
+            if (_client is null || !_client.Connected) throw new Exception("Необходимо сначала подключиться");
+            registers = _client.ReadHoldingRegisters(startNum, count);
+            return registers;
+        }
 
-                ErrorEvent.Invoke(ex.Message);
-                _client?.Disconnect();
-                if(!(_client is null))_connectData.Connected = _client.Connected;
-            }
+        int[] ReadInputRegisters(int startNum, int count)
+        {
+            int[] registers = null;
+            if (_client is null || !_client.Connected) throw new Exception("Необходимо сначала подключиться");
+            registers = _client.ReadInputRegisters(startNum, count);
             return registers;
         }
 

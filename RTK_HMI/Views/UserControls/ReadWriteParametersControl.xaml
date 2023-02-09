@@ -87,9 +87,18 @@
                   SelectedItem="{Binding ConnectVM.SelectedParameter}"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False">
+            <DataGrid.Resources>
+                <DataTemplate x:Key="HeaderTemplate">
+                    <TextBlock TextWrapping="Wrap">
+                        <TextBlock.Text>
+                            <Binding/>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </DataTemplate>
+            </DataGrid.Resources>
             <DataGrid.Columns>
                 <DataGridTextColumn  IsReadOnly="True" Header="Название" Binding="{Binding Description}"/>
-                <DataGridTemplateColumn Header="Значение">
+                <DataGridTemplateColumn Header="Значение" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="200">
@@ -105,10 +114,11 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn>
+                <DataGridTemplateColumn >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ConnectVM.WriteParameterCommand}">
+                            <Button Visibility="{Binding RegType, Converter={StaticResource VisibleIfEqual}, ConverterParameter=Holding}"
+                                    Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ConnectVM.WriteParameterCommand}">
                                 <fa:ImageAwesome Icon="Upload" Height="20" Width="20"/>
                                 <Button.ToolTip>
                                     <TextBlock Text="Записать параметр"/>
@@ -119,7 +129,10 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Header="Тип данных" IsReadOnly="True" Binding="{Binding Type}"/>
                 <DataGridTextColumn Header="№ регистра" IsReadOnly="True" Binding="{Binding RegNum}"/>
-                <DataGridCheckBoxColumn Header="Циклический опрос" Binding="{Binding IsCyclic}"/>
+                <DataGridCheckBoxColumn HeaderTemplate="{StaticResource HeaderTemplate}" Width="80" Header="Циклический опрос" IsReadOnly="True" Binding="{Binding IsCyclic}"/>
+                <DataGridTextColumn Header="Тип регистра" IsReadOnly="True" Binding="{Binding RegType}"/>
+                <DataGridTextColumn HeaderTemplate="{StaticResource HeaderTemplate}" Width="60" Header="Порядок байт" IsReadOnly="True" Binding="{Binding Order}"/>
+                
             </DataGrid.Columns>
         </DataGrid>
         <!--#endregion-->

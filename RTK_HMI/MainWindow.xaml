@@ -33,7 +33,10 @@
             <!--#endregion-->
         </TabControl>
         <TextBlock VerticalAlignment="Bottom" Text="{Binding Version, StringFormat=Версия ПО : {0}}" Style="{StaticResource TextBlockCommonStyle}" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-        <fa:ImageAwesome Spin="{Binding ConnectVM.LoadIndicator}" Visibility="{Binding ConnectVM.LoadIndicator, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" Icon="Refresh" Height="40"/>
+        <fa:ImageAwesome 
+            Spin="{Binding ConnectVM.LoadIndicator}" 
+            Visibility="{Binding ConnectVM.LoadIndicator, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" 
+            Icon="Refresh" Height="40"/>
 
     </Grid>
     

@@ -10,4 +10,8 @@
         <sys:Int32>38400</sys:Int32>
         <sys:Int32>115200</sys:Int32>
     </col:ArrayList>
+    <col:ArrayList x:Key="ConnWays">
+        <sys:String>Modbus RTU</sys:String>
+        <sys:String>Modbus UDP</sys:String>        
+    </col:ArrayList>
 </ResourceDictionary>
