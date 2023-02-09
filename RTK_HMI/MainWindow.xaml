@@ -15,25 +15,13 @@
     </Window.DataContext>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition/>           
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
-        <TabControl TabStripPlacement="Bottom">
-            <!--#region Главная -->
-            <TabItem Header="Главная">
-                <uc:MainPageControl/>
-            </TabItem>
-            <!--#endregion-->
-            <TabItem Header="Параметры РТК">
-                <uc:ReadWriteParametersControl/>
-            </TabItem>
-            <!--#region Настройки -->
-            <!--<TabItem Header="Настройки">
-            <uc:ParametersControl DataContext="{Binding ParameterVm}"/>
-        </TabItem>-->
-            <!--#endregion-->
-        </TabControl>
-        <TextBlock VerticalAlignment="Bottom" Text="{Binding Version, StringFormat=Версия ПО : {0}}" Style="{StaticResource TextBlockCommonStyle}" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-        <fa:ImageAwesome 
+        <uc:ConnectPanel DataContext="{Binding ConnectVM}"/>
+        <uc:ReadWriteParametersControl Grid.Row="1"/>
+        <TextBlock Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Version, StringFormat=Версия ПО : {0}}" Style="{StaticResource TextBlockCommonStyle}" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+        <fa:ImageAwesome  Grid.Row="1"
             Spin="{Binding ConnectVM.LoadIndicator}" 
             Visibility="{Binding ConnectVM.LoadIndicator, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" 
             Icon="Refresh" Height="40"/>

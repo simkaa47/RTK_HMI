@@ -33,6 +33,90 @@ namespace RTK_HMI.ViewModels
 
         public MainViewModel MainView { get; }
 
+        private const string noConnect = "Нет соединения, нажмите кнопку \"Установиить - разорвать соединение\"";
+
+
+        #region Communication Status
+        /// <summary>
+        /// Communication Status
+        /// </summary>
+        private string _status = noConnect;
+        /// <summary>
+        /// Communication Status        
+        /// </summary>
+        public string Status
+        {
+            get => _status;
+            set => Set(ref _status, value);
+        }
+        #endregion
+
+        #region Error
+        /// <summary>
+        /// Error
+        /// </summary>
+        private bool _error;
+        /// <summary>
+        /// Error
+        /// </summary>
+        public bool Error
+        {
+            get => _error;
+            set => Set(ref _error, value);
+        }
+        #endregion
+
+        #region Req attempts count
+        /// <summary>
+        /// Req attempts count
+        /// </summary>
+        private int _reqAtempts;
+        /// <summary>
+        /// Req attempts count
+        /// </summary>
+        public int ReqAtempts
+        {
+            get => _reqAtempts;
+            set => Set(ref _reqAtempts, value);
+        }
+        #endregion
+
+        #region Req success count
+        /// <summary>
+        /// Req success count
+        /// </summary>
+        private int _reqSuccess;
+        /// <summary>
+        /// Req success count
+        /// </summary>
+        public int ReqSuccess
+        {
+            get => _reqSuccess;
+            set => Set(ref _reqSuccess, value);
+        }
+        #endregion
+
+        #region Connect Required
+        /// <summary>
+        /// Connect Required
+        /// </summary>
+        private bool _connectReq;
+        /// <summary>
+        /// Connect Required
+        /// </summary>
+        public bool ConnectReq
+        {
+            get => _connectReq;
+            set
+            {
+                if(Set(ref _connectReq, value))
+                {
+                    if(!ConnectReq) Status = noConnect;
+                }
+            }
+        }
+        #endregion
+
         #region Индикатор загрузки параметра
         /// <summary>
         /// Индикатор загрузки параметра
@@ -183,10 +267,9 @@ namespace RTK_HMI.ViewModels
         private RelayCommand _connectCommand;
         public RelayCommand ConnectCommand => _connectCommand ?? (_connectCommand = new RelayCommand(par =>
         {
-            Task.Run(() =>
-            {
-                Connect();
-            });
+            ConnectReq = !ConnectReq;
+            ReqSuccess = 0;
+            ReqAtempts= 0;
 
         }, canExec => true));
         #endregion
@@ -269,7 +352,7 @@ namespace RTK_HMI.ViewModels
             ConnectSettings.PropertyChanged += (o, e) => 
             {
                 _connectRepository.Update(ConnectSettings);
-                if(RtkExchange.Connected)ExchangeService.Reconnect();
+                if (RtkExchange.Connected) Reconnect();
             } ;
             GetBytesFromIp();
 
@@ -282,6 +365,16 @@ namespace RTK_HMI.ViewModels
 
         }
 
+        void Reconnect()
+        {
+            _requests.Enqueue(new Request(() => 
+            {
+                Status = "Выполняется переподключение по измененным настройкам";
+                Error = false;                
+                SafetyAction(ExchangeService.Reconnect);
+            }));
+        }
+
         void ReadAllRegs(IEnumerable<Parameter> parameters)
         {
             SafetyAction(() =>
@@ -290,8 +383,12 @@ namespace RTK_HMI.ViewModels
                 {
                     throw new Exception("Необходимо подключиться");                    
                 }
-                LoadIndicator = true;
-                
+
+                ReqAtempts++;
+                Status = $"Выполняется запрос данных..({ReqSuccess}/{ReqAtempts})";
+                Error = false;
+
+                LoadIndicator = true;                
                 ReadFromEeprom();
                 
                 var holdings = parameters.Where(p => p.RegType == Registers.Holding);
@@ -308,7 +405,9 @@ namespace RTK_HMI.ViewModels
                 buf = ExchangeService.ReadRegisters(addr.Item1, addr.Item2, Registers.Reading);
                 if (buf is null) return;
                 RecognizeParameterFromArrService.Recongnize(readings, buf, addr.Item1);
-
+                ReqSuccess++;
+                Status = $"Запрос выполнен успешно...({ReqSuccess}/{ReqAtempts})";
+                Error = false;
 
                 LoadIndicator = false;
             });
@@ -323,6 +422,9 @@ namespace RTK_HMI.ViewModels
                 {
                     throw new Exception("Необходимо подключиться");
                 }
+                ReqAtempts++;
+                Status = $"Выполняется запись данных..({ReqSuccess}/{ReqAtempts})";
+                Error = false;
                 LoadIndicator = true;
                 var addr = CalculateRegAdressService.GetStartAndCount(MainView.ParameterVm.Parameters);
                 var arr = new ushort[addr.Item2];
@@ -339,6 +441,9 @@ namespace RTK_HMI.ViewModels
 
                 WriteToEeprom();
                 LoadIndicator = false;
+                ReqSuccess++;
+                Status = $"Запись выполнена успешно...({ReqSuccess}/{ReqAtempts})";
+                Error = false;
             });
         }
 
@@ -364,7 +469,8 @@ namespace RTK_HMI.ViewModels
             catch (Exception ex)
             {
                 LoadIndicator = false;
-                MessageBox.Show(ex.Message);
+                Error = true;
+                Status = ex.Message;
                 if(RtkExchange.Connected)ExchangeService.Disconnect();
             }
 
@@ -393,15 +499,25 @@ namespace RTK_HMI.ViewModels
         void Connect()
         {
             SafetyAction(() =>
-            {
-
+            {                
                 if (!RtkExchange.Connected)
                 {
-                    if (!ComPorts.Contains(ConnectSettings.ComName)) throw new Exception("Выберите COM порт");
+                    Status = "Выполняется подключение...";
+                    if (!ComPorts.Contains(ConnectSettings.ComName) && ConnectSettings.Way == ConnectWays.SerialPort) 
+                        throw new Exception("Выберите COM порт");
                     ExchangeService.Connect();
-                }
-                else ExchangeService.Disconnect();
+                    Status = "Подключение выполнено";
+                } 
+            });
+        }
 
+        void Disconnect()
+        {
+            SafetyAction(() =>
+            {
+                Status = "Выполняется отключение...";
+                ExchangeService.Disconnect();
+                Status = "Отключение выполнено";
             });
         }
 
@@ -409,6 +525,7 @@ namespace RTK_HMI.ViewModels
         {
             while (true)
             {
+                if (!RtkExchange.Connected && ConnectReq) Connect();
                 if(RtkExchange.Connected)
                 {
                     while (_requests.Count > 0)
@@ -421,7 +538,8 @@ namespace RTK_HMI.ViewModels
                     {
                         ReadAllRegs(cyclicParameters);
                     }
-                    
+                    if (RtkExchange.Connected && !ConnectReq) Disconnect();
+
                 }
                 Thread.Sleep(500);
             }
