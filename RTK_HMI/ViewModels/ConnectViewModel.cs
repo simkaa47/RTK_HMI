@@ -388,7 +388,7 @@ namespace RTK_HMI.ViewModels
                 Status = $"Выполняется запрос данных..({ReqSuccess}/{ReqAtempts})";
                 Error = false;
 
-                LoadIndicator = true;                
+                if(ConnectSettings.CommandFlag)LoadIndicator = true;                
                 ReadFromEeprom();
                 
                 var holdings = parameters.Where(p => p.RegType == Registers.Holding);
@@ -471,7 +471,7 @@ namespace RTK_HMI.ViewModels
                 LoadIndicator = false;
                 Error = true;
                 Status = ex.Message;
-                if(RtkExchange.Connected)ExchangeService.Disconnect();
+                ExchangeService.Disconnect();
             }
 
         }

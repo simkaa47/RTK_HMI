@@ -117,6 +117,12 @@
                      HorizontalAlignment="Right"/>
         </DockPanel>
         <!--#endregion-->
-        
+        <!--#region Команда -->
+        <DockPanel>
+            <TextBlock Text="Команда"/>
+            <CheckBox IsChecked="{Binding ConnectSettings.CommandFlag}" HorizontalAlignment="Right"/>
+        </DockPanel>
+        <!--#endregion-->
+
     </ListBox>
 </UserControl>
