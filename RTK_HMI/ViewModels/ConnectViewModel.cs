@@ -426,9 +426,18 @@ namespace RTK_HMI.ViewModels
                 Status = $"Выполняется запись данных..({ReqSuccess}/{ReqAtempts})";
                 Error = false;
                 LoadIndicator = true;
-                var addr = CalculateRegAdressService.GetStartAndCount(MainView.ParameterVm.Parameters);
+                var holdings = MainView.ParameterVm.Parameters.Where(p => p.RegType == Registers.Holding);
+                if (holdings == null || holdings.Count() == 0) 
+                {
+                    ReqSuccess++;
+                    Status = $"Нет параметров для записи...({ReqSuccess}/{ReqAtempts})";
+                    LoadIndicator = false;
+                    Error = false;
+                    return;
+                }
+                var addr = CalculateRegAdressService.GetStartAndCount(holdings);
                 var arr = new ushort[addr.Item2];
-                foreach (var par in MainView.ParameterVm.Parameters)
+                foreach (var par in holdings)
                 {
                     var regs = RecognizeParameterFromArrService.GetRegisters(par);
                     regs.CopyTo(arr, par.RegNum - addr.Item1);
