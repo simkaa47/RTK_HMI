@@ -6,6 +6,7 @@ namespace DataAccess
     public class ApplicationContext : DbContext
     {
         public DbSet<Parameter> Parameters=> Set<Parameter>();
+        public DbSet<User> Users => Set<User>();
         public DbSet<ConnectSettings> ConnectSettingses => Set<ConnectSettings>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
