@@ -25,14 +25,14 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="0.4*"/>
+            <ColumnDefinition Width="2*"/>
             
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <RowDefinition MaxHeight="50" Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
+        <StackPanel Height="50" Orientation="Horizontal" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
             <!--#region Загрузить из РТК -->
             <Button Command="{Binding ConnectVM.ReadAllParamsCommand}">
                 <fa:ImageAwesome Icon="Download"/>
@@ -74,7 +74,7 @@
             </Button>
             <!--#endregion-->
             <!--#region Добавить параметр -->
-            <Button Command="{Binding SaveLoadVM.AddCommand}">
+            <Button Command="{Binding SaveLoadVM.AddCommand}" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
                 <fa:ImageAwesome Icon="PlusCircle"/>
                 <Button.ToolTip>
                     <TextBlock Text="Добавить параметр"/>
@@ -82,6 +82,25 @@
             </Button>
             <!--#endregion-->
         </StackPanel>
+        <Grid Grid.Column="2" Grid.Row="1" Grid.RowSpan="2">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="0.5*"/>
+            </Grid.RowDefinitions>
+            <!--#region Панель крупных индикаторов -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <uc:BigIndicator DataContext="{Binding ParameterVm.Parameters[0]}"/>
+                <uc:BigIndicator Grid.Column="1" DataContext="{Binding ParameterVm.Parameters[1]}"/>
+            </Grid>
+             <!--#endregion-->
+                <!--#region СОхраненные наборы -->
+            <uc:SaveLoadJsonControl DataContext="{Binding SaveLoadVM}" Grid.Row="1"/>
+            <!--#endregion-->
+        </Grid>
         <!--#region Параметры -->
         <DataGrid ItemsSource="{Binding ParameterVm.Parameters}"
                   AutoGenerateColumns="False"
@@ -129,7 +148,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Тип данных" IsReadOnly="True" Binding="{Binding Type}"/>
+                <DataGridTextColumn Header="Тип данных"  Binding="{Binding Type}" />
                 <DataGridTextColumn Header="№ регистра" IsReadOnly="True" Binding="{Binding RegNum}"/>
                 <DataGridCheckBoxColumn HeaderTemplate="{StaticResource HeaderTemplate}" Width="80" Header="Циклический опрос" IsReadOnly="True" Binding="{Binding IsCyclic}"/>
                 <DataGridTextColumn Header="Тип регистра" IsReadOnly="True" Binding="{Binding RegType}"/>
@@ -138,10 +157,7 @@
             </DataGrid.Columns>
         </DataGrid>
         <!--#endregion-->
-        <GridSplitter Grid.Column="1" Width="3"  VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
-        <!--#region СОхраненные наборы -->
-        <uc:SaveLoadJsonControl Grid.RowSpan="2"  Grid.Column="2"
-                                DataContext="{Binding SaveLoadVM}"/>
-        <!--#endregion-->
+        <GridSplitter Grid.Column="1" Width="10" Background="#262626" BorderBrush="Aqua" BorderThickness="1" Grid.RowSpan="2"  VerticalAlignment="Stretch" HorizontalAlignment="Center"/>
+        
     </Grid>
 </UserControl>

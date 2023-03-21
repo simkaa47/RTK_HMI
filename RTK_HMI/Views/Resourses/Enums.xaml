@@ -14,4 +14,12 @@
         <sys:String>Modbus RTU</sys:String>
         <sys:String>Modbus UDP</sys:String>        
     </col:ArrayList>
+    <x:Array x:Key="UserIcons" Type="{x:Type sys:String}">
+        <sys:String>Views\Resourses\Pictures\AccountCircleNonAuthorized.png</sys:String>
+        <sys:String>Views\Resourses\Pictures\AccountCircleAuthorized.png</sys:String>
+    </x:Array>
+    <x:Array x:Key="UserBackground" Type="{x:Type sys:String}">
+        <sys:String>#FF3B30</sys:String>
+        <sys:String>#FFFFFF</sys:String>
+    </x:Array>
 </ResourceDictionary>

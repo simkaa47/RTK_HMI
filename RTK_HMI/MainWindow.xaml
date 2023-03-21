@@ -4,27 +4,66 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RTK_HMI"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:i="Inter"
         mc:Ignorable="d"
         xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
         xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
-        Title="RTKCOMM" Height="450" Width="800"
+        Title="RTKCOMM" WindowState="Maximized"
         Background="#262626">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <uc:ConnectPanel DataContext="{Binding ConnectVM}"/>
-        <uc:ReadWriteParametersControl Grid.Row="1"/>
-        <TextBlock Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Version, StringFormat=Версия ПО : {0}}" Style="{StaticResource TextBlockCommonStyle}" HorizontalAlignment="Right" Margin="0,0,10,0"/>
-        <fa:ImageAwesome  Grid.Row="1"
-            Spin="{Binding ConnectVM.LoadIndicator}" 
-            Visibility="{Binding ConnectVM.LoadIndicator, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" 
-            Icon="Refresh" Height="40"/>
+        <TabControl>
+            <TabItem Header="Главная">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <uc:ConnectPanel DataContext="{Binding ConnectVM}"/>
+                    <uc:ReadWriteParametersControl Grid.Row="1"/>
+                    <TextBlock Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Version, StringFormat=Версия ПО : {0}}" Style="{StaticResource TextBlockCommonStyle}" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                    <fa:ImageAwesome  Grid.Row="1"
+                                      Spin="{Binding ConnectVM.LoadIndicator}" 
+                                      Visibility="{Binding ConnectVM.LoadIndicator, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" 
+                                      Icon="Refresh" Height="40"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Настройки" Visibility="{Binding UserVm.CurrentUser, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter=Admin, TargetNullValue={x:Static Visibility.Collapsed}}">
+                <uc:UsersControl DataContext="{Binding UserVm}"/>
+            </TabItem>
+        </TabControl>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" DataContext="{Binding UserVm}" Margin="10,0,10,0">
+            <!--#region Login -->
+            <Button BorderThickness="0" Background="Transparent" Command="{Binding AuthCommand}">
+                <Image     Height="32" Width="32"                       
+                       Source="{Binding IsAuthorized, Converter={StaticResource GetIfTrueConverter}, ConverterParameter={StaticResource UserIcons}}" 
+                       >
+                </Image>
+            </Button>
+            <!--#endregion-->
+            <!--#region Name -->
+            <TextBlock  FontSize="16"
+                        VerticalAlignment="Center"
+                        FontWeight="Regular"
+                        Text="{Binding CurrentUser, Converter={StaticResource UserTextConverter}}"
+                        Foreground="{Binding IsAuthorized, Converter={StaticResource GetIfTrueConverter}, ConverterParameter={StaticResource UserBackground }}"/>
+            <!--#endregion-->
+            <!--#region LogOut -->
+            <!--#region Login -->
+            <Button BorderThickness="0" Background="Transparent" Command="{Binding LogoutCommand}" Visibility="{Binding IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
+                <Image     Height="32" Width="32"                       
+                       Source="Views\Resourses\Pictures\ResetTv.png" 
+                       >
+                </Image>
+            </Button>
+            <!--#endregion-->
+            <!--#endregion-->
+        </StackPanel>
+        
 
     </Grid>
     

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace RTK_HMI.ViewModels
 {
-    internal class MainViewModel : PropertyChangedBase
+    public class MainViewModel : PropertyChangedBase
     {
 
         #region Версия ПО
@@ -26,6 +26,7 @@ namespace RTK_HMI.ViewModels
         public ParameterVm ParameterVm { get; set; }
         public ConnectViewModel ConnectVM { get; set; }
         public SaveLoadViewModel SaveLoadVM { get; set; }
+        public UserVm UserVm { get; set; }
 
 
         public MainViewModel()
@@ -33,6 +34,7 @@ namespace RTK_HMI.ViewModels
             ParameterVm = new ParameterVm(this);
             ConnectVM = new ConnectViewModel(this);
             SaveLoadVM = new SaveLoadViewModel(this);
+            UserVm = new UserVm(this);
         }
 
 

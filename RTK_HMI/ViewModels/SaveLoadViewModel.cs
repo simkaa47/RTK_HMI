@@ -11,7 +11,7 @@ using System.Windows;
 
 namespace RTK_HMI.ViewModels
 {
-    internal class SaveLoadViewModel : PropertyChangedBase
+    public class SaveLoadViewModel : PropertyChangedBase
     {
         public SaveLoadViewModel(MainViewModel vm)
         {
