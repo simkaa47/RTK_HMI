@@ -5,4 +5,6 @@
     <conv:VisibleIfEqualConverter x:Key="VisibleIfEqual"/>
     <conv:VisibleIfNotEqual x:Key="VisibleIfNotEqual"/>
     <conv:EnumToIntConverter x:Key="EnumToInt"/>
+    <conv:GetIfTrueConverter x:Key="GetIfTrueConverter"/>
+    <conv:UserTextConverter x:Key="UserTextConverter"/>
 </ResourceDictionary>

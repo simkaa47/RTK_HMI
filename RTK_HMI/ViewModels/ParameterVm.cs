@@ -11,7 +11,7 @@ using System.Windows;
 
 namespace RTK_HMI.ViewModels
 {
-    internal class ParameterVm : PropertyChangedBase
+    public class ParameterVm : PropertyChangedBase
     {
         public ParameterVm(MainViewModel mainVm)
         {

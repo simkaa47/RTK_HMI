@@ -14,7 +14,7 @@ using System.Windows;
 
 namespace RTK_HMI.ViewModels
 {
-    internal class ConnectViewModel : PropertyChangedBase
+    public class ConnectViewModel : PropertyChangedBase
     {
 
         private readonly IRepository<ConnectSettings> _connectRepository;

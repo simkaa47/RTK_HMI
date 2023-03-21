@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Views\Resourses\Pictures\AccountCircleAuthorized.png" />
+    <None Remove="Views\Resourses\Pictures\AccountCircleNonAuthorized.png" />
+    <None Remove="Views\Resourses\Pictures\Clear.png" />
+    <None Remove="Views\Resourses\Pictures\ResetTv.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.30">
       <PrivateAssets>all</PrivateAssets>
@@ -31,6 +38,13 @@
     <Reference Include="EasyModbus">
       <HintPath>EasyModbus.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Views\Resourses\Pictures\AccountCircleAuthorized.png" />
+    <Resource Include="Views\Resourses\Pictures\AccountCircleNonAuthorized.png" />
+    <Resource Include="Views\Resourses\Pictures\Clear.png" />
+    <Resource Include="Views\Resourses\Pictures\ResetTv.png" />
   </ItemGroup>
 
 </Project>

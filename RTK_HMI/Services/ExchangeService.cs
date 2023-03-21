@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace RTK_HMI.Services
 {
-    internal class ExchangeService
+    public class ExchangeService
     {
         private readonly ConnectData _connectData;
         private readonly ConnectSettings _connectSettings;
