@@ -7,4 +7,6 @@
     <conv:EnumToIntConverter x:Key="EnumToInt"/>
     <conv:GetIfTrueConverter x:Key="GetIfTrueConverter"/>
     <conv:UserTextConverter x:Key="UserTextConverter"/>
+    <conv:HighRegisterConverter x:Key="HighRegisterConverter"/>
+    <conv:UserToVisibilityConverter x:Key="UserToVisibilityConverter"/>
 </ResourceDictionary>

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RTK_HMI"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:i="Inter"
         mc:Ignorable="d"
@@ -31,7 +32,7 @@
                                       Icon="Refresh" Height="40"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Настройки">
+            <TabItem Header="Настройки" Visibility="{Binding UserVm.CurrentUser, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter=Admin, TargetNullValue={x:Static Visibility.Collapsed}}">
                 <uc:UsersControl DataContext="{Binding UserVm}"/>
             </TabItem>
         </TabControl>

@@ -6,8 +6,24 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
              mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=m:Parameter}"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
-            
+    <Grid >
+        <Border BorderBrush="White" BorderThickness="4" Margin="10">
+            <Viewbox>
+                <StackPanel>
+                    <TextBlock Text="{Binding Description}" Style="{StaticResource TextBlockCommonStyle}" FontSize="10"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Value, StringFormat=f3}" Foreground="White" VerticalAlignment="Bottom"
+                                   FontSize="20"/>
+                        <UserControl Content="{Binding Notification, Converter={StaticResource HighRegisterConverter}}" 
+                                     Foreground="White" FontSize="10" VerticalAlignment="Bottom" Margin="5,0">
+                            
+                        </UserControl>
+                    </StackPanel>
+                </StackPanel>
+
+            </Viewbox>
+        </Border>
     </Grid>
 </UserControl>
