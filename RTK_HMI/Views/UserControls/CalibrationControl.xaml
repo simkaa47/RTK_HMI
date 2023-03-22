@@ -1,0 +1,270 @@
+﻿<UserControl x:Class="RTK_HMI.Views.UserControls.CalibrationControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
+             xmlns:oxy="http://oxyplot.org/wpf"
+            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:CalibrationVm}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="Button">
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Height" Value="50"/>
+                <Setter Property="Width" Value="50"/>
+                <Setter Property="Margin" Value="5"/>
+            </Style>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <!--#region Точки -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>                
+            </Grid.RowDefinitions>
+            <!--#region Кнопки -->
+            <StackPanel Orientation="Horizontal">                
+                <!--#region Добавить -->
+                <Button Command="{Binding AddCommand}">
+                    <fa:ImageAwesome Icon="PlusCircle"/>
+                    <Button.ToolTip>
+                        <TextBlock Text="Добавить точку"/>
+                    </Button.ToolTip>
+                </Button>
+                <!--#endregion-->
+                <!--#region Удалить -->
+                <Button Command="{Binding DeleteCommand}">
+                    <fa:ImageAwesome Icon="Remove"/>
+                    <Button.ToolTip>
+                        <TextBlock Text="Удалить точку"/>
+                    </Button.ToolTip>
+                </Button>
+                <!--#endregion-->
+                <!--#region Степень кривой -->
+                <Border BorderBrush="Gray" BorderThickness="1">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Степень полинома" Style="{StaticResource TextBlockCommonStyle}"
+                                   VerticalAlignment="Center"/>
+                        <TextBox Margin="10"
+                                 Text="{Binding Degree}"
+                                 Width="80"
+                                 VerticalContentAlignment="Center">
+                            
+                        </TextBox>
+                    </StackPanel>
+                </Border>
+                <!--#endregion-->
+                <!--#region Рассчитать -->
+                <Button Command="{Binding CalculateCommand}">
+                    <fa:ImageAwesome Icon="Calculator"/>
+                    <Button.ToolTip>
+                        <TextBlock Text="Рассчитать к-ты кривой"/>
+                    </Button.ToolTip>
+                </Button>
+                <!--#endregion-->
+                <!--#region Показать график -->
+                <ToggleButton Command="{Binding ShowPolinomTrendCommand}" Width="50" Height="50" Background="Transparent" BorderThickness="0"
+                              Name="TrendOpen">
+                    <fa:ImageAwesome Icon="Arrows"/>
+                    <ToggleButton.ToolTip>
+                        <TextBlock Text="Показать график"/>
+                    </ToggleButton.ToolTip>
+                </ToggleButton>
+                <!--#endregion-->
+            </StackPanel>
+            <!--#endregion-->
+            <!--#region Таблица -->
+            <DataGrid CanUserAddRows="False"
+                  Grid.Row="1"
+                  CanUserDeleteRows="False"
+                  AlternationCount="100"
+                  VerticalAlignment="Top"
+                  SelectedItem="{Binding SelectedPoint, UpdateSourceTrigger=PropertyChanged}"                  
+                  HorizontalAlignment="Left"
+                  BorderThickness="0"
+                  ItemsSource="{Binding Points}"
+                  AutoGenerateColumns="False">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="CurrentCellChanged">
+                        <i:InvokeCommandAction Command="{Binding EditCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <DataGrid.Columns>
+                    <!--#region Id -->
+                    <DataGridTemplateColumn Header="№">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=AlternationIndex}" Margin="10"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--#endregion-->
+                    <!--#region IsCustom X-->
+                    <DataGridTemplateColumn Header="Кастомная величина X" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding UseCastomValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                      VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--#endregion-->
+                    <!--#region IsCustom Y-->
+                    <DataGridTemplateColumn Header="Кастомная величина Y" Width="100">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding UseCastomValueY, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                      VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--#endregion-->
+                    <!--#region Pareameter X-->
+                    <DataGridTemplateColumn Header="Параметр X" Width="300">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" Visibility="{Binding UseCastomValue, Converter={StaticResource VisibleIfEqual}, ConverterParameter=False}">
+                                        <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.MainVm.ParameterVm.Parameters}"
+                                      DisplayMemberPath="Description"
+                                      Width="160"
+                                      Name="Selector"
+                                      VerticalContentAlignment="Center"
+                                      SelectedIndex="{Binding ParameterId, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBlock Text="{Binding ElementName=Selector, Path=SelectedItem.Value}" Margin="10,0,10,0"
+                                           VerticalAlignment="Center"
+                                           Width="160">
+
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <TextBox Margin="10,0,10,0" Text="{Binding Value , UpdateSourceTrigger=PropertyChanged}"
+                                         BorderThickness="0" Width="160"
+                                         VerticalAlignment="Center"
+                                           Visibility="{Binding UseCastomValue, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}"/>
+                                </StackPanel>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--#endregion-->
+                    <!--#region Pareameter Y-->
+                    <DataGridTemplateColumn Header="Параметр Y" Width="300">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" Visibility="{Binding UseCastomValueY, Converter={StaticResource VisibleIfEqual}, ConverterParameter=False}">
+                                        <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.MainVm.ParameterVm.Parameters}"
+                                      DisplayMemberPath="Description"
+                                      Width="160"
+                                      Name="SelectorY"
+                                      VerticalContentAlignment="Center"
+                                      SelectedIndex="{Binding ParameterIdY, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBlock Text="{Binding ElementName=SelectorY, Path=SelectedItem.Value}" Margin="10,0,10,0"
+                                           VerticalAlignment="Center"
+                                           Width="160">
+
+                                        </TextBlock>
+                                    </StackPanel>
+                                    <TextBox Margin="10,0,10,0" Text="{Binding ValueY, UpdateSourceTrigger=PropertyChanged}"
+                                         BorderThickness="0" Width="160"
+                                         VerticalAlignment="Center"
+                                           Visibility="{Binding UseCastomValueY, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}"/>
+                                </StackPanel>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--#endregion-->
+                    <!--#region Участие в расчете -->
+                    <DataGridTemplateColumn Header="Участие в расчете" Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--#endregion-->
+                </DataGrid.Columns>
+            </DataGrid>
+            <!--#endregion-->
+            
+        </Grid>
+        <!--#endregion-->
+        <!--#region Рассчитанные к-ты -->
+        <DataGrid Grid.Column="1"
+                  BorderThickness="0"
+                  Margin="50,50"
+                  VerticalAlignment="Top"
+                  AlternationCount="6"
+                  ItemsSource="{Binding Coeffs}"
+                  IsReadOnly="True"
+                  HorizontalAlignment="Left">
+            <DataGrid.Columns>
+                <!--#region № -->
+                <DataGridTemplateColumn Header="Степень">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=AlternationIndex}"
+                                       Margin="10"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <!--#endregion-->
+                <!--#region № -->
+                <DataGridTextColumn Header="K" Binding="{Binding}" />
+                <!--#endregion-->
+            </DataGrid.Columns>
+        </DataGrid>
+        <!--#endregion-->
+        <Popup IsOpen="{Binding ElementName=TrendOpen, Path=IsChecked}" 
+                                               StaysOpen="False"
+                                               Placement="MousePoint">
+            <Grid>
+                <Border Background="Gray"
+                                                        Height="600"
+                                                        Width="800">
+                    <oxy:Plot TextColor="WhiteSmoke"                                                          
+                                                          PlotAreaBorderColor="WhiteSmoke"
+                                                          SelectionColor="WhiteSmoke"
+                                                          LegendTextColor="WhiteSmoke" 
+                                                          IsLegendVisible="True"
+                                                          Background="Transparent"
+                                                          PlotAreaBackground="Transparent">
+                        <oxy:Plot.Axes>
+                            <oxy:LinearAxis Title="ФИЗИЧЕСКАЯ ВЕЛИЧИНА"                                                    
+                                                                            Position="Left"
+                                                                            MajorGridlineColor="WhiteSmoke"
+                                                                            MajorGridlineStyle="Dot"/>
+                            <oxy:LinearAxis Title="ОСЛАБЛЕНИЕ"
+                                                                             MajorGridlineColor="WhiteSmoke"
+                                                                            MajorGridlineStyle="Dot"
+                                                                            Position="Bottom"/>
+                        </oxy:Plot.Axes>
+                        <oxy:LineSeries    ItemsSource="{Binding MeasuredPointsCollection}"
+                                                                       DataFieldX="X" DataFieldY="Y"
+                                                                       Title="Измереннные точки"
+                                                                       Color="Red"/>
+                        <oxy:LineSeries    ItemsSource="{Binding CalculatedMeasCollection}"
+                                                                       DataFieldX="X" DataFieldY="Y"
+                                                                       Title="Кривая по полиному"
+                                                                       Color="Blue"/>
+
+                    </oxy:Plot>
+                </Border>
+
+            </Grid>
+        </Popup>
+            
+    </Grid>
+    
+   
+</UserControl>

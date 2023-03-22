@@ -27,6 +27,7 @@ namespace RTK_HMI.ViewModels
         public ConnectViewModel ConnectVM { get; set; }
         public SaveLoadViewModel SaveLoadVM { get; set; }
         public UserVm UserVm { get; set; }
+        public CalibrationVm CalibrationVm { get; set; }    
 
 
         public MainViewModel()
@@ -34,6 +35,7 @@ namespace RTK_HMI.ViewModels
             ParameterVm = new ParameterVm(this);
             ConnectVM = new ConnectViewModel(this);
             SaveLoadVM = new SaveLoadViewModel(this);
+            CalibrationVm= new CalibrationVm(this);
             UserVm = new UserVm(this);
         }
 

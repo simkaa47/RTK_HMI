@@ -2,14 +2,16 @@
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20230322070725_AddingCalibrationEntity1")]
+    partial class AddingCalibrationEntity1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,19 +29,10 @@ namespace DataAccess.Migrations
                     b.Property<int>("ParameterId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("ParameterIdY")
-                        .HasColumnType("INTEGER");
-
                     b.Property<bool>("UseCastomValue")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("UseCastomValueY")
-                        .HasColumnType("INTEGER");
-
                     b.Property<float>("Value")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("ValueY")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");
