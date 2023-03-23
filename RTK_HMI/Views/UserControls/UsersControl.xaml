@@ -18,10 +18,7 @@
                       IsReadOnly="True">
                 <DataGrid.Columns>
                     <!--#region Логин -->
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.Header>
-                            <TextBlock Text="Логин" Margin="10" FontSize="16"/>
-                        </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn Header="Логин">                        
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Login}" Margin="10"/>
@@ -30,10 +27,7 @@
                     </DataGridTemplateColumn>
                     <!--#endregion-->
                     <!--#region Имя -->
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.Header>
-                            <TextBlock Text="Имя" Margin="10" FontSize="16"/>
-                        </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn Header="Имя">                        
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding FirstName}" Margin="10"/>
@@ -42,10 +36,7 @@
                     </DataGridTemplateColumn>
                     <!--#endregion-->
                     <!--#region Фамилия -->
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.Header>
-                            <TextBlock Text="Фамилия" Margin="10" FontSize="16"/>
-                        </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn Header="Фамилия">                        
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding LastName}" Margin="10"/>
@@ -54,10 +45,7 @@
                     </DataGridTemplateColumn>
                     <!--#endregion-->
                     <!--#region Уровень доступа -->
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.Header>
-                            <TextBlock Text="Уровень" Margin="10" FontSize="16"/>
-                        </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn Header="Уровень">                       
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Level}" Margin="10"/>
@@ -66,10 +54,7 @@
                     </DataGridTemplateColumn>
                     <!--#endregion-->
                     <!--#region Пароль -->
-                    <DataGridTemplateColumn>
-                        <DataGridTemplateColumn.Header>
-                            <TextBlock Text="Пароль" Margin="10" FontSize="16"/>
-                        </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn Header="Пароль">                       
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Password}" Margin="10"/>
