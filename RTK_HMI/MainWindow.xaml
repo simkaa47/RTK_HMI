@@ -7,6 +7,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:i="Inter"
+        xmlns:m="clr-namespace:DataAccess.Models;assembly=DataAccess"
         mc:Ignorable="d"
         xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
         xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
@@ -32,7 +33,7 @@
                                       Icon="Refresh" Height="40"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Настройки" Visibility="{Binding UserVm.CurrentUser, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter=Admin, TargetNullValue={x:Static Visibility.Collapsed}}">
+            <TabItem Header="Настройки" Visibility="{Binding UserVm.CurrentUser, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, TargetNullValue={x:Static Visibility.Collapsed}}">
                 <uc:UsersControl DataContext="{Binding UserVm}"/>
             </TabItem>
             <TabItem Header="Калибровка" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
@@ -58,7 +59,7 @@
             <!--#region LogOut -->
             <!--#region Login -->
             <Button BorderThickness="0" Background="Transparent" Command="{Binding LogoutCommand}" Visibility="{Binding IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
-                <Image     Height="32" Width="32"                       
+                <Image Height="32" Width="32"                       
                        Source="Views\Resourses\Pictures\ResetTv.png" 
                        >
                 </Image>

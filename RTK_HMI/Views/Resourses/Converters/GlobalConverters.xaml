@@ -9,4 +9,6 @@
     <conv:UserTextConverter x:Key="UserTextConverter"/>
     <conv:HighRegisterConverter x:Key="HighRegisterConverter"/>
     <conv:UserToVisibilityConverter x:Key="UserToVisibilityConverter"/>
+    <conv:UserToBoolConveterter x:Key="UserToBoolConveterter"/>
+    <conv:UserToBoolInverseConverter x:Key="UserToBoolInverseConverter"/>
 </ResourceDictionary>

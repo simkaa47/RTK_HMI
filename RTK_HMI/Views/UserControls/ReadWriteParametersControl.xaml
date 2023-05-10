@@ -8,12 +8,15 @@
              xmlns:data="clr-namespace:DataAccess.Models;assembly=DataAccess"
              xmlns:fa="http://schemas.fontawesome.io/icons/"
              xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
+             xmlns:m="clr-namespace:DataAccess.Models;assembly=DataAccess"
+             xmlns:v="clr-namespace:RTK_HMI.Views"
               xmlns:sys="clr-namespace:System;assembly=mscorlib" 
              d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"              
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.Resources>
+            <v:BindingProxy  x:Key="AdminVisibility" Data="{Binding UserVm.CurrentUser}"/>
             <ObjectDataProvider x:Key="DataTypes"
                             ObjectType="{x:Type sys:Enum}"
                             MethodName="GetValues">
@@ -25,7 +28,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="3.2*"/>
+            <ColumnDefinition Width="3*"/>
             
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -105,6 +108,8 @@
         <DataGrid ItemsSource="{Binding ParameterVm.Parameters}"
                   AutoGenerateColumns="False"
                   Grid.Row="1"
+                  FontSize="14"
+                  IsReadOnly="{Binding UserVm.CurrentUser, Converter={StaticResource UserToBoolInverseConverter}, ConverterParameter={x:Static m:UserLevel.Service}}"
                   SelectedItem="{Binding ConnectVM.SelectedParameter}"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False">
@@ -122,7 +127,8 @@
                 <DataGridTemplateColumn Header="Значение" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="200">
+                            <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="200"
+                                     IsReadOnly="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.UserVm.CurrentUser, Converter={StaticResource UserToBoolInverseConverter}, ConverterParameter={x:Static m:UserLevel.Service}}">
                             </TextBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
@@ -130,12 +136,13 @@
                 <DataGridTemplateColumn Header="Примечание">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Notification, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="200">
+                            <TextBox Text="{Binding Notification, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="200"
+                                     IsReadOnly="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.UserVm.CurrentUser, Converter={StaticResource UserToBoolInverseConverter}, ConverterParameter={x:Static m:UserLevel.Service}}">
                             </TextBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn >
+                <DataGridTemplateColumn Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Service}, UpdateSourceTrigger=PropertyChanged}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Button Visibility="{Binding RegType, Converter={StaticResource VisibleIfEqual}, ConverterParameter=Holding}"
@@ -148,12 +155,27 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Тип данных"  Binding="{Binding Type}" />
-                <DataGridTextColumn Header="№ регистра" IsReadOnly="True" Binding="{Binding RegNum}"/>
-                <DataGridCheckBoxColumn HeaderTemplate="{StaticResource HeaderTemplate}" Width="80" Header="Циклический опрос" IsReadOnly="True" Binding="{Binding IsCyclic}"/>
-                <DataGridTextColumn Header="Тип регистра" IsReadOnly="True" Binding="{Binding RegType}"/>
-                <DataGridTextColumn HeaderTemplate="{StaticResource HeaderTemplate}" Width="60" Header="Порядок байт" IsReadOnly="True" Binding="{Binding Order}"/>
-                
+                <!--#region Data type -->
+                <DataGridTextColumn Header="Тип данных"  Binding="{Binding Type}" 
+                                    Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
+                <!--#endregion-->
+                <!--#region № reg -->
+                <DataGridTextColumn Header="№ регистра" IsReadOnly="True" Binding="{Binding RegNum}"
+                                    Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
+                <!--#endregion-->
+                <!--#region Cyclic requestes -->
+                <DataGridCheckBoxColumn  Width="110" Header="Циклический опрос" IsReadOnly="True" Binding="{Binding IsCyclic}"
+                                         Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
+                <!--#endregion-->
+                <!--#region Reg type -->
+                <DataGridTextColumn Header="Тип регистра" IsReadOnly="True" Binding="{Binding RegType}"
+                                    Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
+                <!--#endregion-->
+                <!--#region Byte order -->
+                <DataGridTextColumn  Width="60" Header="Порядок байт" IsReadOnly="True" Binding="{Binding Order}" 
+                                    Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
+                <!--#endregion-->
+
             </DataGrid.Columns>
         </DataGrid>
         <!--#endregion-->
