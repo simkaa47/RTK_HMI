@@ -33,7 +33,7 @@ namespace RTK_HMI.ViewModels
 
         public MainViewModel MainView { get; }
 
-        private const string noConnect = "Нет соединения, нажмите кнопку \"Установиить - разорвать соединение\"";
+        private const string noConnect = "Нет соединения, нажмите кнопку \"Установить - разорвать соединение\"";
 
 
         #region Communication Status

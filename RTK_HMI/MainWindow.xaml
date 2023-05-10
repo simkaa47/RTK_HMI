@@ -36,9 +36,9 @@
             <TabItem Header="Настройки" Visibility="{Binding UserVm.CurrentUser, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, TargetNullValue={x:Static Visibility.Collapsed}}">
                 <uc:UsersControl DataContext="{Binding UserVm}"/>
             </TabItem>
-            <TabItem Header="Калибровка" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
+            <!--<TabItem Header="Калибровка" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
                 <uc:CalibrationControl DataContext="{Binding CalibrationVm}"/>
-            </TabItem>
+            </TabItem>-->
         </TabControl>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" DataContext="{Binding UserVm}" Margin="10,0,10,0">
             <!--#region Login -->

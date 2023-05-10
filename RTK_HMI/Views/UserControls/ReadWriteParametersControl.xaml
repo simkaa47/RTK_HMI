@@ -30,7 +30,24 @@
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
                             <Condition Binding="{Binding VisibleForAdmin}" Value="True"/>
+                            <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.UserVm.CurrentUser}" Value="{x:Null}"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding VisibleForAdmin}" Value="True"/>
                             <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.UserVm.CurrentUser.Level}" Value="{x:Static m:UserLevel.Admin}"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding VisibleForAdmin}" Value="False"/>                            
                         </MultiDataTrigger.Conditions>
                         <MultiDataTrigger.Setters>
                             <Setter Property="Visibility" Value="Visible"/>
