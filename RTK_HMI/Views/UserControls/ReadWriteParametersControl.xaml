@@ -24,6 +24,21 @@
                     <x:Type TypeName="data:DataType" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+            <Style TargetType="DataGridRow" BasedOn="{StaticResource DataGridCommon}" x:Key="ParametersRowStyle">
+                <Setter Property="Visibility" Value="Collapsed"/>
+                <Style.Triggers>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding VisibleForAdmin}" Value="True"/>
+                            <Condition Binding="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.UserVm.CurrentUser.Level}" Value="{x:Static m:UserLevel.Admin}"/>
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
+                </Style.Triggers>
+            </Style>
+            
         </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -108,6 +123,7 @@
         <DataGrid ItemsSource="{Binding ParameterVm.Parameters}"
                   AutoGenerateColumns="False"
                   Grid.Row="1"
+                  RowStyle="{StaticResource ParametersRowStyle}"
                   FontSize="14"
                   IsReadOnly="{Binding UserVm.CurrentUser, Converter={StaticResource UserToBoolInverseConverter}, ConverterParameter={x:Static m:UserLevel.Service}}"
                   SelectedItem="{Binding ConnectVM.SelectedParameter}"
@@ -175,7 +191,10 @@
                 <DataGridTextColumn  Width="60" Header="Порядок байт" IsReadOnly="True" Binding="{Binding Order}" 
                                     Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
                 <!--#endregion-->
-
+                <!--#region Visible for admin -->
+                <DataGridCheckBoxColumn Header="Только для админа" Binding="{Binding VisibleForAdmin}"
+                                        Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
+                <!--#endregion-->
             </DataGrid.Columns>
         </DataGrid>
         <!--#endregion-->
