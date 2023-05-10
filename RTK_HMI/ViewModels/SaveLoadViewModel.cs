@@ -11,7 +11,7 @@ using System.Windows;
 
 namespace RTK_HMI.ViewModels
 {
-    internal class SaveLoadViewModel : PropertyChangedBase
+    public class SaveLoadViewModel : PropertyChangedBase
     {
         public SaveLoadViewModel(MainViewModel vm)
         {
@@ -96,10 +96,6 @@ namespace RTK_HMI.ViewModels
         }, canExecPar => true));
         #endregion
 
-
-
-
-
         #endregion
 
         void SafetyAction(Action action)
@@ -169,6 +165,27 @@ namespace RTK_HMI.ViewModels
         void Init()
         { 
             SafetyAction(Refresh);
+            GetLastParameters();
+
+        }
+
+        void GetLastParameters()
+        {
+            if(JsonDataCollection!=null && JsonDataCollection.Count>0)
+            {
+                IEnumerable<Parameter> parameters = null;
+                SafetyAction(() => 
+                {
+                    var lastName = JsonDataCollection.Where(j => j.ChangeTime == JsonDataCollection.Max(js => js.ChangeTime))
+                    .First()
+                    .Name;
+                    parameters = JsonSaveLoadService.LoadFromJson(lastName);
+                });
+                if(parameters != null) 
+                { 
+                    Vm.ParameterVm.Parameters = new ObservableCollection<Parameter>(parameters); 
+                }
+            }
         }
 
         void Refresh()
@@ -186,6 +203,7 @@ namespace RTK_HMI.ViewModels
         void Load()
         {
             if (SelectedFileInfo is null) return;
+
             Vm.ParameterVm.Parameters = new ObservableCollection<Parameter>(JsonSaveLoadService.LoadFromJson(SelectedFileInfo.Name));
         }
 

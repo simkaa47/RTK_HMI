@@ -10,6 +10,14 @@ namespace RTK_HMI.Services
 {
     internal static class JsonSaveLoadService
     {
+        static JsonSaveLoadService()
+        {
+            if(!Directory.Exists(FolderName))
+            {
+                Directory.CreateDirectory(FolderName);
+            }
+        }
+
 
         public const string FolderName = "SavedData";
         public static void Save(IEnumerable<Parameter> parameters, JsonData fileInfo)

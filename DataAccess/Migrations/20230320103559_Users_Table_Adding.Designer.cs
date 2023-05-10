@@ -2,50 +2,20 @@
 using DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20230320103559_Users_Table_Adding")]
+    partial class Users_Table_Adding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.30");
-
-            modelBuilder.Entity("DataAccess.Models.CalibrationCell", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ParameterId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("ParameterIdY")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("UseCastomValue")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("UseCastomValueY")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<float>("Value")
-                        .HasColumnType("REAL");
-
-                    b.Property<float>("ValueY")
-                        .HasColumnType("REAL");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CalibrationCells");
-                });
 
             modelBuilder.Entity("DataAccess.Models.ConnectSettings", b =>
                 {
@@ -116,9 +86,6 @@ namespace DataAccess.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<bool>("VisibleForAdmin")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

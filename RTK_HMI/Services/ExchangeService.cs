@@ -7,7 +7,7 @@ using System.Windows;
 
 namespace RTK_HMI.Services
 {
-    internal class ExchangeService
+    public class ExchangeService
     {
         private readonly ConnectData _connectData;
         private readonly ConnectSettings _connectSettings;
@@ -103,7 +103,7 @@ namespace RTK_HMI.Services
             _client = new ModbusClient();
             _client.UDPFlag = true;
             _client.IPAddress = GetStringFromIp(_connectSettings.Ip);
-            _client.Port = 502;
+            _client.Port = _connectSettings.PortNumber;
             _client.Connect();
         }
         #endregion

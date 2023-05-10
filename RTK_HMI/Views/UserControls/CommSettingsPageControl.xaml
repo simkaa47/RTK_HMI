@@ -88,6 +88,14 @@
             
         </DockPanel>
         <!--#endregion-->
+        <!--#region Port number -->
+        <DockPanel Visibility="{Binding ConnectSettings.Way, Converter={StaticResource VisibleIfNotEqual}, ConverterParameter=SerialPort}">
+            <TextBlock Text="Порт"/>
+            <TextBox Text="{Binding ConnectSettings.PortNumber}" Width="100"
+                     HorizontalAlignment="Right"/>
+        </DockPanel>
+            
+        <!--#endregion-->
         <!--#region Тайм-аут ответа -->
         <DockPanel>
             <TextBlock Text="Тайм-аут ответа, мс"/>
@@ -109,6 +117,12 @@
                      HorizontalAlignment="Right"/>
         </DockPanel>
         <!--#endregion-->
-        
+        <!--#region Команда -->
+        <DockPanel>
+            <TextBlock Text="Команда"/>
+            <CheckBox IsChecked="{Binding ConnectSettings.CommandFlag}" HorizontalAlignment="Right"/>
+        </DockPanel>
+        <!--#endregion-->
+
     </ListBox>
 </UserControl>
