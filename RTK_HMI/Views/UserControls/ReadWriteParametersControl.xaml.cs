@@ -22,5 +22,15 @@ namespace RTK_HMI.Views.UserControls
         {
             InitializeComponent();
         }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void SaveLoadJsonControl_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

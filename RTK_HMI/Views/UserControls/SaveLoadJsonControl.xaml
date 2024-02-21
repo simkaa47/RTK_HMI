@@ -17,8 +17,8 @@
                   ItemsSource="{Binding JsonDataCollection}"
                   SelectedItem="{Binding SelectedFileInfo}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Имя файла" Binding="{Binding Name}"/>
-                <DataGridTextColumn Header="Дата  изменения" Binding="{Binding ChangeTime, StringFormat=F, ConverterCulture=ru-RU}"/>
+                <DataGridTextColumn Header="File name" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Date of modification" Binding="{Binding ChangeTime, StringFormat=F, ConverterCulture=ru-RU}"/>
             </DataGrid.Columns>
 
         </DataGrid>

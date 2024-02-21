@@ -25,7 +25,7 @@
             <Button Command="{Binding EditParameterCommand}">
                 <fa:ImageAwesome Icon="Edit"/>
                 <Button.ToolTip>
-                    <TextBlock Text="Редактировать"/>
+                    <TextBlock Text="Edit"/>
                 </Button.ToolTip>
             </Button>
             <!--#endregion-->
@@ -33,7 +33,7 @@
             <Button Command="{Binding AddParameterCommand}">
                 <fa:ImageAwesome Icon="PlusCircle"/>
                 <Button.ToolTip>
-                    <TextBlock Text="Добавить"/>
+                    <TextBlock Text="Add"/>
                 </Button.ToolTip>
             </Button>
             <!--#endregion-->
@@ -41,7 +41,7 @@
             <Button Command="{Binding DeleteCommand}">
                 <fa:ImageAwesome Icon="Remove"/>
                 <Button.ToolTip>
-                    <TextBlock Text="Удалить"/>
+                    <TextBlock Text="Remove"/>
                 </Button.ToolTip>
             </Button>
             <!--#endregion-->

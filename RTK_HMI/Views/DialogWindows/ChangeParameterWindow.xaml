@@ -64,33 +64,33 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <TextBlock Text="Описание"/>
+        <TextBlock Text="Name"/>
         <TextBox Grid.Row="0" Grid.Column="1" Width ="200" Text="{Binding Description}"/>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Номер регистра"/>
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Register number"/>
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding RegNum}"/>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Тип данных"/>
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Data type"/>
         <ComboBox Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Right" 
                   ItemsSource="{Binding Source={StaticResource DataTypes}}"
                   SelectedItem="{Binding Type}"
                   HorizontalContentAlignment="Center"
                   VerticalContentAlignment="Center"/>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Длина(если строка)"/>
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Length(if STRING)"/>
         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Length}"/>
 
-        <TextBlock Grid.Row="4" Grid.Column="0" Text="Примечание"/>
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Description"/>
         <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Notification}"/>
-        <TextBlock Grid.Row="5" Grid.Column="0" Text="Циклический опрос"/>
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Cyclic polling"/>
         <CheckBox Grid.Row="5" Grid.Column="1" IsChecked="{Binding IsCyclic}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-        <TextBlock Grid.Row="6" Grid.Column="0" Text="Тип регистра"/>
+        <TextBlock Grid.Row="6" Grid.Column="0" Text="Register type"/>
         <ComboBox Grid.Row="6" Grid.Column="1" Width="100" HorizontalAlignment="Right" 
                   ItemsSource="{Binding Source={StaticResource RegTypes}}"
                   SelectedItem="{Binding RegType}"
                   HorizontalContentAlignment="Center"
                   VerticalContentAlignment="Center"/>
-        <TextBlock Grid.Row="7" Grid.Column="0" Text="Порядок байт"/>
+        <TextBlock Grid.Row="7" Grid.Column="0" Text="Byte order"/>
         <ComboBox Grid.Row="7" Grid.Column="1" Width="100" HorizontalAlignment="Right" 
                   ItemsSource="{Binding Source={StaticResource ByteOrders}}"
                   SelectedItem="{Binding Order}"
@@ -101,7 +101,7 @@
                 <TextBlock Text="OK"/>                
             </Button>
             <Button Width="80" VerticalAlignment="Center" HorizontalAlignment="Center"  Grid.Column="1" Grid.Row="5" IsCancel="True" Height="20"  Margin="5" >
-                <TextBlock Text="Отмена"/>
+                <TextBlock Text="Cancel"/>
             </Button>
         </UniformGrid>
                    

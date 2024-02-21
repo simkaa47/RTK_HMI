@@ -39,7 +39,7 @@
                 <Grid>
                     <ScrollViewer Margin="0" x:Name="PART_ContentHost"/>
                     <TextBlock  Visibility="Hidden" x:Name="WatermarkText" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" 
-                              Background="Transparent" Foreground="{StaticResource InputTextColor}" Text="Введите логин" />
+                              Background="Transparent" Foreground="{StaticResource InputTextColor}" Text="Login" />
                 </Grid>
             </Border>
             <ControlTemplate.Triggers>
@@ -56,7 +56,7 @@
                     CornerRadius="3,3,0,0">
                 <Grid>
                     <ScrollViewer Margin="0" x:Name="PART_ContentHost"/>
-                    <TextBlock Visibility="Hidden" x:Name="WatermarkText" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="{StaticResource InputTextColor}" Text="Введите пароль"  />
+                    <TextBlock Visibility="Hidden" x:Name="WatermarkText" HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False" Foreground="{StaticResource InputTextColor}" Text="Password"  />
                 </Grid>
             </Border>
             <ControlTemplate.Triggers>
@@ -80,7 +80,7 @@
         </Image>
         <StackPanel VerticalAlignment="Center">
 
-            <TextBlock Text="VISSMA / Авторизация" Foreground="White" HorizontalAlignment="Center" FontFamily="Regular" FontSize="34"/>
+            <TextBlock Text="VISSMA / Authentication" Foreground="White" HorizontalAlignment="Center" FontFamily="Regular" FontSize="34"/>
             <TextBox  x:Name="Login"  
                       Background="{StaticResource InputBackgroundColor}"  
                       Template="{StaticResource WatermarkLogin}" 
@@ -92,7 +92,7 @@
                          Template="{StaticResource pboxTemplate}" 
                          HorizontalContentAlignment="Center" 
                          VerticalContentAlignment="Center" Width="380" Height="56" PasswordChanged="Password_PasswordChanged"/>
-            <Button Background="{StaticResource SelectionColor}" Content="ВОЙТИ" Width="380" Height="55" Margin="10" Click="EnterClick"></Button>
+            <Button Background="{StaticResource SelectionColor}" Content="Sign in" Width="380" Height="55" Margin="10" Click="EnterClick"></Button>
         </StackPanel>
     </Grid>
 </Window>

@@ -33,25 +33,25 @@
     <ListBox HorizontalContentAlignment="Stretch">
         <!--#region Логин -->
         <DockPanel>
-            <TextBlock Text="Логин"/>
+            <TextBlock Text="Login"/>
             <TextBox Width ="150" Text="{Binding Login}"/>
         </DockPanel>
         <!--#endregion-->
         <!--#region Имя -->
         <DockPanel>
-            <TextBlock Text="Имя"/>
+            <TextBlock Text="Name" Width="49"/>
             <TextBox Width ="150" Text="{Binding FirstName}"/>
         </DockPanel>
         <!--#endregion-->
         <!--#region Фамилия -->
         <DockPanel>
-            <TextBlock Text="Фамилия"/>
+            <TextBlock Text="Surname"/>
             <TextBox Width ="150" Text="{Binding LastName}"/>
         </DockPanel>
         <!--#endregion-->
         <!--#region Уровень доступа -->
         <DockPanel>
-            <TextBlock Text="Уровень доступа"/>
+            <TextBlock Text="Access level"/>
             <ComboBox Grid.Row="2" Grid.Column="1" Width="150" HorizontalAlignment="Right" 
                   ItemsSource="{Binding Source={StaticResource Levels}}"
                   SelectedItem="{Binding Level}"                      
@@ -61,7 +61,7 @@
         <!--#endregion-->
         <!--#region Пароль -->
         <DockPanel>
-            <TextBlock Text="Пароль"/>
+            <TextBlock Text="Password"/>
             <TextBox Width ="150" Text="{Binding Password}"/>
         </DockPanel>
         <!--#endregion-->
@@ -70,7 +70,7 @@
                 <TextBlock Text="OK"/>
             </Button>
             <Button Width="80" VerticalAlignment="Center" HorizontalAlignment="Right"   IsCancel="True" Height="20"  Margin="18" >
-                <TextBlock Text="Отмена"/>
+                <TextBlock Text="Cancel"/>
             </Button>
         </DockPanel>
     </ListBox>

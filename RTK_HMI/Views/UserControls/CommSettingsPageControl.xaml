@@ -26,7 +26,7 @@
         </ListBox.Resources>
         <!--#region Conn Way -->
         <DockPanel>
-            <TextBlock Text="Способ подключения"/>
+            <TextBlock Text="Connection method"/>
             <ComboBox SelectedIndex="{Binding ConnectSettings.Way, Converter={StaticResource EnumToInt}}"                                           
                       Width="100"
                       HorizontalAlignment="Right"
@@ -41,7 +41,7 @@
         <!--#endregion-->
         <!--#region COM порт -->
         <DockPanel Visibility="{Binding ConnectSettings.Way, Converter={StaticResource VisibleIfEqual}, ConverterParameter=SerialPort}">
-            <TextBlock Text="COM порт"/>
+            <TextBlock Text="COM port"/>
             <ComboBox SelectedItem="{Binding ConnectSettings.ComName}"                                           
                       Width="100"
                       HorizontalAlignment="Right"
@@ -56,7 +56,7 @@
         <!--#endregion-->
         <!--#region Баудрейт -->
         <DockPanel Visibility="{Binding ConnectSettings.Way, Converter={StaticResource VisibleIfEqual}, ConverterParameter=SerialPort}">
-            <TextBlock Text="Байдрейт"/>
+            <TextBlock Text="Baud rate"/>
             <ComboBox ItemsSource="{StaticResource PortSpeeds}"
                       HorizontalAlignment="Right"
                       Width="100"
@@ -65,7 +65,7 @@
         <!--#endregion-->
         <!--#region Паритет-->
         <DockPanel Visibility="{Binding ConnectSettings.Way, Converter={StaticResource VisibleIfEqual}, ConverterParameter=SerialPort}">
-            <TextBlock Text="Паритет"/>
+            <TextBlock Text="Parity"/>
             <ComboBox HorizontalAlignment="Right"
                       Width="100"
                       ItemsSource="{Binding Source={StaticResource Parities}}"
@@ -90,7 +90,7 @@
         <!--#endregion-->
         <!--#region Port number -->
         <DockPanel Visibility="{Binding ConnectSettings.Way, Converter={StaticResource VisibleIfNotEqual}, ConverterParameter=SerialPort}">
-            <TextBlock Text="Порт"/>
+            <TextBlock Text="Port"/>
             <TextBox Text="{Binding ConnectSettings.PortNumber}" Width="100"
                      HorizontalAlignment="Right"/>
         </DockPanel>
@@ -98,28 +98,28 @@
         <!--#endregion-->
         <!--#region Тайм-аут ответа -->
         <DockPanel>
-            <TextBlock Text="Тайм-аут ответа, мс"/>
+            <TextBlock Text="Response timeout, ms"/>
             <TextBox Text="{Binding ConnectSettings.ConnectionTimeout}" Width="100"
                      HorizontalAlignment="Right"/>
         </DockPanel>
         <!--#endregion-->
         <!--#region Адрес в сети Modbus -->
         <DockPanel>
-            <TextBlock Text="Адрес в сети Modbus"/>
+            <TextBlock Text="Modbus address"/>
             <TextBox Text="{Binding ConnectSettings.ModbAddr}" Width="100"
                      HorizontalAlignment="Right"/>
         </DockPanel>
         <!--#endregion-->
         <!--#region Стартовый регистр -->
         <DockPanel>
-            <TextBlock Text="Cтартовый регистр"/>
+            <TextBlock Text="Start register"/>
             <TextBox Text="{Binding ConnectSettings.StartReg}" Width="100"
                      HorizontalAlignment="Right"/>
         </DockPanel>
         <!--#endregion-->
         <!--#region Команда -->
         <DockPanel>
-            <TextBlock Text="Команда"/>
+            <TextBlock Text="Command"/>
             <CheckBox IsChecked="{Binding ConnectSettings.CommandFlag}" HorizontalAlignment="Right"/>
         </DockPanel>
         <!--#endregion-->

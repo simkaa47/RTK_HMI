@@ -17,7 +17,7 @@
     </Window.DataContext>
     <Grid>
         <TabControl>
-            <TabItem Header="Главная">
+            <TabItem Header="Main page">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50"/>
@@ -32,10 +32,10 @@
                                       Icon="Refresh" Height="40"/>
                 </Grid>
             </TabItem>
-            <TabItem Header="Настройки" Visibility="{Binding UserVm.CurrentUser, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter=Admin, TargetNullValue={x:Static Visibility.Collapsed}}">
+            <TabItem Header="Settings" Visibility="{Binding UserVm.CurrentUser, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter=Admin, TargetNullValue={x:Static Visibility.Collapsed}}">
                 <uc:UsersControl DataContext="{Binding UserVm}"/>
             </TabItem>
-            <TabItem Header="Калибровка" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
+            <TabItem Header="Calibration" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
                 <uc:CalibrationControl DataContext="{Binding CalibrationVm}"/>
             </TabItem>
         </TabControl>
