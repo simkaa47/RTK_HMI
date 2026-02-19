@@ -125,6 +125,22 @@ namespace DataAccess.Models
         }
         #endregion
 
+        #region VisibleForAdmin
+        /// <summary>
+        /// Byte Order
+        /// </summary>
+        private bool _visibleForAdmin;
+        /// <summary>
+        /// Byte Order
+        /// </summary>
+        [DataMember]
+        public bool VisibleForAdmin
+        {
+            get => _visibleForAdmin;
+            set => Set(ref _visibleForAdmin, value);
+        }
+        #endregion
+
 
         object Convert(object writeValue)
         {

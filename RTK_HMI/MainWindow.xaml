@@ -7,6 +7,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:i="Inter"
+        xmlns:m="clr-namespace:DataAccess.Models;assembly=DataAccess"
         mc:Ignorable="d"
         xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
         xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
@@ -25,7 +26,7 @@
                     </Grid.RowDefinitions>
                     <uc:ConnectPanel DataContext="{Binding ConnectVM}"/>
                     <uc:ReadWriteParametersControl Grid.Row="1"/>
-                    <TextBlock Grid.Row="1" VerticalAlignment="Bottom" Text="{Binding Version, StringFormat=Версия ПО : {0}}" Style="{StaticResource TextBlockCommonStyle}" HorizontalAlignment="Right" Margin="0,0,10,0"/>
+                    
                     <fa:ImageAwesome  Grid.Row="1"
                                       Spin="{Binding ConnectVM.LoadIndicator}" 
                                       Visibility="{Binding ConnectVM.LoadIndicator, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" 
@@ -37,7 +38,7 @@
             </TabItem>
             <TabItem Header="Calibration" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
                 <uc:CalibrationControl DataContext="{Binding CalibrationVm}"/>
-            </TabItem>
+            </TabItem>-->
         </TabControl>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" DataContext="{Binding UserVm}" Margin="10,0,10,0">
             <!--#region Login -->
@@ -58,7 +59,7 @@
             <!--#region LogOut -->
             <!--#region Login -->
             <Button BorderThickness="0" Background="Transparent" Command="{Binding LogoutCommand}" Visibility="{Binding IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
-                <Image     Height="32" Width="32"                       
+                <Image Height="32" Width="32"                       
                        Source="Views\Resourses\Pictures\ResetTv.png" 
                        >
                 </Image>
@@ -66,8 +67,8 @@
             <!--#endregion-->
             <!--#endregion-->
         </StackPanel>
-        
 
+        <TextBlock FontSize="14" VerticalAlignment="Bottom" Text="{Binding Version, StringFormat=VISSMA FLOW Version:{0}}" Style="{StaticResource TextBlockCommonStyle}" HorizontalAlignment="Right" Margin="10"/>
     </Grid>
     
 </Window>

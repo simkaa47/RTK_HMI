@@ -13,7 +13,8 @@ namespace RTK_HMI.Views.Resourses.Converters
         {
             if (value is null || parameter is null) return Visibility.Collapsed;
             if(!(value is User user)) return Visibility.Collapsed;
-            if(user.Level.ToString()==parameter.ToString())return Visibility.Visible;
+            if(!(parameter is UserLevel level)) return Visibility.Collapsed;
+            if (user.Level>=level)return Visibility.Visible;
             return Visibility.Collapsed;
         }
     }

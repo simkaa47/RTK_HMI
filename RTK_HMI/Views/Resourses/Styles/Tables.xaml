@@ -10,8 +10,10 @@
         <Setter Property="Background" Value="#323232"/>
         <Setter Property="Foreground" Value="#ADADAD"/>
     </Style>
-    <Style TargetType="DataGridRow">
+    <Style TargetType="DataGridRow" x:Key="DataGridCommon">
         <Setter Property="Background" Value="#323232"/>
         <Setter Property="Foreground" Value="#ADADAD"/>
     </Style>
+
+    <Style TargetType="DataGridRow" BasedOn="{StaticResource DataGridCommon}"/>
 </ResourceDictionary>
