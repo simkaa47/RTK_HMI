@@ -8,9 +8,9 @@ namespace RTK_HMI.Views.Resourses.Converters
     {
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null) return "Пользователь не авторизован";
+            if (value == null) return "The user is not logged in";
             var user = value as User;
-            if (user == null) return "Пользователь не авторизован";
+            if (user == null) return "The user is not logged in";
             return user.LastName + " " + user.FirstName + $"({user.Level})";
         }
     }

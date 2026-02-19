@@ -72,7 +72,7 @@
             <Button Command="{Binding ConnectVM.ReadAllParamsCommand}">
                 <fa:ImageAwesome Icon="Download"/>
                 <Button.ToolTip>
-                    <TextBlock Text="Выгрузить из РТК"/>
+                    <TextBlock Text="Download from RTK"/>
                 </Button.ToolTip>
             </Button>
             <!--#endregion-->
@@ -80,7 +80,7 @@
             <Button Command="{Binding SaveLoadVM.SaveCommand}">
                 <fa:ImageAwesome Icon="Save"/>
                 <Button.ToolTip>
-                    <TextBlock Text="Сохранить"/>
+                    <TextBlock Text="Save"/>
                 </Button.ToolTip>
             </Button>
             <!--#endregion-->
@@ -88,7 +88,7 @@
             <Button Command="{Binding ConnectVM.WriteAllCommand}">
                 <fa:ImageAwesome Icon="Upload"/>
                 <Button.ToolTip>
-                    <TextBlock Text="Загрузить в РТК"/>
+                    <TextBlock Text="Upload to RTK"/>
                 </Button.ToolTip>
             </Button>
             <!--#endregion-->
@@ -96,7 +96,7 @@
             <Button Command="{Binding SaveLoadVM.EditCommand}">
                 <fa:ImageAwesome Icon="Edit"/>
                 <Button.ToolTip>
-                    <TextBlock Text="Редактировать параметр"/>
+                    <TextBlock Text="Edit"/>
                 </Button.ToolTip>
             </Button>
             <!--#endregion-->
@@ -104,7 +104,7 @@
             <Button Command="{Binding SaveLoadVM.DeleteCommand}">
                 <fa:ImageAwesome Icon="Remove"/>
                 <Button.ToolTip>
-                    <TextBlock Text="Удалить параметр"/>
+                    <TextBlock Text="Remove"/>
                 </Button.ToolTip>
             </Button>
             <!--#endregion-->
@@ -112,7 +112,7 @@
             <Button Command="{Binding SaveLoadVM.AddCommand}" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
                 <fa:ImageAwesome Icon="PlusCircle"/>
                 <Button.ToolTip>
-                    <TextBlock Text="Добавить параметр"/>
+                    <TextBlock Text="Add"/>
                 </Button.ToolTip>
             </Button>
             <!--#endregion-->
@@ -133,7 +133,7 @@
             </Grid>
              <!--#endregion-->
                 <!--#region СОхраненные наборы -->
-            <uc:SaveLoadJsonControl DataContext="{Binding SaveLoadVM}" Grid.Row="1"/>
+            <uc:SaveLoadJsonControl DataContext="{Binding SaveLoadVM}" Grid.Row="1" Loaded="SaveLoadJsonControl_Loaded"/>
             <!--#endregion-->
         </Grid>
         <!--#region Параметры -->
@@ -145,7 +145,7 @@
                   IsReadOnly="{Binding UserVm.CurrentUser, Converter={StaticResource UserToBoolInverseConverter}, ConverterParameter={x:Static m:UserLevel.Service}}"
                   SelectedItem="{Binding ConnectVM.SelectedParameter}"
                   CanUserAddRows="False"
-                  CanUserDeleteRows="False">
+                  CanUserDeleteRows="False" SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Resources>
                 <DataTemplate x:Key="HeaderTemplate">
                     <TextBlock TextWrapping="Wrap">
@@ -156,8 +156,8 @@
                 </DataTemplate>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn  IsReadOnly="True" Header="Название" Binding="{Binding Description}"/>
-                <DataGridTemplateColumn Header="Значение" Width="120">
+                <DataGridTextColumn  IsReadOnly="True" Header="Name" Binding="{Binding Description}"/>
+                <DataGridTemplateColumn Header="Value" Width="120">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="200"
@@ -166,7 +166,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Примечание">
+                <DataGridTemplateColumn Header="Description">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBox Text="{Binding Notification, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Width="200"
@@ -182,36 +182,18 @@
                                     Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ConnectVM.WriteParameterCommand}">
                                 <fa:ImageAwesome Icon="Upload" Height="20" Width="20"/>
                                 <Button.ToolTip>
-                                    <TextBlock Text="Записать параметр"/>
+                                    <TextBlock Text="Write parametr"/>
                                 </Button.ToolTip>
                             </Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <!--#region Data type -->
-                <DataGridTextColumn Header="Тип данных"  Binding="{Binding Type}" 
-                                    Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
-                <!--#endregion-->
-                <!--#region № reg -->
-                <DataGridTextColumn Header="№ регистра" IsReadOnly="True" Binding="{Binding RegNum}"
-                                    Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
-                <!--#endregion-->
-                <!--#region Cyclic requestes -->
-                <DataGridCheckBoxColumn  Width="110" Header="Циклический опрос" IsReadOnly="True" Binding="{Binding IsCyclic}"
-                                         Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
-                <!--#endregion-->
-                <!--#region Reg type -->
-                <DataGridTextColumn Header="Тип регистра" IsReadOnly="True" Binding="{Binding RegType}"
-                                    Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
-                <!--#endregion-->
-                <!--#region Byte order -->
-                <DataGridTextColumn  Width="60" Header="Порядок байт" IsReadOnly="True" Binding="{Binding Order}" 
-                                    Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
-                <!--#endregion-->
-                <!--#region Visible for admin -->
-                <DataGridCheckBoxColumn Header="Только для админа" Binding="{Binding VisibleForAdmin}"
-                                        Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Admin}, UpdateSourceTrigger=PropertyChanged}"/>
-                <!--#endregion-->
+                <DataGridTextColumn Header="Data type"  Binding="{Binding Type}" />
+                <DataGridTextColumn Header="№ of register" IsReadOnly="True" Binding="{Binding RegNum}"/>
+                <DataGridCheckBoxColumn HeaderTemplate="{StaticResource HeaderTemplate}" Width="80" Header="Cyclic pooling" IsReadOnly="True" Binding="{Binding IsCyclic}"/>
+                <DataGridTextColumn Header="Register type" IsReadOnly="True" Binding="{Binding RegType}"/>
+                <DataGridTextColumn HeaderTemplate="{StaticResource HeaderTemplate}" Width="60" Header="Byte order" IsReadOnly="True" Binding="{Binding Order}"/>
+                
             </DataGrid.Columns>
         </DataGrid>
         <!--#endregion-->

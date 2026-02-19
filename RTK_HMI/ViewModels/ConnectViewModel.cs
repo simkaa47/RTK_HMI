@@ -33,7 +33,7 @@ namespace RTK_HMI.ViewModels
 
         public MainViewModel MainView { get; }
 
-        private const string noConnect = "Нет соединения, нажмите кнопку \"Установить - разорвать соединение\"";
+        private const string noConnect = "There is no connection, click the \"Establish/Terminate connection\" button";
 
 
         #region Communication Status
@@ -369,7 +369,7 @@ namespace RTK_HMI.ViewModels
         {
             _requests.Enqueue(new Request(() => 
             {
-                Status = "Выполняется переподключение по измененным настройкам";
+                Status = "Reconnection is performed using the changed settings";
                 Error = false;                
                 SafetyAction(ExchangeService.Reconnect);
             }));
@@ -381,11 +381,11 @@ namespace RTK_HMI.ViewModels
             {
                 if (!RtkExchange.Connected) 
                 {
-                    throw new Exception("Необходимо подключиться");                    
+                    throw new Exception("You need to connect");                    
                 }
 
                 ReqAtempts++;
-                Status = $"Выполняется запрос данных..({ReqSuccess}/{ReqAtempts})";
+                Status = $"Requesting data..({ReqSuccess}/{ReqAtempts})";
                 Error = false;
 
                 if(ConnectSettings.CommandFlag)LoadIndicator = true;                
@@ -406,7 +406,7 @@ namespace RTK_HMI.ViewModels
                 if (buf is null) return;
                 RecognizeParameterFromArrService.Recongnize(readings, buf, addr.Item1);
                 ReqSuccess++;
-                Status = $"Запрос выполнен успешно...({ReqSuccess}/{ReqAtempts})";
+                Status = $"The request was completed successfully...({ReqSuccess}/{ReqAtempts})";
                 Error = false;
 
                 LoadIndicator = false;
@@ -420,17 +420,17 @@ namespace RTK_HMI.ViewModels
             {
                 if (!RtkExchange.Connected)
                 {
-                    throw new Exception("Необходимо подключиться");
+                    throw new Exception("Need to connect");
                 }
                 ReqAtempts++;
-                Status = $"Выполняется запись данных..({ReqSuccess}/{ReqAtempts})";
+                Status = $"Saving data..({ReqSuccess}/{ReqAtempts})";
                 Error = false;
                 LoadIndicator = true;
                 var holdings = MainView.ParameterVm.Parameters.Where(p => p.RegType == Registers.Holding);
                 if (holdings == null || holdings.Count() == 0) 
                 {
                     ReqSuccess++;
-                    Status = $"Нет параметров для записи...({ReqSuccess}/{ReqAtempts})";
+                    Status = $"There are no parameters to save...({ReqSuccess}/{ReqAtempts})";
                     LoadIndicator = false;
                     Error = false;
                     return;
@@ -451,7 +451,7 @@ namespace RTK_HMI.ViewModels
                 WriteToEeprom();
                 LoadIndicator = false;
                 ReqSuccess++;
-                Status = $"Запись выполнена успешно...({ReqSuccess}/{ReqAtempts})";
+                Status = $"Data successfully saved ...({ReqSuccess}/{ReqAtempts})";
                 Error = false;
             });
         }
@@ -511,11 +511,11 @@ namespace RTK_HMI.ViewModels
             {                
                 if (!RtkExchange.Connected)
                 {
-                    Status = "Выполняется подключение...";
+                    Status = "Connecting...";
                     if (!ComPorts.Contains(ConnectSettings.ComName) && ConnectSettings.Way == ConnectWays.SerialPort) 
-                        throw new Exception("Выберите COM порт");
+                        throw new Exception("Select COM port");
                     ExchangeService.Connect();
-                    Status = "Подключение выполнено";
+                    Status = "Connected";
                 } 
             });
         }
@@ -524,9 +524,9 @@ namespace RTK_HMI.ViewModels
         {
             SafetyAction(() =>
             {
-                Status = "Выполняется отключение...";
+                Status = "Disconnecting...";
                 ExchangeService.Disconnect();
-                Status = "Отключение выполнено";
+                Status = "Disconnected";
             });
         }
 

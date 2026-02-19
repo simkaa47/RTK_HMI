@@ -20,14 +20,14 @@
         <Button Command="{Binding ConnectCommand}" >
             <fa:ImageAwesome Icon="Link" Foreground="{Binding RtkExchange.Connected, Converter={StaticResource BoolToColor}, ConverterParameter=#ADADAD}"/>
             <Button.ToolTip>
-                <TextBlock Text="Установить-разорвать соединение"/>
+                <TextBlock Text="Establish/Terminate connection"/>
             </Button.ToolTip>
         </Button>
         <!--#endregion-->
         <!--#region Открыть настройки связи -->
         <ToggleButton Grid.Column="1"  x:Name="ShowCommSettinsButton" Margin="5" Background="#323232" >
             <ToggleButton.ToolTip>
-                <TextBlock Text="Настройки связи"/>
+                <TextBlock Text="Communication settings"/>
             </ToggleButton.ToolTip>
             <fa:ImageAwesome Icon="Sliders" Rotation="90" />
         </ToggleButton>
