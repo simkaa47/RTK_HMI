@@ -12,7 +12,7 @@
     </col:ArrayList>
     <col:ArrayList x:Key="ConnWays">
         <sys:String>Modbus RTU</sys:String>
-        <sys:String>Modbus UDP</sys:String>        
+        <sys:String>Modbus TCP</sys:String>        
     </col:ArrayList>
     <x:Array x:Key="UserIcons" Type="{x:Type sys:String}">
         <sys:String>Views\Resourses\Pictures\AccountCircleNonAuthorized.png</sys:String>

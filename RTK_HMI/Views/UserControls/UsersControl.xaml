@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
              xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:UserVm}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -70,17 +70,17 @@
                                     <Button Margin="10" Background="Transparent" BorderThickness="0"
                                             
                                             Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.EditUserCommand}">
-                                        <fa:ImageAwesome Icon="Edit" Height="20"/>
+                                        <fa:IconBlock Icon="Edit" Height="20"/>
                                     </Button>
                                     <Button Margin="10" Background="Transparent" BorderThickness="0"
                                             
                                             Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.AddUserCommand}">
-                                        <fa:ImageAwesome Icon="PlusCircle" Height="20"/>
+                                        <fa:IconBlock Icon="PlusCircle" Height="20"/>
                                     </Button>
                                     <Button Margin="10" Background="Transparent" BorderThickness="0"
                                             
                                             Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.DeleteUserCommand}">
-                                        <fa:ImageAwesome Icon="Remove" Height="20"/>
+                                        <fa:IconBlock Icon="Xmark" Height="20"/>
                                     </Button>
                                 </StackPanel>
                             </DataTemplate>

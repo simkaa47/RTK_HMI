@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
              xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=vm:ParameterVm}">
@@ -23,7 +23,7 @@
             </StackPanel.Resources>
             <!--#region Редактировать -->
             <Button Command="{Binding EditParameterCommand}">
-                <fa:ImageAwesome Icon="Edit"/>
+                <fa:IconBlock Icon="Edit"/>
                 <Button.ToolTip>
                     <TextBlock Text="Edit"/>
                 </Button.ToolTip>
@@ -31,7 +31,7 @@
             <!--#endregion-->
             <!--#region Добавить -->
             <Button Command="{Binding AddParameterCommand}">
-                <fa:ImageAwesome Icon="PlusCircle"/>
+                <fa:IconBlock Icon="PlusCircle"/>
                 <Button.ToolTip>
                     <TextBlock Text="Add"/>
                 </Button.ToolTip>
@@ -39,7 +39,7 @@
             <!--#endregion-->
             <!--#region Удалить -->
             <Button Command="{Binding DeleteCommand}">
-                <fa:ImageAwesome Icon="Remove"/>
+                <fa:IconBlock Icon="Xmark"/>
                 <Button.ToolTip>
                     <TextBlock Text="Remove"/>
                 </Button.ToolTip>

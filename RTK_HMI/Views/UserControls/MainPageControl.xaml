@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
              xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
              xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
@@ -23,9 +23,8 @@
         <Grid>            
             
             <Button Command="{Binding ConnectVM.ConnectCommand}" >
-                <fa:ImageAwesome Icon="Link"     
-                                  Stretch="None"
-                                 Foreground="{Binding ConnectVM.RtkExchange.Connected, Converter={StaticResource BoolToColor}, ConverterParameter=#ADADAD}"/>
+                <fa:IconBlock Icon="Link"     
+                                                                 Foreground="{Binding ConnectVM.RtkExchange.Connected, Converter={StaticResource BoolToColor}, ConverterParameter=#ADADAD}"/>
                 <Button.ToolTip>
                     <TextBlock Text="Установить-разорвать соединение"/>
                 </Button.ToolTip>
@@ -35,7 +34,7 @@
         <!--#region Загрузить из РТК -->
         <Button  Grid.Column="0" Grid.Row="1"
                  Command="{Binding ConnectVM.ReadAllParamsCommand}">
-            <fa:ImageAwesome Icon="Download"  Stretch="None"/>
+            <fa:IconBlock Icon="Download"/>
             <Button.ToolTip>
                 <TextBlock Text="Выгрузить из РТК" />
             </Button.ToolTip>
@@ -44,14 +43,18 @@
         <!--#region Записать все параметры  в память -->
         <Button Grid.Column="1" Grid.Row="1"
                 Command="{Binding ConnectVM.WriteAllCommand}">
-            <fa:ImageAwesome Icon="Upload"  Stretch="None"/>
+            <fa:IconBlock Icon="Upload"/>
             <Button.ToolTip>
                 <TextBlock Text="Загрузить в РТК"/>
             </Button.ToolTip>
         </Button>
         <!--#endregion-->
         <ToggleButton Grid.Column="1" Grid.Row="0" x:Name="ShowCommSettinsButton" Margin="5" Background="#323232" >
-            <fa:ImageAwesome Icon="Sliders" Rotation="90"  Stretch="None"/>
+            <fa:IconBlock Icon="Sliders">
+                <fa:IconBlock.LayoutTransform>
+                    <RotateTransform Angle="90"/>
+                </fa:IconBlock.LayoutTransform>
+            </fa:IconBlock>
         </ToggleButton>
         <Popup Height="200" Width="300"
                    IsOpen="{Binding ElementName=ShowCommSettinsButton, Path=IsChecked}"                   

@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
              xmlns:oxy="http://oxyplot.org/wpf"
-            xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+            xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
              xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:CalibrationVm}"
@@ -35,7 +35,7 @@
             <StackPanel Orientation="Horizontal">                
                 <!--#region Добавить -->
                 <Button Command="{Binding AddCommand}">
-                    <fa:ImageAwesome Icon="PlusCircle"/>
+                    <fa:IconBlock Icon="PlusCircle"/>
                     <Button.ToolTip>
                         <TextBlock Text="Добавить точку"/>
                     </Button.ToolTip>
@@ -43,7 +43,7 @@
                 <!--#endregion-->
                 <!--#region Удалить -->
                 <Button Command="{Binding DeleteCommand}">
-                    <fa:ImageAwesome Icon="Remove"/>
+                    <fa:IconBlock Icon="Xmark"/>
                     <Button.ToolTip>
                         <TextBlock Text="Удалить точку"/>
                     </Button.ToolTip>
@@ -65,7 +65,7 @@
                 <!--#endregion-->
                 <!--#region Рассчитать -->
                 <Button Command="{Binding CalculateCommand}">
-                    <fa:ImageAwesome Icon="Calculator"/>
+                    <fa:IconBlock Icon="Calculator"/>
                     <Button.ToolTip>
                         <TextBlock Text="Рассчитать к-ты кривой"/>
                     </Button.ToolTip>
@@ -74,7 +74,7 @@
                 <!--#region Показать график -->
                 <ToggleButton Command="{Binding ShowPolinomTrendCommand}" Width="50" Height="50" Background="Transparent" BorderThickness="0"
                               Name="TrendOpen">
-                    <fa:ImageAwesome Icon="Arrows"/>
+                    <fa:IconBlock Icon="ArrowsUpDownLeftRight"/>
                     <ToggleButton.ToolTip>
                         <TextBlock Text="Показать график"/>
                     </ToggleButton.ToolTip>

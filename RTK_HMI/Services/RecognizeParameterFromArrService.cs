@@ -17,7 +17,7 @@ namespace RTK_HMI.Services
                 switch (param.Type)
                 {
                     case DataType.String:
-                        param.Value = GetStringFromUshorts(ushortArr, param.RegNum - offset, param.Length);
+                        param.Value = GetStringFromUshorts(ushortArr, param.RegNum - offset, param.Length, param.Order);
                         break;
                     case DataType.Float32:
                         param.Value = GetFloatFromUshorts(ushortArr, param.RegNum - offset, param.Order);
@@ -139,11 +139,13 @@ namespace RTK_HMI.Services
         #endregion
 
         #region Получить строку из байт
-        static string GetStringFromUshorts(ushort[] regs, int regNum, int lenght)
+        static string GetStringFromUshorts(ushort[] regs, int regNum, int lenght, ByteOrder order)
         {
-            
+            bool needToReverse = false;
+            if(order == ByteOrder.BADC || order == ByteOrder.DCBA) 
+                needToReverse = true;
             var bytes = regs.Skip(regNum)
-                .SelectMany(num => BitConverter.GetBytes(num).Reverse())
+                .SelectMany(num =>needToReverse ? BitConverter.GetBytes(num).Reverse() : BitConverter.GetBytes(num))
                 .Take(lenght)
                 .ToArray();
             var name = Encoding.ASCII.GetString(bytes, 0, bytes.Length);
@@ -196,7 +198,7 @@ namespace RTK_HMI.Services
             {
                 case DataType.String:
                     if(parameter.Value is null)return new ushort[parameter.Length%2==0?parameter.Length/2:parameter.Length/2+1];
-                    return GetRegistersFromString(parameter.Value.ToString(), parameter.Length);
+                    return GetRegistersFromString(parameter.Value.ToString(), parameter.Length, parameter.Order);
                 case DataType.Float32:
                     if (parameter.Value is null) return new ushort[2];
                     return GetRegsFromFloat((float)parameter.Value, parameter.Order);
@@ -220,8 +222,11 @@ namespace RTK_HMI.Services
         #endregion
 
         #region Получить регистры из строки
-        static ushort[] GetRegistersFromString(string value, int length)
+        static ushort[] GetRegistersFromString(string value, int length, ByteOrder order)
         {
+            bool needToReverse = false;
+            if (order == ByteOrder.BADC || order == ByteOrder.DCBA)
+                needToReverse = true;
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);             
             var bytes = Encoding.GetEncoding(1251).GetBytes(value).Take(length).ToArray();
             var arr = new byte[length];
@@ -229,10 +234,14 @@ namespace RTK_HMI.Services
             var nums = new ushort[length % 2 == 0 ? length / 2 : length / 2 + 1];
             for (int i = 0; i < bytes.Length; i += 2)
             {
+                if(needToReverse)
+                {
+                    arr[i] = bytes[i + 1];
+                    arr[i + 1] = bytes[i];
+                }               
                 nums[i / 2] = BitConverter.ToUInt16(arr, i);
-            }
-            var regs = nums.Select(num => (ushort)((num / 256) + (ushort)(num << 8))).ToArray();
-            return regs;
+            }           
+            return nums;
         }
         #endregion
 

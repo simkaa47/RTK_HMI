@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
              xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
              mc:Ignorable="d" 
              xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
@@ -18,7 +18,7 @@
         </Grid.ColumnDefinitions>
         <!--#region Connect Requiring Button -->
         <Button Command="{Binding ConnectCommand}" >
-            <fa:ImageAwesome Icon="Link" Foreground="{Binding RtkExchange.Connected, Converter={StaticResource BoolToColor}, ConverterParameter=#ADADAD}"/>
+            <fa:IconBlock Icon="Link" Foreground="{Binding RtkExchange.Connected, Converter={StaticResource BoolToColor}, ConverterParameter=#ADADAD}"/>
             <Button.ToolTip>
                 <TextBlock Text="Establish/Terminate connection"/>
             </Button.ToolTip>
@@ -29,7 +29,11 @@
             <ToggleButton.ToolTip>
                 <TextBlock Text="Communication settings"/>
             </ToggleButton.ToolTip>
-            <fa:ImageAwesome Icon="Sliders" Rotation="90" />
+            <fa:IconBlock Icon="Sliders">
+                <fa:IconBlock.LayoutTransform>
+                    <RotateTransform Angle="90"/>
+                </fa:IconBlock.LayoutTransform>
+            </fa:IconBlock>
         </ToggleButton>
         <!--#endregion-->
         <!--#region Comm Settings -->

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:RTK_HMI.Views.UserControls"
              xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
              xmlns:data="clr-namespace:DataAccess.Models;assembly=DataAccess"
-             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
              xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
              xmlns:m="clr-namespace:DataAccess.Models;assembly=DataAccess"
              xmlns:v="clr-namespace:RTK_HMI.Views"
@@ -70,7 +70,7 @@
         <StackPanel Height="50" Orientation="Horizontal" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
             <!--#region Загрузить из РТК -->
             <Button Command="{Binding ConnectVM.ReadAllParamsCommand}">
-                <fa:ImageAwesome Icon="Download"/>
+                <fa:IconBlock Icon="Download"/>
                 <Button.ToolTip>
                     <TextBlock Text="Download from RTK"/>
                 </Button.ToolTip>
@@ -78,7 +78,7 @@
             <!--#endregion-->
             <!--#region Сохранить набор -->
             <Button Command="{Binding SaveLoadVM.SaveCommand}">
-                <fa:ImageAwesome Icon="Save"/>
+                <fa:IconBlock Icon="Save"/>
                 <Button.ToolTip>
                     <TextBlock Text="Save"/>
                 </Button.ToolTip>
@@ -86,7 +86,7 @@
             <!--#endregion-->
             <!--#region Записать все параметры  в память -->
             <Button Command="{Binding ConnectVM.WriteAllCommand}">
-                <fa:ImageAwesome Icon="Upload"/>
+                <fa:IconBlock Icon="Upload"/>
                 <Button.ToolTip>
                     <TextBlock Text="Upload to RTK"/>
                 </Button.ToolTip>
@@ -94,7 +94,7 @@
             <!--#endregion-->
             <!--#region Редактировать параметр -->
             <Button Command="{Binding SaveLoadVM.EditCommand}">
-                <fa:ImageAwesome Icon="Edit"/>
+                <fa:IconBlock Icon="Edit"/>
                 <Button.ToolTip>
                     <TextBlock Text="Edit"/>
                 </Button.ToolTip>
@@ -102,7 +102,7 @@
             <!--#endregion-->
             <!--#region Удалить параметр -->
             <Button Command="{Binding SaveLoadVM.DeleteCommand}">
-                <fa:ImageAwesome Icon="Remove"/>
+                <fa:IconBlock Icon="Xmark"/>
                 <Button.ToolTip>
                     <TextBlock Text="Remove"/>
                 </Button.ToolTip>
@@ -110,7 +110,7 @@
             <!--#endregion-->
             <!--#region Добавить параметр -->
             <Button Command="{Binding SaveLoadVM.AddCommand}" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
-                <fa:ImageAwesome Icon="PlusCircle"/>
+                <fa:IconBlock Icon="PlusCircle"/>
                 <Button.ToolTip>
                     <TextBlock Text="Add"/>
                 </Button.ToolTip>
@@ -180,7 +180,7 @@
                         <DataTemplate>
                             <Button Visibility="{Binding RegType, Converter={StaticResource VisibleIfEqual}, ConverterParameter=Holding}"
                                     Command="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.ConnectVM.WriteParameterCommand}">
-                                <fa:ImageAwesome Icon="Upload" Height="20" Width="20"/>
+                                <fa:IconBlock Icon="Upload" Height="20" Width="20"/>
                                 <Button.ToolTip>
                                     <TextBlock Text="Write parametr"/>
                                 </Button.ToolTip>
@@ -188,12 +188,12 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Data type"  Binding="{Binding Type}" />
-                <DataGridTextColumn Header="№ of register" IsReadOnly="True" Binding="{Binding RegNum}"/>
-                <DataGridCheckBoxColumn HeaderTemplate="{StaticResource HeaderTemplate}" Width="80" Header="Cyclic pooling" IsReadOnly="True" Binding="{Binding IsCyclic}"/>
-                <DataGridTextColumn Header="Register type" IsReadOnly="True" Binding="{Binding RegType}"/>
-                <DataGridTextColumn HeaderTemplate="{StaticResource HeaderTemplate}" Width="60" Header="Byte order" IsReadOnly="True" Binding="{Binding Order}"/>
-                
+                <DataGridTextColumn Header="Data type"  Binding="{Binding Type}" Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Service}, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="№ of register" IsReadOnly="True" Binding="{Binding RegNum}" Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Service}, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridCheckBoxColumn Width="80" Header="Cyclic pooling" IsReadOnly="True" Binding="{Binding IsCyclic}" Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Service}, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn Header="Register type" IsReadOnly="True" Binding="{Binding RegType}" Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Service}, UpdateSourceTrigger=PropertyChanged}"/>
+                <DataGridTextColumn  Width="60" Header="Byte order" IsReadOnly="True" Binding="{Binding Order}" Visibility="{Binding Source={StaticResource AdminVisibility}, Path=Data, Mode=TwoWay, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter={x:Static m:UserLevel.Service}, UpdateSourceTrigger=PropertyChanged}"/>
+
             </DataGrid.Columns>
         </DataGrid>
         <!--#endregion-->

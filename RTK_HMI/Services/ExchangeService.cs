@@ -1,25 +1,42 @@
-﻿using DataAccess.Models;
-using EasyModbus;
+using DataAccess.Models;
+using FluentModbus;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Net;
+using System.Threading;
 
 namespace RTK_HMI.Services
 {
     public class ExchangeService
     {
+        private const int ChunkSize = 50;
+
         private readonly ConnectData _connectData;
         private readonly ConnectSettings _connectSettings;
+
+        private readonly ModbusRtuClient _rtuClient = new ModbusRtuClient();
+        private readonly ModbusTcpClient _tcpClient = new ModbusTcpClient();
         private ModbusClient _client;
 
+        private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+        private bool _rtuConnected;
+
         public event Action<string> ErrorEvent;
+
+        public bool Connected => _connectSettings.Way == ConnectWays.SerialPort
+            ? _rtuConnected
+            : _tcpClient.IsConnected;
 
         public ExchangeService(ConnectData connectData, ConnectSettings connectSettings)
         {
             _connectData = connectData;
             _connectSettings = connectSettings;
+            _tcpClient.ReadTimeout = 500;
+            _tcpClient.WriteTimeout = 500;            
         }
+
+
+       
 
         public void Connect()
         {
@@ -28,28 +45,28 @@ namespace RTK_HMI.Services
                 case ConnectWays.SerialPort:
                     PortInit();
                     break;
-                case ConnectWays.Udp:
-                    ConnectUdp();
-                    break;
                 case ConnectWays.Tcp:
-                    break;
-                default:
+                    ConnectTcp();
                     break;
             }
-            _connectData.Connected = _client.Connected;
+            _connectData.Connected = Connected;
         }
 
-        public   void Disconnect()
+        public void Disconnect()
         {
-            if(_client!=null)
+            if (_client is ModbusTcpClient tcpClient)
             {
-                _client.Disconnect();
-                _connectData.Connected = false;
+                tcpClient.Disconnect();
             }
-            
+            else if (_client is ModbusRtuClient)
+            {
+                _rtuClient.Close();
+                _rtuConnected = false;
+            }
+            _connectData.Connected = false;
         }
 
-        public void Reconnect() 
+        public void Reconnect()
         {
             Disconnect();
             Connect();
@@ -58,55 +75,51 @@ namespace RTK_HMI.Services
         public int[] ReadRegisters(int startNum, int count, Registers type)
         {
             int[] result = new int[count];
-            for (int i = 0; i < count; i+=100)
+            for (int i = 0; i < count; i += ChunkSize)
             {
-                var num = Math.Min(100, count - i);
-                int[] temp = null;
-                if(type == Registers.Holding)
-                {
-                    temp = ReadHoldingRegisters(startNum + i, num);
-                }
-                else
-                {
-                    temp = ReadInputRegisters(startNum + i, num);
-                }
-                if(temp!=null)
-                {
-                    temp.CopyTo(result, i);
-                }
-                
-            }            
+                int num = Math.Min(ChunkSize, count - i);
+                int[] temp = type == Registers.Holding
+                    ? ReadHoldingRegisters(startNum + i, num)
+                    : ReadInputRegisters(startNum + i, num);
+                temp?.CopyTo(result, i);
+            }
             return result;
         }
 
         public void WriteRegisters(ushort[] source, int startNum)
         {
-            if (_client is null || !_client.Connected) throw new Exception("Необходимо подлкючиться");
-            _client.WriteMultipleRegisters(startNum, source.Select(s=>(int)s).ToArray());
+            if (_client is null) throw new Exception("Необходимо подключиться");
+            _semaphore.Wait();
+            try
+            {
+                _client.WriteMultipleRegisters(_connectSettings.ModbAddr, startNum, source);
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
 
-        #region Инициализаця порта
+        #region Private connection helpers
+
         void PortInit()
         {
-            _client = new ModbusClient(_connectSettings.ComName);
-            _client.ConnectionTimeout = _connectSettings.ConnectionTimeout;
-            _client.Baudrate = _connectSettings.Baudrate; ;
-            _client.UnitIdentifier = _connectSettings.ModbAddr;
-            _client.Parity = _connectSettings.Parity;
-            _client.Connect();
+            _rtuClient.BaudRate = _connectSettings.Baudrate;
+            _rtuClient.Parity = _connectSettings.Parity;
+            _rtuClient.ReadTimeout = _connectSettings.ConnectionTimeout;
+            _rtuClient.Connect(_connectSettings.ComName, ModbusEndianness.BigEndian);
+            _client = _rtuClient;
+            _rtuConnected = true;
         }
-        #endregion
 
-        #region Покдлючение UDP
-        void ConnectUdp()
+        void ConnectTcp()
         {
-            _client = new ModbusClient();
-            _client.UDPFlag = true;
-            _client.IPAddress = GetStringFromIp(_connectSettings.Ip);
-            _client.Port = _connectSettings.PortNumber;
-            _client.Connect();
+            var ip = GetStringFromIp(_connectSettings.Ip);
+            _tcpClient.Connect(
+                new IPEndPoint(IPAddress.Parse(ip), _connectSettings.PortNumber),
+                ModbusEndianness.BigEndian);
+            _client = _tcpClient;
         }
-        #endregion
 
         static string GetStringFromIp(int ip)
         {
@@ -118,23 +131,42 @@ namespace RTK_HMI.Services
             return $"{addr[3]}.{addr[2]}.{addr[1]}.{addr[0]}";
         }
 
+        #endregion
+
+        #region Private register read helpers
 
         int[] ReadHoldingRegisters(int startNum, int count)
         {
-            int[] registers = null;
-            if (_client is null || !_client.Connected) throw new Exception("Необходимо сначала подключиться");
-            registers = _client.ReadHoldingRegisters(startNum, count);
-            return registers;
+            if (_client is null) throw new Exception("Необходимо сначала подключиться");
+            _semaphore.Wait();
+            try
+            {
+                var span = _client.ReadHoldingRegisters<ushort>(
+                    _connectSettings.ModbAddr, startNum, count);
+                return span.ToArray().Select(x => (int)x).ToArray();
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
 
         int[] ReadInputRegisters(int startNum, int count)
         {
-            int[] registers = null;
-            if (_client is null || !_client.Connected) throw new Exception("Необходимо сначала подключиться");
-            registers = _client.ReadInputRegisters(startNum, count);
-            return registers;
+            if (_client is null) throw new Exception("Необходимо сначала подключиться");
+            _semaphore.Wait();
+            try
+            {
+                var span = _client.ReadInputRegisters<ushort>(
+                    _connectSettings.ModbAddr, startNum, count);
+                return span.ToArray().Select(x => (int)x).ToArray();
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
 
-
+        #endregion
     }
 }

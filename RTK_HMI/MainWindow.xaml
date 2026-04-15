@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RTK_HMI"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
-        xmlns:i="Inter"
+        xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:m="clr-namespace:DataAccess.Models;assembly=DataAccess"
         mc:Ignorable="d"
         xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
@@ -27,10 +27,25 @@
                     <uc:ConnectPanel DataContext="{Binding ConnectVM}"/>
                     <uc:ReadWriteParametersControl Grid.Row="1"/>
                     
-                    <fa:ImageAwesome  Grid.Row="1"
-                                      Spin="{Binding ConnectVM.LoadIndicator}" 
-                                      Visibility="{Binding ConnectVM.LoadIndicator, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" 
-                                      Icon="Refresh" Height="40"/>
+                    <fa:IconBlock Grid.Row="1"
+                                     Visibility="{Binding ConnectVM.LoadIndicator, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}"
+                                     Icon="ArrowsRotate" Height="40"
+                                     RenderTransformOrigin="0.5,0.5">
+                        <fa:IconBlock.RenderTransform>
+                            <RotateTransform/>
+                        </fa:IconBlock.RenderTransform>
+                        <fa:IconBlock.Triggers>
+                            <EventTrigger RoutedEvent="Loaded">
+                                <BeginStoryboard>
+                                    <Storyboard RepeatBehavior="Forever">
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                            From="0" To="360" Duration="0:0:1"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </fa:IconBlock.Triggers>
+                    </fa:IconBlock>
                 </Grid>
             </TabItem>
             <TabItem Header="Settings" Visibility="{Binding UserVm.CurrentUser, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter=Admin, TargetNullValue={x:Static Visibility.Collapsed}}">

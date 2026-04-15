@@ -8,7 +8,6 @@ namespace DataAccess.Models
     public enum ConnectWays
     {
         SerialPort,
-        Udp,
         Tcp
     }
 
@@ -49,7 +48,7 @@ namespace DataAccess.Models
         /// <summary>
         /// Стартовый регистр
         /// </summary>
-        private int _startReg = 64;
+        private int _startReg = 99;
         /// <summary>
         /// Стартовый регистр
         /// </summary>

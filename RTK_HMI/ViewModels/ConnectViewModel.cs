@@ -375,7 +375,7 @@ namespace RTK_HMI.ViewModels
             }));
         }
 
-        void ReadAllRegs(IEnumerable<Parameter> parameters)
+        void ReadAllRegs(IEnumerable<Parameter> parameters, bool withEeprom = true)
         {
             SafetyAction(() =>
             {
@@ -388,8 +388,11 @@ namespace RTK_HMI.ViewModels
                 Status = $"Requesting data..({ReqSuccess}/{ReqAtempts})";
                 Error = false;
 
-                if(ConnectSettings.CommandFlag)LoadIndicator = true;                
-                ReadFromEeprom();
+                if(ConnectSettings.CommandFlag)LoadIndicator = true;
+                if (withEeprom)
+                {
+                    ReadFromEeprom();
+                }
                 
                 var holdings = parameters.Where(p => p.RegType == Registers.Holding);
                 var readings = parameters.Where(p => p.RegType == Registers.Reading);
@@ -545,7 +548,7 @@ namespace RTK_HMI.ViewModels
                     var cyclicParameters = MainView.ParameterVm.Parameters.Where(p => p.IsCyclic).ToList();
                     if (cyclicParameters.Count > 0)
                     {
-                        ReadAllRegs(cyclicParameters);
+                        ReadAllRegs(cyclicParameters, withEeprom:false);
                     }
                     if (RtkExchange.Connected && !ConnectReq) Disconnect();
 
