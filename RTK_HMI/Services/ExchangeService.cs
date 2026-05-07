@@ -9,7 +9,7 @@ namespace RTK_HMI.Services
 {
     public class ExchangeService
     {
-        private const int ChunkSize = 50;
+        private const int ChunkSize = 100;
 
         private readonly ConnectData _connectData;
         private readonly ConnectSettings _connectSettings;
@@ -93,6 +93,7 @@ namespace RTK_HMI.Services
             try
             {
                 _client.WriteMultipleRegisters(_connectSettings.ModbAddr, startNum, source);
+                Thread.Sleep(100);
             }
             finally
             {
@@ -143,7 +144,9 @@ namespace RTK_HMI.Services
             {
                 var span = _client.ReadHoldingRegisters<ushort>(
                     _connectSettings.ModbAddr, startNum, count);
+                Thread.Sleep(100);
                 return span.ToArray().Select(x => (int)x).ToArray();
+                
             }
             finally
             {
@@ -159,6 +162,7 @@ namespace RTK_HMI.Services
             {
                 var span = _client.ReadInputRegisters<ushort>(
                     _connectSettings.ModbAddr, startNum, count);
+                Thread.Sleep(100);
                 return span.ToArray().Select(x => (int)x).ToArray();
             }
             finally

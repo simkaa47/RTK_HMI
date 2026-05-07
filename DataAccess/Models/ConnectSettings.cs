@@ -31,7 +31,12 @@ namespace DataAccess.Models
 
         #region Бадрейт
         private int _baudrate=9600;
-        public int Baudrate { get => _baudrate; set => Set(ref _baudrate, value); }
+
+        public int Baudrate
+        {
+            get => _baudrate; 
+            set => Set(ref _baudrate, value);
+        }
         #endregion
 
         #region Адрес в сети модбас
