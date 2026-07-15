@@ -35,11 +35,25 @@ namespace RTK_HMI.ViewModels
 			}); ;
         }
 
-		#region Точки для расчета
-		/// <summary>
-		/// Точки для расчета
-		/// </summary>
-		private IEnumerable<CalibrationCell> _points;
+        #region Флаг продвинутой калибровки
+
+        private bool _isFullCalib = false;
+        /// <summary>
+        /// Точки для расчета
+        /// </summary>
+        public bool IsFullCalib
+        {
+            get => _isFullCalib;
+            set => Set(ref _isFullCalib, value);
+        }
+
+        #endregion
+
+        #region Точки для расчета
+        /// <summary>
+        /// Точки для расчета
+        /// </summary>
+        private IEnumerable<CalibrationCell> _points;
 		/// <summary>
 		/// Точки для расчета
 		/// </summary>
@@ -152,6 +166,11 @@ namespace RTK_HMI.ViewModels
 		public RelayCommand AddCommand => _addCommand ?? (_addCommand = new RelayCommand(execPar => 
 		{
             var point = new CalibrationCell();
+            if (!IsFullCalib)
+            {
+                point.UseCastomValue = true;
+                point.UseCastomValueY = true;
+            }
             SafetyAction(() =>
             {
                 _calibrationRepository.Add(point);

@@ -29,6 +29,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition/>                
             </Grid.RowDefinitions>
             <!--#region Кнопки -->
@@ -50,18 +51,7 @@
                 </Button>
                 <!--#endregion-->
                 <!--#region Степень кривой -->
-                <Border BorderBrush="Gray" BorderThickness="1">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Степень полинома" Style="{StaticResource TextBlockCommonStyle}"
-                                   VerticalAlignment="Center"/>
-                        <TextBox Margin="10"
-                                 Text="{Binding Degree}"
-                                 Width="80"
-                                 VerticalContentAlignment="Center">
-                            
-                        </TextBox>
-                    </StackPanel>
-                </Border>
+                
                 <!--#endregion-->
                 <!--#region Рассчитать -->
                 <Button Command="{Binding CalculateCommand}">
@@ -82,9 +72,126 @@
                 <!--#endregion-->
             </StackPanel>
             <!--#endregion-->
+            <!--#region ListBox параметров-->
+            <ListBox Grid.Row="1" FontSize="16">
+
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <TextBlock Text="Степень полинома" Style="{StaticResource TextBlockCommonStyle}"
+                   VerticalAlignment="Center"/>
+                    <TextBox Margin="10"
+                             Text="{Binding Degree}"
+                             Width="80"
+                             VerticalContentAlignment="Center">
+
+                    </TextBox>
+                </StackPanel>
+                <DockPanel Margin="5">
+                    <TextBlock Style="{StaticResource TextBlockCommonStyle}" Margin="0, 3"
+                               Text="Дополнительная калибровка"/>
+                    <CheckBox Margin="10, 5" IsChecked="{Binding IsFullCalib}" DockPanel.Dock="Right"/>
+                </DockPanel>
+            </ListBox>
+            
+            <!--#endregion-->
+            <!--#region MinТаблица-->
+            <DataGrid CanUserAddRows="False" 
+                    Visibility="{Binding IsFullCalib, Converter={StaticResource VisibleIfEqual}, ConverterParameter=False}"
+                    Grid.Row="2"
+                    CanUserDeleteRows="False"
+                    AlternationCount="100"
+                    VerticalAlignment="Top"
+                    SelectedItem="{Binding SelectedPoint, UpdateSourceTrigger=PropertyChanged}"                  
+                    HorizontalAlignment="Left"
+                    BorderThickness="0"
+                    ItemsSource="{Binding Points}"
+                    AutoGenerateColumns="False">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="CurrentCellChanged">
+                        <i:InvokeCommandAction Command="{Binding EditCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+                <DataGrid.Columns>
+                    <!--#region Id -->
+                    <DataGridTemplateColumn Header="№">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=AlternationIndex}" Margin="10"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--#endregion-->
+                    <!--#region Pareameter X-->
+                    <DataGridTemplateColumn Header="Параметр X" Width="300">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <!--<StackPanel Orientation="Horizontal" Visibility="{Binding UseCastomValue, Converter={StaticResource VisibleIfEqual}, ConverterParameter=False}">
+                                        <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.MainVm.ParameterVm.Parameters}"
+                          DisplayMemberPath="Description"
+                          Width="160"
+                          Name="Selector"
+                          VerticalContentAlignment="Center"
+                          SelectedIndex="{Binding ParameterId, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBlock Text="{Binding ElementName=Selector, Path=SelectedItem.Value}" Margin="10,0,10,0"
+                               VerticalAlignment="Center"
+                               Width="160">
+
+                                        </TextBlock>
+                                    </StackPanel>-->
+                                    <TextBox Margin="10,0,10,0" Text="{Binding Value , UpdateSourceTrigger=PropertyChanged}"
+                             BorderThickness="0" Width="160"
+                             VerticalAlignment="Center"
+                               Visibility="{Binding UseCastomValue, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}"/>
+                                </StackPanel>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--#endregion-->
+                    <!--#region Pareameter Y-->
+                    <DataGridTemplateColumn Header="Параметр Y" Width="300">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <!--<StackPanel Orientation="Horizontal" Visibility="{Binding UseCastomValueY, Converter={StaticResource VisibleIfEqual}, ConverterParameter=False}">
+                                        <ComboBox ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.MainVm.ParameterVm.Parameters}"
+                                                  DisplayMemberPath="Description"
+                                                  Width="160"
+                                                  Name="SelectorY"
+                                                  VerticalContentAlignment="Center"
+                                                  SelectedIndex="{Binding ParameterIdY, UpdateSourceTrigger=PropertyChanged}"/>
+                                        <TextBlock Text="{Binding ElementName=SelectorY, Path=SelectedItem.Value}" Margin="10,0,10,0"
+                                                   VerticalAlignment="Center"
+                                                   Width="160">
+                                        </TextBlock>
+                                    </StackPanel>-->
+                                    <TextBox Margin="10,0,10,0" Text="{Binding ValueY, UpdateSourceTrigger=LostFocus}"
+                             BorderThickness="0" Width="160"
+                             VerticalAlignment="Center"
+                               Visibility="{Binding UseCastomValueY, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}"/>
+                                </StackPanel>
+
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--#endregion-->
+                    <!--#region Участие в расчете -->
+                    <DataGridTemplateColumn Header="Участие в расчете" Width="120">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!--#endregion-->
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!--#endregion-->
             <!--#region Таблица -->
-            <DataGrid CanUserAddRows="False"
-                  Grid.Row="1"
+            <DataGrid CanUserAddRows="False" 
+                      Visibility="{Binding IsFullCalib, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}"
+                  Grid.Row="2"
                   CanUserDeleteRows="False"
                   AlternationCount="100"
                   VerticalAlignment="Top"
@@ -174,7 +281,7 @@
 
                                         </TextBlock>
                                     </StackPanel>
-                                    <TextBox Margin="10,0,10,0" Text="{Binding ValueY, UpdateSourceTrigger=PropertyChanged}"
+                                    <TextBox Margin="10,0,10,0" Text="{Binding ValueY, UpdateSourceTrigger=LostFocus}"
                                          BorderThickness="0" Width="160"
                                          VerticalAlignment="Center"
                                            Visibility="{Binding UseCastomValueY, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}"/>
