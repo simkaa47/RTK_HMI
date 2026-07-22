@@ -1,14 +1,15 @@
 ﻿using DataAccess;
+using DataAccess.Models;
+using Microsoft.Win32;
 using RTK_HMI.Infrastructure.Commands;
 using System;
-using Microsoft.Win32;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using System.IO;
 using System.Linq;
-using DataAccess.Models;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace RTK_HMI.ViewModels
 {
@@ -17,13 +18,22 @@ namespace RTK_HMI.ViewModels
         public LoggingVm(MainViewModel mainVm)
         {
             MainVm = mainVm;
+            Selected = MainVm.ParameterVm.Parameters.Where(p => p.LogStatus == true).ToList();
         }
 
         public MainViewModel MainVm { get; }
 
+        #region Поля
+
         private System.Timers.Timer _recordingTimer;
 
+
+
+        #endregion
+
         #region Свойства
+
+
 
         #region Статус логирования
         /// <summary>
@@ -56,11 +66,11 @@ namespace RTK_HMI.ViewModels
 
         #region Путь к файлу
         /// <summary>
-        /// Статус логирования
+        /// Путь к файлу
         /// </summary>
         private string _selectedFilePath;
         /// <summary>
-        /// Статус логирования
+        /// Путь к файлу
         /// </summary>
         public string SelectedFilePath
         {
@@ -71,11 +81,11 @@ namespace RTK_HMI.ViewModels
 
         #region Выбранные параметры для лога
         /// <summary>
-        /// Статус логирования
+        /// Список выбранных параметров
         /// </summary>
         private List<Parameter> _selected;
         /// <summary>
-        /// Статус логирования
+        /// Список выбранных параметров
         /// </summary>
         public List<Parameter> Selected
         {
@@ -96,10 +106,10 @@ namespace RTK_HMI.ViewModels
             IsLogging = !IsLogging;
             if (IsLogging)
             {
-
+                Selected = MainVm.ParameterVm.Parameters.Where(p => p.LogStatus == true).ToList();
                 try
                 {
-                    Selected = MainVm.ParameterVm.Parameters.Where(p => p.LogStatus == true).ToList();
+                    
                     var header = $"Дата;";
 
                     foreach (var head in Selected)
@@ -184,6 +194,16 @@ namespace RTK_HMI.ViewModels
         }
 
         #endregion
-
+        void SafetyAction(Action action)
+        {
+            try
+            {
+                action.Invoke();
+            }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message);
+            }
+        }
     }
 }
