@@ -13,7 +13,8 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
-            <ColumnDefinition/>            
+            <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -40,6 +41,7 @@
             </Button.ToolTip>
         </Button>
         <!--#endregion-->
+
         <!--#region Записать все параметры  в память -->
         <Button Grid.Column="1" Grid.Row="1"
                 Command="{Binding ConnectVM.WriteAllCommand}">
@@ -49,6 +51,8 @@
             </Button.ToolTip>
         </Button>
         <!--#endregion-->
+
+
         <ToggleButton Grid.Column="1" Grid.Row="0" x:Name="ShowCommSettinsButton" Margin="5" Background="#323232" >
             <fa:IconBlock Icon="Sliders">
                 <fa:IconBlock.LayoutTransform>

@@ -57,6 +57,6 @@ namespace DataAccess.Repositories
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
             _dbContext.SaveChanges();
-        }
+        } 
     }
 }

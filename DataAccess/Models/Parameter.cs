@@ -141,7 +141,16 @@ namespace DataAccess.Models
         }
         #endregion
 
+        #region Выбранный параметр для логирования
+        private bool _logStatus;
 
+        [DataMember]
+        public bool LogStatus
+        {
+            get => _logStatus;
+            set => Set(ref _logStatus, value);
+        }
+        #endregion
         object Convert(object writeValue)
         {
             if(writeValue == null)return null;
