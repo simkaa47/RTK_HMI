@@ -14,6 +14,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="50"/>
             <ColumnDefinition Width="50"/>
+            
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <!--#region Connect Requiring Button -->
@@ -44,6 +45,7 @@
             <uc:CommSettingsPageControl/>
         </Popup>
         <!--#endregion-->
+        
         <!--#region Comm Status -->
         <TextBlock Grid.Column="2" 
                    Text="{Binding Status}" 

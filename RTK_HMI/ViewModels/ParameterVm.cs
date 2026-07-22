@@ -64,6 +64,15 @@ namespace RTK_HMI.ViewModels
         #endregion
 
 
+        //#region Выбранный параметр для логирования
+        //private bool _logStatus;
+        //public bool LogStatus
+        //{
+        //    get => _logStatus;
+        //    set => Set(ref _logStatus, value);
+        //}
+        //#endregion
+
         #region Добавить параметр
         /// <summary>
         /// Добавить параметр

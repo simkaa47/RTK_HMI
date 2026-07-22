@@ -63,6 +63,7 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
         <TextBlock Text="Name"/>
         <TextBox Grid.Row="0" Grid.Column="1" Width ="200" Text="{Binding Description}"/>
@@ -96,7 +97,9 @@
                   SelectedItem="{Binding Order}"
                   HorizontalContentAlignment="Center"
                   VerticalContentAlignment="Center"/>
-        <UniformGrid Grid.Row="8" Grid.ColumnSpan="2">
+        <TextBlock Grid.Row="8" Grid.Column="0" Text="Logging Status"/>
+        <CheckBox Grid.Row="8" Grid.Column="1" IsChecked="{Binding LogStatus}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <UniformGrid Grid.Row="9" Grid.ColumnSpan="2">
             <Button Width="80" IsDefault="True" Click="Accept_Click" Height="20"  Margin="5">
                 <TextBlock Text="OK"/>                
             </Button>
