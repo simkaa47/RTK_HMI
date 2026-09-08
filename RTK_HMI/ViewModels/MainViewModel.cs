@@ -30,10 +30,12 @@ namespace RTK_HMI.ViewModels
         public CalibrationVm CalibrationVm { get; set; }    
         public LoggingVm LoggingVm { get; set; }
 
+        public PlcViewModel PlcVm { get; set; }
 
         public MainViewModel()
         {
             ParameterVm = new ParameterVm(this);
+            PlcVm = new PlcViewModel(this);
             ConnectVM = new ConnectViewModel(this);
             SaveLoadVM = new SaveLoadViewModel(this);
             CalibrationVm= new CalibrationVm(this);

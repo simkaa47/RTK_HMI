@@ -51,6 +51,95 @@
             <TabItem Header="Settings" Visibility="{Binding UserVm.CurrentUser, Converter={StaticResource UserToVisibilityConverter}, ConverterParameter=Admin, TargetNullValue={x:Static Visibility.Collapsed}}">
                 <uc:UsersControl DataContext="{Binding UserVm}"/>
             </TabItem>
+            <TabItem Header="PLC" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
+                <Grid ColumnDefinitions="*,*" DataContext="{Binding PlcVm}">
+                    <ListBox>
+                        <DockPanel>
+                            <TextBlock Foreground="White" Text="{Binding IsPlcConnected, StringFormat='PLC connect status: {0}'}" Margin="20, 5" FontSize="24"/>
+                            <Button Command="{Binding ConnectPlcCommand}" Content="ПОДКЛЮЧИТЬСЯ" Foreground="Wheat"/>
+                            <Button Command="{Binding DisconnectPlcCommand}" Content="ОТКЛЮЧИТЬСЯ" Foreground="Wheat"/>
+                        </DockPanel>
+                        
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.Mode, StringFormat='PLC Mode: {0}'}" Margin="20, 5"/>
+                        <DockPanel Margin="20, 5" >
+                            <TextBlock Text="Plc Run status" Foreground="White"/>
+                            <CheckBox IsChecked="{Binding plcDevice.Run}"/>
+                        </DockPanel>
+                        <DockPanel Margin="20, 5">
+                            <TextBlock Text="Plc RstErrors" Foreground="White"/>
+                            <CheckBox IsChecked="{Binding plcDevice.RstErrors}"/>
+                        </DockPanel>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorView.Adc, StringFormat='HummSensor View Adc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorView.Value, StringFormat='HummSensor Value {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorView.VoltageCur, StringFormat='HummSensor VoltageCur {0}'}" Margin="20, 5"/>
+
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.TempSensorView.Adc, StringFormat='TempSensor View Adc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.TempSensorView.Value, StringFormat='TempSensor Value {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.TempSensorView.VoltageCur, StringFormat='TempSensor VoltageCur {0}'}" Margin="20, 5"/>
+
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.DiffPressureView.Adc, StringFormat='DiffPressure View Adc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.DiffPressureView.Value, StringFormat='DiffPressure Value {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.DiffPressureView.VoltageCur, StringFormat='DiffPressure VoltageCur {0}'}" Margin="20, 5"/>
+
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.AbsPressureView.Adc, StringFormat='AbsPressure View Adc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.AbsPressureView.Value, StringFormat='AbsPressure Value {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.AbsPressureView.VoltageCur, StringFormat='AbsPressure VoltageCur {0}'}" Margin="20, 5"/>
+
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.FlowView.Density, StringFormat='FlowView Density {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.FlowView.Velocity, StringFormat='FlowView Velocity {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.FlowView.DeltaPFilter, StringFormat='FlowView DeltaPFilter {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.FlowView.DeltaPNet, StringFormat='FlowView DeltaPNet {0}'}" Margin="20, 5"/>
+
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.Pv, StringFormat='PID View Pv {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.StatePrev, StringFormat='PID View StatePrev {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.State, StringFormat='PID View State {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.OutHz, StringFormat='PID View OutHz {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.OutLast, StringFormat='PID View OutLast {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.OutPct, StringFormat='PID View OutPct {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.Tuned, StringFormat='PID View Tuned {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.ErrorBits, StringFormat='PID View ErrorBits {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.InRangeTmr, StringFormat='PID View InRangeTmr {0}'}" Margin="20, 5"/>
+                    </ListBox>
+                    <ListBox Grid.Column="1">
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorSettings.InputType, StringFormat='HummSensor Input Type {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorSettings.MaxAdc, StringFormat='HummSensor MaxAdc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorSettings.MinAdc, StringFormat='HummSensor MinAdc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorSettings.MaxValue, StringFormat='HummSensor MaxValue {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorSettings.MinValue, StringFormat='HummSensor MinValue {0}'}" Margin="20, 5"/>
+                        
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.TempSensorSettings.InputType, StringFormat='TempSensor Input Type {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.TempSensorSettings.MaxAdc, StringFormat='TempSensor MaxAdc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.TempSensorSettings.MinAdc, StringFormat='TempSensor MinAdc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.TempSensorSettings.MaxValue, StringFormat='TempSensor MaxValue {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.TempSensorSettings.MinValue, StringFormat='TempSensor MinValue {0}'}" Margin="20, 5"/>
+
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.DiffPressureSettings.InputType, StringFormat='DiffPressure Input Type {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.DiffPressureSettings.MaxAdc, StringFormat='DiffPressure MaxAdc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.DiffPressureSettings.MinAdc, StringFormat='DiffPressure MinAdc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.DiffPressureSettings.MaxValue, StringFormat='DiffPressure MaxValue {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.DiffPressureSettings.MinValue, StringFormat='DiffPressure MinValue {0}'}" Margin="20, 5"/>
+
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.AbsPressureSettings.InputType, StringFormat='AbsPressure Input Type {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.AbsPressureSettings.MaxAdc, StringFormat='AbsPressure MaxAdc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.AbsPressureSettings.MinAdc, StringFormat='AbsPressure MinAdc {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.AbsPressureSettings.MaxValue, StringFormat='AbsPressure MaxValue {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.AbsPressureSettings.MinValue, StringFormat='AbsPressure MinValue {0}'}" Margin="20, 5"/>
+
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.FlowSettings.GasType, StringFormat='FlowSettings GasType {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.FlowSettings.KProbe, StringFormat='FlowSettings KProbe {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.FlowSettings.DeltaPCutOff, StringFormat='FlowSettings DeltaPCutOff {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.FlowSettings.DeltaPHyst, StringFormat='FlowSettings DeltaPHyst {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.FlowSettings.DeltaPZero, StringFormat='FlowSettings DeltaPZero {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.FlowSettings.FilterTimeConst, StringFormat='FlowSettings FilterTimeConst {0}'}" Margin="20, 5"/>
+
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidSettings.Speed, StringFormat='PidSettings Speed {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidSettings.ManPct, StringFormat='PidSettings ManPct {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidSettings.Tol, StringFormat='PidSettings Tol {0}'}" Margin="20, 5"/>
+                        <TextBlock Foreground="White" Text="{Binding plcDevice.PidSettings.InRangeTime, StringFormat='PidSettings InRangeTime {0}'}" Margin="20, 5"/>
+                    </ListBox>
+                </Grid>
+
+            </TabItem>
             <TabItem Header="Calibration" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
                 <uc:CalibrationControl DataContext="{Binding CalibrationVm}"/>
             </TabItem>
