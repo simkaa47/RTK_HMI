@@ -38,7 +38,7 @@
                 <Button Command="{Binding AddCommand}">
                     <fa:IconBlock Icon="PlusCircle"/>
                     <Button.ToolTip>
-                        <TextBlock Text="Добавить точку"/>
+                        <TextBlock Text="Add point"/>
                     </Button.ToolTip>
                 </Button>
                 <!--#endregion-->
@@ -46,18 +46,29 @@
                 <Button Command="{Binding DeleteCommand}">
                     <fa:IconBlock Icon="Xmark"/>
                     <Button.ToolTip>
-                        <TextBlock Text="Удалить точку"/>
+                        <TextBlock Text="Delete point"/>
                     </Button.ToolTip>
                 </Button>
                 <!--#endregion-->
                 <!--#region Степень кривой -->
-                
+                <Border BorderBrush="Gray" BorderThickness="1">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Polynomial degree" Style="{StaticResource TextBlockCommonStyle}"
+                                   VerticalAlignment="Center"/>
+                        <TextBox Margin="10"
+                                 Text="{Binding Degree}"
+                                 Width="80"
+                                 VerticalContentAlignment="Center">
+                            
+                        </TextBox>
+                    </StackPanel>
+                </Border>
                 <!--#endregion-->
                 <!--#region Рассчитать -->
                 <Button Command="{Binding CalculateCommand}">
                     <fa:IconBlock Icon="Calculator"/>
                     <Button.ToolTip>
-                        <TextBlock Text="Рассчитать к-ты кривой"/>
+                        <TextBlock Text="Calculate the coefficients of the curve"/>
                     </Button.ToolTip>
                 </Button>
                 <!--#endregion-->
@@ -66,7 +77,7 @@
                               Name="TrendOpen">
                     <fa:IconBlock Icon="ArrowsUpDownLeftRight"/>
                     <ToggleButton.ToolTip>
-                        <TextBlock Text="Показать график"/>
+                        <TextBlock Text="Show Plot"/>
                     </ToggleButton.ToolTip>
                 </ToggleButton>
                 <!--#endregion-->
@@ -216,7 +227,7 @@
                     </DataGridTemplateColumn>
                     <!--#endregion-->
                     <!--#region IsCustom X-->
-                    <DataGridTemplateColumn Header="Кастомная величина X" Width="100">
+                    <DataGridTemplateColumn Header="Castom value X" Width="100">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{Binding UseCastomValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
@@ -226,7 +237,7 @@
                     </DataGridTemplateColumn>
                     <!--#endregion-->
                     <!--#region IsCustom Y-->
-                    <DataGridTemplateColumn Header="Кастомная величина Y" Width="100">
+                    <DataGridTemplateColumn Header="Castom value Y" Width="100">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{Binding UseCastomValueY, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
@@ -236,7 +247,7 @@
                     </DataGridTemplateColumn>
                     <!--#endregion-->
                     <!--#region Pareameter X-->
-                    <DataGridTemplateColumn Header="Параметр X" Width="300">
+                    <DataGridTemplateColumn Header="Parameter X" Width="300">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -264,7 +275,7 @@
                     </DataGridTemplateColumn>
                     <!--#endregion-->
                     <!--#region Pareameter Y-->
-                    <DataGridTemplateColumn Header="Параметр Y" Width="300">
+                    <DataGridTemplateColumn Header="Parameter Y" Width="300">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -292,7 +303,7 @@
                     </DataGridTemplateColumn>
                     <!--#endregion-->
                     <!--#region Участие в расчете -->
-                    <DataGridTemplateColumn Header="Участие в расчете" Width="120">
+                    <DataGridTemplateColumn Header="Select for Calculation" Width="120">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <CheckBox IsChecked="{Binding IsActive, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -317,7 +328,7 @@
                   HorizontalAlignment="Left">
             <DataGrid.Columns>
                 <!--#region № -->
-                <DataGridTemplateColumn Header="Степень">
+                <DataGridTemplateColumn Header="Degree">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=AlternationIndex}"
@@ -347,22 +358,22 @@
                                                           Background="Transparent"
                                                           PlotAreaBackground="Transparent">
                         <oxy:Plot.Axes>
-                            <oxy:LinearAxis Title="ФИЗИЧЕСКАЯ ВЕЛИЧИНА"                                                    
+                            <oxy:LinearAxis Title="PHYS VALUE"                                                    
                                                                             Position="Left"
                                                                             MajorGridlineColor="WhiteSmoke"
                                                                             MajorGridlineStyle="Dot"/>
-                            <oxy:LinearAxis Title="ОСЛАБЛЕНИЕ"
+                            <oxy:LinearAxis Title="ATTENUATION"
                                                                              MajorGridlineColor="WhiteSmoke"
                                                                             MajorGridlineStyle="Dot"
                                                                             Position="Bottom"/>
                         </oxy:Plot.Axes>
                         <oxy:LineSeries    ItemsSource="{Binding MeasuredPointsCollection}"
                                                                        DataFieldX="X" DataFieldY="Y"
-                                                                       Title="Измереннные точки"
+                                                                       Title="Calculated points"
                                                                        Color="Red"/>
                         <oxy:LineSeries    ItemsSource="{Binding CalculatedMeasCollection}"
                                                                        DataFieldX="X" DataFieldY="Y"
-                                                                       Title="Кривая по полиному"
+                                                                       Title="Polynomial curve"
                                                                        Color="Blue"/>
 
                     </oxy:Plot>

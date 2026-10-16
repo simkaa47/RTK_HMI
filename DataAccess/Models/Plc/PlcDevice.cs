@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using DataAccess.Models.Plc.Errors;
+using DataAccess.Models.Plc.Parameter;
 
 namespace DataAccess.Models.Plc
 {
@@ -19,25 +20,25 @@ namespace DataAccess.Models.Plc
 
         #region Humm Sensor Settings
 
-        public PlcSettings HummSensorSettings { get; set; } = new PlcSettings(1);
+        public PlcSettings HummSensorSettings { get; set; } = new PlcSettings();
 
         #endregion
 
         #region Temp Sensor Settings
 
-        public PlcSettings TempSensorSettings { get; set; } = new PlcSettings(1);
+        public PlcSettings TempSensorSettings { get; set; } = new PlcSettings();
 
         #endregion
 
         #region Diff Pressure Settings
 
-        public PlcSettings DiffPressureSettings { get; set; } = new PlcSettings(1);
+        public PlcSettings DiffPressureSettings { get; set; } = new PlcSettings();
 
         #endregion
 
         #region Abs Pressure Settings
 
-        public PlcSettings AbsPressureSettings { get; set; } = new PlcSettings(1);
+        public PlcSettings AbsPressureSettings { get; set; } = new PlcSettings();
 
         #endregion
 
@@ -99,7 +100,7 @@ namespace DataAccess.Models.Plc
 
         #region Errors
 
-        public PlcErrors Errors { get; set; }
+        public PlcErrors Errors { get; set; } = new PlcErrors();
 
         #endregion
 
@@ -136,6 +137,9 @@ namespace DataAccess.Models.Plc
             get => _run;
             set => Set(ref _run, value);
         }
+
+        public PlcParameter<float> DeltaPZero { get; set; } = new PlcParameter<float>("DeltaPZero", "Смещение нуля датчика ΔP, Па", 0, 10000, 1, 62, false);
+
 
     }
 }

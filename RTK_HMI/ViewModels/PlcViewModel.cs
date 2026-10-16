@@ -1,5 +1,6 @@
 ﻿using DataAccess;
 using DataAccess.Models.Plc;
+using DataAccess.Models.Plc.Parameter;
 using RTK_HMI.Infrastructure.Commands;
 using RTK_HMI.Services;
 using S7.Net.Types;
@@ -81,6 +82,7 @@ namespace RTK_HMI.ViewModels
         {
             SafetyAction(async () =>
             {
+                _cts = new();
                 await InitPlc();
                 await _plcService.Connect().ConfigureAwait(false);
                 if (_plcService.isPlcConnected) IsPlcConnected = true; 
@@ -102,9 +104,15 @@ namespace RTK_HMI.ViewModels
         {
             SafetyAction(async () =>
             {
-                _cts.Cancel();
-                await _plcService.Disconnect();
-                IsPlcConnected = false;
+                if (_cts is not null)
+                {
+                    _cts.Cancel();
+                    _cts.Dispose();
+
+                    await _plcService.Disconnect();
+                    IsPlcConnected = false;
+                }
+
 
             });
         }, canExecPar => true));
@@ -122,15 +130,69 @@ namespace RTK_HMI.ViewModels
         {
             if (_plcService.isPlcConnected)
             {
-                
+                //if (execPar)
             }
             SafetyAction(async () =>
             {
-                
+                //_plcService.WriteClass(plcDevice.FlowSettings, 1, 56);
 
 
             });
         }, canExecPar => true));
+
+        RelayCommand _writePlcParameterCommand;
+        /// <summary>
+        /// Подключение
+        /// </summary>
+        public RelayCommand WritePlcParameterCommand => _writePlcParameterCommand ?? (_writePlcParameterCommand = new RelayCommand(execPar =>
+        {
+            if (_plcService.isPlcConnected)
+            {
+                if (execPar is not null)
+                {
+                    switch (execPar)
+                    {
+                        case PlcParameter<float> par:
+                            par.Value = par.WriteValue;
+                            SafetyAction(async () =>
+                            {
+                                _plcService.WriteParameter(par.Value, 1, 56, 6);
+                            });
+                            break;
+
+                            case PlcParameter<int> par:
+                            par.Value = par.WriteValue;
+                            SafetyAction(async () =>
+                            {
+                                _plcService.WriteParameter(par.Value, 1, 56, 6);
+                            });
+                            break;
+                        case PlcParameter<short> par:
+                            par.Value = par.WriteValue;
+                            SafetyAction(async () =>
+                            {
+                                _plcService.WriteParameter(par.Value, 1, 56, 6);
+                            });
+                            break;
+                        case PlcParameter<bool> par:
+                            par.Value = par.WriteValue;
+                            SafetyAction(async () =>
+                            {
+                                _plcService.WriteParameter(par.Value, 1, 56, 6);
+                            });
+                            break;
+
+                    }
+                 
+                    
+
+                }
+                
+
+            }
+
+        }, canExecPar => true));
+
         #endregion
 
 
@@ -147,6 +209,8 @@ namespace RTK_HMI.ViewModels
                 MessageBox.Show(ex.Message);
             }
         }
+
+
 
     }
 }

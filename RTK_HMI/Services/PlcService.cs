@@ -1,4 +1,6 @@
 ﻿using DataAccess.Models.Plc;
+using DataAccess.Models.Plc.Errors;
+using DataAccess.Models.Plc.Parameter;
 using DataAccess.Models.Plc.Settings;
 using S7.Net;
 using S7.Net.Types;
@@ -8,6 +10,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace RTK_HMI.Services
 {
@@ -25,19 +28,26 @@ namespace RTK_HMI.Services
 
         public bool isPlcConnected = false;
 
-        private CancellationToken _cts = new CancellationToken();
+        private CancellationTokenSource _cts = new CancellationTokenSource();
 
         public async Task Initialize()
         {
-            _client = new Plc(CpuType.S71200, "192.168.1.215", 0, 2);
+            _client = new Plc(CpuType.S71200, "192.168.1.215", 0, 0);
         }
 
         public async Task Connect()
         {
             if (_client is not null)
             {
-                _client.Open();
-                isPlcConnected = true;
+                try
+                {
+                    _client.Open();
+                    isPlcConnected = true;
+                }
+                catch(Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
 
@@ -64,7 +74,7 @@ namespace RTK_HMI.Services
                             GetSensorSettings();
                             GetViewSettings();
                             GetErrorData();
-
+                            
 
                         }
                         catch (Exception ex)
@@ -125,6 +135,14 @@ namespace RTK_HMI.Services
             
         }
 
+
+        public void WriteParameter(object value, int db, int startByteAdr, int byteAdr)
+        {
+
+                var str = $"DB{db}.DBW{startByteAdr + byteAdr}.0";
+                _client.Write(str, value);
+
+        }
 
 
 

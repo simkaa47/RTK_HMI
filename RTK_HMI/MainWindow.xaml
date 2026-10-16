@@ -8,6 +8,7 @@
         xmlns:fa="clr-namespace:FontAwesome.Sharp;assembly=FontAwesome.Sharp"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:m="clr-namespace:DataAccess.Models;assembly=DataAccess"
+        xmlns:par="clr-namespace:RTK_HMI.Views.UserControls.PlcParameters"
         mc:Ignorable="d"
         xmlns:uc="clr-namespace:RTK_HMI.Views.UserControls"
         xmlns:vm="clr-namespace:RTK_HMI.ViewModels"
@@ -52,12 +53,14 @@
                 <uc:UsersControl DataContext="{Binding UserVm}"/>
             </TabItem>
             <TabItem Header="PLC" Visibility="{Binding UserVm.IsAuthorized, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
-                <Grid ColumnDefinitions="*,*" DataContext="{Binding PlcVm}">
+                <Grid ColumnDefinitions="*,*" DataContext="{Binding PlcVm}" x:Name="PlcGrid">
                     <ListBox>
                         <DockPanel>
                             <TextBlock Foreground="White" Text="{Binding IsPlcConnected, StringFormat='PLC connect status: {0}'}" Margin="20, 5" FontSize="24"/>
-                            <Button Command="{Binding ConnectPlcCommand}" Content="ПОДКЛЮЧИТЬСЯ" Foreground="Wheat"/>
-                            <Button Command="{Binding DisconnectPlcCommand}" Content="ОТКЛЮЧИТЬСЯ" Foreground="Wheat"/>
+                            <Button Command="{Binding ConnectPlcCommand}" IsEnabled="{Binding IsPlcConnected, Converter={StaticResource InverseConverter}}" Content="ПОДКЛЮЧИТЬСЯ" Foreground="Wheat"/>
+                            <Button Command="{Binding DisconnectPlcCommand}" IsEnabled="{Binding IsPlcConnected}" Content="ОТКЛЮЧИТЬСЯ" Foreground="Wheat"/>
+                            <Button Command="{Binding WritePlcCommand}" Content="Записать класс" Foreground="AntiqueWhite"/>
+                            <Button Command="{Binding WritePlcParameterCommand}" Content="Записать параметр" Foreground="AntiqueWhite"/>
                         </DockPanel>
                         
                         <TextBlock Foreground="White" Text="{Binding plcDevice.Mode, StringFormat='PLC Mode: {0}'}" Margin="20, 5"/>
@@ -69,6 +72,16 @@
                             <TextBlock Text="Plc RstErrors" Foreground="White"/>
                             <CheckBox IsChecked="{Binding plcDevice.RstErrors}"/>
                         </DockPanel>
+                        <DockPanel Margin="20, 5">
+                            <TextBlock Text="FlowSettings DeltaPZero" Foreground="White"/>
+                            <TextBox Text="{Binding plcDevice.FlowSettings.DeltaPZero}" x:Name="Delta">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Enter" Command="{Binding WritePlcParameterCommand}" CommandParameter="{Binding Text, ElementName=Delta}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                        </DockPanel>
+                        <par:PlcTextParameter DataContext="{Binding plcDevice.DeltaPZero}" DescriptionNotVisible="False" Command="{Binding ElementName=PlcGrid, Path=DataContext.WritePlcParameterCommand}" CommanDParameter="{Binding}" />
+                        <!--CommanDParameter="{Binding}"-->
                         <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorView.Adc, StringFormat='HummSensor View Adc {0}'}" Margin="20, 5"/>
                         <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorView.Value, StringFormat='HummSensor Value {0}'}" Margin="20, 5"/>
                         <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorView.VoltageCur, StringFormat='HummSensor VoltageCur {0}'}" Margin="20, 5"/>
@@ -99,6 +112,29 @@
                         <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.Tuned, StringFormat='PID View Tuned {0}'}" Margin="20, 5"/>
                         <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.ErrorBits, StringFormat='PID View ErrorBits {0}'}" Margin="20, 5"/>
                         <TextBlock Foreground="White" Text="{Binding plcDevice.PidView.InRangeTmr, StringFormat='PID View InRangeTmr {0}'}" Margin="20, 5"/>
+                        <GroupBox Header="Errors">
+                            <ListBox>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrAbsPressureSensor, StringFormat='ErrAbsPressureSensor {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrAbsPressureSensorBreak, StringFormat='ErrAbsPressureSensorBreak {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrAbsPressureSensorOutOfRange, StringFormat='ErrAbsPressureSensorOutofRange {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrDiffPressureSensor, StringFormat='ErrDiffPressureSensor {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrDiffPressureSensorBreak, StringFormat='ErrDiffPressureSensorBreak {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrDiffPressureSensorOutOfRange, StringFormat='ErrDiffPressureSensorOutofRange {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrHumiditySensor, StringFormat='ErrHumiditySensor {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrHumiditySensorBreak, StringFormat='ErrHumiditySensorBreak {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrHumiditySensorOutOfRange, StringFormat='ErrHumiditySensorOutofRange {0}'}" Margin="20, 5"/>
+
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrTempPressureSensor, StringFormat='ErrTempPressureSensor {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrTempPressureSensorBreak, StringFormat='ErrTempPressureSensorBreak {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrTempPressureSensorOutOfRange, StringFormat='ErrTempPressureSensorOutofRange {0}'}" Margin="20, 5"/>
+
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrEmergencyStop, StringFormat='ErrEmergencyStop {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrFcComm, StringFormat='ErrFcComm {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrFcNotRdy, StringFormat='ErrFcNotRdy {0}'}" Margin="20, 5"/>
+                                <TextBlock Foreground="White" Text="{Binding plcDevice.Errors.ErrNoTuning, StringFormat='ErrNoTuning {0}'}" Margin="20, 5"/>
+                            </ListBox>
+                            
+                        </GroupBox>
                     </ListBox>
                     <ListBox Grid.Column="1">
                         <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorSettings.InputType, StringFormat='HummSensor Input Type {0}'}" Margin="20, 5"/>
