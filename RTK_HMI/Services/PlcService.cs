@@ -138,9 +138,8 @@ namespace RTK_HMI.Services
 
         public void WriteParameter(object value, int db, int startByteAdr, int byteAdr)
         {
-
-                var str = $"DB{db}.DBW{startByteAdr + byteAdr}.0";
-                _client.Write(str, value);
+            var str = $"DB{db}.DBW{startByteAdr + byteAdr}"; // + .0
+            _client.Write(str, value);
 
         }
 

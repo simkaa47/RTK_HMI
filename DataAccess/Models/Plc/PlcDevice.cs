@@ -138,8 +138,9 @@ namespace DataAccess.Models.Plc
             set => Set(ref _run, value);
         }
 
-        public PlcParameter<float> DeltaPZero { get; set; } = new PlcParameter<float>("DeltaPZero", "Смещение нуля датчика ΔP, Па", 0, 10000, 1, 62, false);
+        public PlcParameter<float> DeltaPZero { get; set; } = new PlcParameter<float>("DeltaPZero", "Смещение нуля датчика ΔP, Па", 0, 10000, 1, 56, 6, false);
 
+        public PlcParameter<float> OutHz { get; set; } = new PlcParameter<float>("OutHz", "Частота ПЧ, ГЦ", 0.0f, 50.0f, 2, 80, 8, false);
 
     }
 }

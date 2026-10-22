@@ -14,13 +14,14 @@ namespace DataAccess.Models.Plc.Parameter
         {
 
         }
-        public PlcParameter(string id, string description, T minValue, T maxValue, int dbNum, int dbOffset, bool isReadOnly)
+        public PlcParameter(string id, string description, T minValue, T maxValue, int dbNum, int dbReg, int dbOffset, bool isReadOnly)
         {
             Id = id;
             Description = description;
             MinValue = minValue; 
             MaxValue = maxValue;
             DbNum = dbNum;
+            DbReg = dbReg;
             DbOffset = dbOffset;
             OnlyRead = isReadOnly;
             timer = new Timer(5000);
@@ -47,6 +48,14 @@ namespace DataAccess.Models.Plc.Parameter
         public int DbNum { get => _dbNum; set => Set(ref _dbNum, value); }
 
         #endregion
+
+        #region Db номер
+        int _dbReg;
+        public int DbReg { get => _dbReg; set => Set(ref _dbReg, value); }
+
+        #endregion
+
+
 
         #region Db Offset
         int _dbOffset;

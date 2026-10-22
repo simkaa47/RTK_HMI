@@ -72,14 +72,7 @@
                             <TextBlock Text="Plc RstErrors" Foreground="White"/>
                             <CheckBox IsChecked="{Binding plcDevice.RstErrors}"/>
                         </DockPanel>
-                        <DockPanel Margin="20, 5">
-                            <TextBlock Text="FlowSettings DeltaPZero" Foreground="White"/>
-                            <TextBox Text="{Binding plcDevice.FlowSettings.DeltaPZero}" x:Name="Delta">
-                                <TextBox.InputBindings>
-                                    <KeyBinding Key="Enter" Command="{Binding WritePlcParameterCommand}" CommandParameter="{Binding Text, ElementName=Delta}"/>
-                                </TextBox.InputBindings>
-                            </TextBox>
-                        </DockPanel>
+                        <par:PlcTextParameter DataContext="{Binding plcDevice.OutHz}" DescriptionNotVisible="False" Command="{Binding ElementName=PlcGrid, Path=DataContext.WritePlcParameterCommand}" CommanDParameter="{Binding}" />
                         <par:PlcTextParameter DataContext="{Binding plcDevice.DeltaPZero}" DescriptionNotVisible="False" Command="{Binding ElementName=PlcGrid, Path=DataContext.WritePlcParameterCommand}" CommanDParameter="{Binding}" />
                         <!--CommanDParameter="{Binding}"-->
                         <TextBlock Foreground="White" Text="{Binding plcDevice.HummSensorView.Adc, StringFormat='HummSensor View Adc {0}'}" Margin="20, 5"/>

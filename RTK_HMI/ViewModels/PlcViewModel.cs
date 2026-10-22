@@ -156,7 +156,7 @@ namespace RTK_HMI.ViewModels
                             par.Value = par.WriteValue;
                             SafetyAction(async () =>
                             {
-                                _plcService.WriteParameter(par.Value, 1, 56, 6);
+                                _plcService.WriteParameter(par.Value, par.DbNum, par.DbReg, par.DbOffset);
                             });
                             break;
 
@@ -164,21 +164,21 @@ namespace RTK_HMI.ViewModels
                             par.Value = par.WriteValue;
                             SafetyAction(async () =>
                             {
-                                _plcService.WriteParameter(par.Value, 1, 56, 6);
+                                _plcService.WriteParameter(par.Value, par.DbNum, par.DbReg, par.DbOffset);
                             });
                             break;
                         case PlcParameter<short> par:
                             par.Value = par.WriteValue;
                             SafetyAction(async () =>
                             {
-                                _plcService.WriteParameter(par.Value, 1, 56, 6);
+                                _plcService.WriteParameter(par.Value, par.DbNum, par.DbReg, par.DbOffset);
                             });
                             break;
                         case PlcParameter<bool> par:
                             par.Value = par.WriteValue;
                             SafetyAction(async () =>
                             {
-                                _plcService.WriteParameter(par.Value, 1, 56, 6);
+                                _plcService.WriteParameter(par.Value, par.DbNum, par.DbReg, par.DbOffset);
                             });
                             break;
 
