@@ -116,9 +116,9 @@ namespace RTK_HMI.Services
 
         private void GetControl()
         {
-            _plcDevice.Mode = (ushort)_client.Read("DB9.DBW0");
-            _plcDevice.RstErrors = (bool)_client.Read("DB9.DBX2.0");
-            _plcDevice.Run = (bool)_client.Read("DB9.DBX2.1");
+            _plcDevice.Mode.Value = (ushort)_client.Read("DB9.DBW0");
+            _plcDevice.RstErrors.Value = (bool)_client.Read("DB9.DBX2.0");
+            _plcDevice.Run.Value = (bool)_client.Read("DB9.DBX2.1");
         }
 
 
@@ -138,11 +138,23 @@ namespace RTK_HMI.Services
 
         public void WriteParameter(object value, int db, int startByteAdr, int byteAdr)
         {
-            var str = $"DB{db}.DBW{startByteAdr + byteAdr}"; // + .0
-            _client.Write(str, value);
+            if (value is bool boolValue)
+            {
+                // Параметры: (Тип, Номер DB, Номер байта, Номер бита, Значение)
+                _client.WriteBit(DataType.DataBlock, db, startByteAdr, byteAdr, boolValue);
+            }
+            if (value is int intValue) 
+            {
+                _client.Write(DataType.DataBlock, db, startByteAdr, byteAdr, intValue);
+            }
+            if (value is float realValue)
+            {
+                _client.Write(DataType.DataBlock, db, startByteAdr + byteAdr, realValue);
+            }
+
+            
 
         }
-
 
 
         #endregion

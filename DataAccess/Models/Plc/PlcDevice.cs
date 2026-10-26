@@ -107,36 +107,42 @@ namespace DataAccess.Models.Plc
         /// <summary>
         /// Mode: Режим: 0 = авто, 1 = ручной, 2 = автонастройка
         /// </summary>
-        private ushort _mode;
+        //private ushort _mode;
 
-        public ushort Mode
-        {
-            get => _mode;
-            set => Set(ref _mode, value);
+        //public ushort Mode
+        //{
+        //    get => _mode;
+        //    set => Set(ref _mode, value);
 
-        }
+        //}
+
+        public PlcParameter<ushort> Mode = new PlcParameter<ushort>("Mode", "Mode", 0, 2, 9, 0, 0, false);
 
         /// <summary>
         /// Сброс защёлкнутых аварий (импульс)
         /// </summary>
-        private bool _rstErrors;
+        //private bool _rstErrors;
 
-        public bool RstErrors
-        {
-            get => _rstErrors;
-            set => Set(ref _rstErrors, value);
-        }
+        //public bool RstErrors
+        //{
+        //    get => _rstErrors;
+        //    set => Set(ref _rstErrors, value);
+        //}
+
+        public PlcParameter<bool> RstErrors = new PlcParameter<bool>("RstErrors", "Сброс защёлкнутых аварий", false, true, 9, 2, 0, false);
 
         /// <summary>
         /// Общий пуск установки
         /// </summary>
-        private bool _run;
+        //private bool _run;
 
-        public bool Run
-        {
-            get => _run;
-            set => Set(ref _run, value);
-        }
+        //public bool Run
+        //{
+        //    get => _run;
+        //    set => Set(ref _run, value);
+        //}
+
+        public PlcParameter<bool> Run = new PlcParameter<bool>("Run", "Пуск установки", false, true, 9, 2, 1, false);
 
         public PlcParameter<float> DeltaPZero { get; set; } = new PlcParameter<float>("DeltaPZero", "Смещение нуля датчика ΔP, Па", 0, 10000, 1, 56, 6, false);
 

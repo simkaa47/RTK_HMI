@@ -18,6 +18,15 @@
         <sys:String>Start Logging</sys:String>
         <sys:String>Stop Logging</sys:String>
     </x:Array>
+    <x:Array x:Key="PlcConnectStatus" Type="{x:Type sys:String}">        
+        <sys:String>Не подключено</sys:String>
+        <sys:String>Подключено</sys:String>
+    </x:Array>
+    <col:ArrayList x:Key="PlcModeStatus">
+        <sys:String>Авто</sys:String>
+        <sys:String>Ручной</sys:String>
+        <sys:String>Автонастройка</sys:String>
+    </col:ArrayList>
     <x:Array x:Key="LogStateIcon" Type="{x:Type sys:String}">
         <sys:String>LaptopFile</sys:String>
         <sys:String>CircleStop</sys:String>

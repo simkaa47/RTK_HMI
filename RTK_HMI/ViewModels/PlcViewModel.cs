@@ -92,13 +92,13 @@ namespace RTK_HMI.ViewModels
         }, canExecPar => true));
         #endregion
 
-        #region Подключение 
+        #region Отключение 
         /// <summary>
-        /// Подключение 
+        /// Отключение 
         /// </summary>
         RelayCommand _disconnectPlcCommand;
         /// <summary>
-        /// Подключение
+        /// Отключение
         /// </summary>
         public RelayCommand DisconnectPlcCommand => _disconnectPlcCommand ?? (_disconnectPlcCommand = new RelayCommand(execPar =>
         {
@@ -120,25 +120,58 @@ namespace RTK_HMI.ViewModels
 
         #region Запись 
         /// <summary>
-        /// Подключение 
+        /// Запись
         /// </summary>
         RelayCommand _writePlcCommand;
         /// <summary>
-        /// Подключение
+        /// Запись
         /// </summary>
         public RelayCommand WritePlcCommand => _writePlcCommand ?? (_writePlcCommand = new RelayCommand(execPar =>
         {
             if (_plcService.isPlcConnected)
             {
+                if (execPar is PlcParameter<bool> boolParameter)
+                {
+                    _plcService.WriteParameter(boolParameter.WriteValue, boolParameter.DbNum, boolParameter.DbReg, boolParameter.DbOffset);
+                }
+                if (execPar is PlcParameter<int> intParameter)
+                {
+                    _plcService.WriteParameter(intParameter.WriteValue, intParameter.DbNum, intParameter.DbReg, intParameter.DbOffset);
+                }
+                if (execPar is PlcParameter<short> shortParameter)
+                {
+                    _plcService.WriteParameter(shortParameter.WriteValue, shortParameter.DbNum, shortParameter.DbReg, shortParameter.DbOffset);
+                }
+                if (execPar is PlcParameter<float> floatParameter)
+                {
+                    _plcService.WriteParameter(floatParameter.WriteValue, floatParameter.DbNum, floatParameter.DbReg, floatParameter.DbOffset);
+                }
+
+            }
+        }, canExecPar => true));
+
+        /// <summary>
+        /// Подключение 
+        /// </summary>
+        RelayCommand _writePlcVariableCommand;
+        /// <summary>
+        /// Подключение
+        /// </summary>
+        public RelayCommand WritePlcVariableCommand => _writePlcVariableCommand ?? (_writePlcVariableCommand = new RelayCommand(execPar =>
+        {
+            if (_plcService.isPlcConnected)
+            {
                 //if (execPar)
+
             }
             SafetyAction(async () =>
             {
                 //_plcService.WriteClass(plcDevice.FlowSettings, 1, 56);
-
+                
 
             });
         }, canExecPar => true));
+
 
         RelayCommand _writePlcParameterCommand;
         /// <summary>
