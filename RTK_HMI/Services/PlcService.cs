@@ -80,7 +80,6 @@ namespace RTK_HMI.Services
                         catch (Exception ex)
                         {
                             Debug.WriteLine(ex);
-                            //Disconnect();
                         }
                     });
                 }
@@ -96,6 +95,44 @@ namespace RTK_HMI.Services
             _client.ReadClass(_plcDevice.AbsPressureSettings, 1, 42);
             _client.ReadClass(_plcDevice.FlowSettings, 1, 56);
             _client.ReadClass(_plcDevice.PidSettings, 1, 100);
+            _plcDevice.PlcParameters.Speed.Value = _plcDevice.PidSettings.Speed;
+            _plcDevice.PlcParameters.ManPct.Value = _plcDevice.PidSettings.ManPct;
+            _plcDevice.PlcParameters.Tol.Value = _plcDevice.PidSettings.Tol;
+            _plcDevice.PlcParameters.InRangeT.Value = _plcDevice.PidSettings.InRangeTime;
+
+            _plcDevice.PlcParameters.GasType.Value = _plcDevice.FlowSettings.GasType;
+            _plcDevice.PlcParameters.KProbe.Value = _plcDevice.FlowSettings.KProbe;
+            _plcDevice.PlcParameters.DpZero.Value = _plcDevice.FlowSettings.DeltaPZero;
+            _plcDevice.PlcParameters.DpCutoff.Value = _plcDevice.FlowSettings.DeltaPCutOff;
+            _plcDevice.PlcParameters.DpHyst.Value = _plcDevice.FlowSettings.DeltaPHyst;
+            _plcDevice.PlcParameters.FilterT.Value = _plcDevice.FlowSettings.FilterTimeConst;
+
+
+            _plcDevice.PlcParameters.TempSensorInputType.Value = _plcDevice.TempSensorSettings.InputType;
+            _plcDevice.PlcParameters.TempSensorMinAdc.Value = _plcDevice.TempSensorSettings.MinAdc;
+            _plcDevice.PlcParameters.TempSensorMaxAdc.Value = _plcDevice.TempSensorSettings.MaxAdc;
+            _plcDevice.PlcParameters.TempSensorMinValue.Value = _plcDevice.TempSensorSettings.MinValue;
+            _plcDevice.PlcParameters.TempSensorMaxValue.Value = _plcDevice.TempSensorSettings.MaxValue;
+
+
+            _plcDevice.PlcParameters.HummSensorInputType.Value = _plcDevice.HummSensorSettings.InputType;
+            _plcDevice.PlcParameters.HummSensorMinAdc.Value = _plcDevice.HummSensorSettings.MinAdc;
+            _plcDevice.PlcParameters.HummSensorMaxAdc.Value = _plcDevice.HummSensorSettings.MaxAdc;
+            _plcDevice.PlcParameters.HummSensorMinValue.Value = _plcDevice.HummSensorSettings.MinValue;
+            _plcDevice.PlcParameters.HummSensorMaxValue.Value = _plcDevice.HummSensorSettings.MaxValue;
+
+
+            _plcDevice.PlcParameters.DiffPressureSensorInputType.Value = _plcDevice.DiffPressureSettings.InputType;
+            _plcDevice.PlcParameters.DiffPressureSensorMinAdc.Value = _plcDevice.DiffPressureSettings.MinAdc;
+            _plcDevice.PlcParameters.DiffPressureSensorMaxAdc.Value = _plcDevice.DiffPressureSettings.MaxAdc;
+            _plcDevice.PlcParameters.DiffPressureSensorMinValue.Value = _plcDevice.DiffPressureSettings.MinValue;
+            _plcDevice.PlcParameters.DiffPressureSensorMaxValue.Value = _plcDevice.DiffPressureSettings.MaxValue;
+
+            _plcDevice.PlcParameters.AbsPressureSensorInputType.Value = _plcDevice.AbsPressureSettings.InputType;
+            _plcDevice.PlcParameters.AbsPressureSensorMinAdc.Value = _plcDevice.AbsPressureSettings.MinAdc;
+            _plcDevice.PlcParameters.AbsPressureSensorMaxAdc.Value = _plcDevice.AbsPressureSettings.MaxAdc;
+            _plcDevice.PlcParameters.AbsPressureSensorMinValue.Value = _plcDevice.AbsPressureSettings.MinValue;
+            _plcDevice.PlcParameters.AbsPressureSensorMaxValue.Value = _plcDevice.AbsPressureSettings.MaxValue;
         }
 
         private void GetViewSettings()
@@ -154,6 +191,11 @@ namespace RTK_HMI.Services
 
             
 
+        }
+
+        public void WriteVariable(string str, object value)
+        {
+            _client.Write(str, value);
         }
 
 

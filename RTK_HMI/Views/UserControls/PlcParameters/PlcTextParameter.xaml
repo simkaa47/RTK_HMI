@@ -50,6 +50,8 @@
                    Visibility="{Binding RelativeSource={RelativeSource AncestorType=local:PlcTextParameter}, Path=DescriptionNotVisible, Converter={StaticResource VisibleIfEqual}, ConverterParameter=False}"
                    VerticalAlignment="Center"/>
         <StackPanel HorizontalAlignment="Right"
+                    Margin="0,0,20,0"
+                    DockPanel.Dock="Right"
                     Orientation="Horizontal">
             <Border CornerRadius="4"
                     Height="40"
@@ -62,7 +64,7 @@
                          IsReadOnly="{Binding RelativeSource={RelativeSource AncestorType=local:PlcTextParameter}, Path=IsOnlyRead}"
                          BorderThickness="0"                                                 
                          FontFamily="Roboto"
-                         Margin="10,0,0,0"                         
+                         Margin="10,0,10,0"                         
                          VerticalAlignment="Center"
                          FontSize="16"
                          CaretBrush="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}"

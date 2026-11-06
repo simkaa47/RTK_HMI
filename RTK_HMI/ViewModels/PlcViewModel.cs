@@ -1,12 +1,15 @@
 ﻿using DataAccess;
 using DataAccess.Models.Plc;
 using DataAccess.Models.Plc.Parameter;
+using Microsoft.Win32;
 using RTK_HMI.Infrastructure.Commands;
 using RTK_HMI.Services;
 using S7.Net.Types;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
@@ -40,8 +43,57 @@ namespace RTK_HMI.ViewModels
 
         #endregion
 
+        private System.Timers.Timer _recordingTimer;
+
+        #region Статус логирования
+        /// <summary>
+        /// Статус логирования
+        /// </summary>
+        private bool _isLogging = false;
+        /// <summary>
+        /// Статус логирования
+        /// </summary>
+        public bool IsLogging
+        {
+            get => _isLogging;
+            set => Set(ref _isLogging, value);
+        }
+        #endregion
+        #region Частота записи
+        /// <summary>
+        /// Частота записи
+        /// </summary>
+        private int _timeInterval = 1000;
+        /// <summary>
+        /// Частота записи
+        /// </summary>
+        public int TimeInterval
+        {
+            get => _timeInterval;
+            set => Set(ref _timeInterval, value);
+        }
+        #endregion
+
+        #region Путь к файлу
+        /// <summary>
+        /// Путь к файлу
+        /// </summary>
+        private string _selectedFilePath;
+        /// <summary>
+        /// Путь к файлу
+        /// </summary>
+        public string SelectedFilePath
+        {
+            get => _selectedFilePath;
+            set => Set(ref _selectedFilePath, value);
+        }
+        #endregion
+
+
+
+
         public CancellationTokenSource _cts = new ();
-        //public CancellationToken token = _cts.Token;
+
 
         public async Task InitPlc()
         {
@@ -150,27 +202,6 @@ namespace RTK_HMI.ViewModels
             }
         }, canExecPar => true));
 
-        /// <summary>
-        /// Подключение 
-        /// </summary>
-        RelayCommand _writePlcVariableCommand;
-        /// <summary>
-        /// Подключение
-        /// </summary>
-        public RelayCommand WritePlcVariableCommand => _writePlcVariableCommand ?? (_writePlcVariableCommand = new RelayCommand(execPar =>
-        {
-            if (_plcService.isPlcConnected)
-            {
-                //if (execPar)
-
-            }
-            SafetyAction(async () =>
-            {
-                //_plcService.WriteClass(plcDevice.FlowSettings, 1, 56);
-                
-
-            });
-        }, canExecPar => true));
 
 
         RelayCommand _writePlcParameterCommand;
@@ -226,10 +257,156 @@ namespace RTK_HMI.ViewModels
 
         }, canExecPar => true));
 
+ 
+        /// <summary>
+        /// Запуск установки
+        /// </summary>
+        RelayCommand _runCommand;
+        /// <summary>
+        /// Запуск установки
+        /// </summary>
+        public RelayCommand RunCommand => _runCommand ?? (_runCommand = new RelayCommand(execPar =>
+        {
+            if (_plcService.isPlcConnected)
+            {
+                plcDevice.Run.WriteValue = !plcDevice.Run.Value;
+                _plcService.WriteParameter(plcDevice.Run.WriteValue, plcDevice.Run.DbNum, plcDevice.Run.DbReg, plcDevice.Run.DbOffset);
+
+            }
+        }, canExecPar => true));
+
+        /// <summary>
+        /// Сброс ошибок
+        /// </summary>
+        RelayCommand _rstCommand;
+        /// <summary>
+        /// Сброс ошибок
+        /// </summary>
+        public RelayCommand RstCommand => _rstCommand ?? (_rstCommand = new RelayCommand(execPar =>
+        {
+            if (_plcService.isPlcConnected)
+            {
+                plcDevice.RstErrors.WriteValue = !plcDevice.RstErrors.Value;
+                _plcService.WriteParameter(plcDevice.RstErrors.WriteValue, plcDevice.RstErrors.DbNum, plcDevice.RstErrors.DbReg, plcDevice.RstErrors.DbOffset);
+
+            }
+        }, canExecPar => true));
+
+        /// <summary>
+        /// Смена режима управления
+        /// </summary>
+        RelayCommand _changeModeCommand;
+        /// <summary>
+        /// Смена режима управления
+        /// </summary>
+        public RelayCommand ChangeModeCommand => _changeModeCommand ?? (_changeModeCommand = new RelayCommand(execPar =>
+        {
+            if (_plcService.isPlcConnected)
+            {
+
+                //_plcService.WriteParameter(plcDevice.Mode.WriteValue, plcDevice.RstErrors.DbNum, plcDevice.RstErrors.DbReg, plcDevice.RstErrors.DbOffset);
+                _plcService.WriteVariable("DB9.DBW0", plcDevice.Mode.WriteValue);
+
+            }
+        }, canExecPar => true));
+
+        #endregion
+
+        #region Логирование
+
+        #region Запустить логирование
+        private RelayCommand _startLoggingCommand;
+        public RelayCommand StartLoggingCommand => _startLoggingCommand ?? (_startLoggingCommand = new RelayCommand(async par =>
+        {
+            IsLogging = !IsLogging;
+            if (IsLogging)
+            {
+                //Selected = MainVm.ParameterVm.Parameters.Where(p => p.LogStatus == true).ToList();
+                try
+                {
+
+                    var header = $"Дата;Уставка скорости, м/с;Влажность;Температура, °C;Абс. давление, Па;Дифф. давление, Па; Плотность, кг/м3; Скорость, м/с";
+                    header += "\n";
+                    await File.AppendAllTextAsync(SelectedFilePath,
+                        header, Encoding.UTF8);
+                    _recordingTimer = new System.Timers.Timer(TimeInterval); // Интервал в мс
+                    _recordingTimer.Elapsed += async (s, e) => await RecordData();
+                    _recordingTimer.Start();
+                }
+
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    IsLogging = false;
+                }
+            }
+
+        }, canExec => SelectedFilePath is not null));
+        #endregion
+
+        #region Остановить логирование
+        private RelayCommand _stopLoggingCommand;
+        public RelayCommand StopLoggingCommand => _stopLoggingCommand ?? (_stopLoggingCommand = new RelayCommand(par =>
+        {
+            IsLogging = !IsLogging;
+        }, canExec => IsLogging));
+        #endregion
+
+        #region Выбрать файл
+        private RelayCommand _chooseFileCommand;
+        public RelayCommand ChooseFileCommand => _chooseFileCommand ?? (_chooseFileCommand = new RelayCommand(par =>
+        {
+            var dialog = new OpenFileDialog
+            {
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+                Filter = "CSV файлы (*.csv)|*.csv|Excel файлы (*.xlsx)|*.xlsx",
+                CheckFileExists = false, // Разрешаем создание нового файла
+                AddExtension = true,
+                FileName = $"Measures log {System.DateTime.Now:d} {System.DateTime.Now:HH_mm}",
+
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                SelectedFilePath = dialog.FileName;
+            }
+        }, canExec => !IsLogging));
         #endregion
 
 
         #endregion
+
+        #region Record Data
+
+        private async Task RecordData()
+        {
+            if (!IsLogging) return;
+
+            try
+            {
+
+                await File.AppendAllTextAsync(SelectedFilePath, $"{System.DateTime.Now};", Encoding.UTF8);
+                var data = $"{plcDevice.PlcParameters.Speed.Value};{plcDevice.HummSensorView.Value};{plcDevice.TempSensorView.Value};" +
+                    $"{plcDevice.AbsPressureView.Value};{plcDevice.DiffPressureView.Value};{plcDevice.FlowView.Density};{plcDevice.FlowView.Velocity}";
+                
+                data += "\n";
+                await File.AppendAllTextAsync(SelectedFilePath, data.ToString(), Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Ошибка записи: {ex.Message}");
+
+            }
+
+
+        }
+
+        #endregion
+
+
+        #endregion
+
+
 
         async void SafetyAction(Action action)
         {

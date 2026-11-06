@@ -22,6 +22,10 @@
         <sys:String>Не подключено</sys:String>
         <sys:String>Подключено</sys:String>
     </x:Array>
+    <x:Array x:Key="PlcRunStatus" Type="{x:Type sys:String}">
+        <sys:String>ЗАПУСТИТЬ УСТАНОВКУ</sys:String>
+        <sys:String>ОСТАНОВИТЬ УСТАНОВКУ</sys:String>
+    </x:Array>
     <col:ArrayList x:Key="PlcModeStatus">
         <sys:String>Авто</sys:String>
         <sys:String>Ручной</sys:String>

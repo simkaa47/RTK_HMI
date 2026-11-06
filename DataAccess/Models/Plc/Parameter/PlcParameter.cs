@@ -32,9 +32,20 @@ namespace DataAccess.Models.Plc.Parameter
 
         #region IDataError
         Dictionary<string, string> errorsDict = new Dictionary<string, string>();
-        public string this[string columnName] => errorsDict.ContainsKey(columnName) ? errorsDict[columnName] : null;
+        public string this[string columnName]
+        {
+            get
+            {
+                // Безопасная проверка: если ключ есть И значение не пустое, возвращаем ошибку
+                if (errorsDict.TryGetValue(columnName, out string error) && !string.IsNullOrEmpty(error))
+                {
+                    return error;
+                }
+                return null; // null означает, что ошибок нет
+            }
+        }
 
-        public string Error { get; }
+        public string Error => null; //{ get; }
 
         #endregion
 
@@ -135,7 +146,8 @@ namespace DataAccess.Models.Plc.Parameter
                         }
                         else
                         {
-                            errorsDict["WriteValue"] = null;
+                            // ВАЖНО: Удаляем ключ из словаря, а не присваиваем null
+                            errorsDict.Remove("WriteValue");
                             ValidationOk = true;
                         }
                     }
