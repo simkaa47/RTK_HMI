@@ -44,6 +44,8 @@ namespace RTK_HMI.ViewModels
         #endregion
 
         private System.Timers.Timer _recordingTimer;
+        private System.Timers.Timer _uiTimer;
+        private System.DateTime _loggingEndTime;
 
         #region Статус логирования
         /// <summary>
@@ -72,6 +74,33 @@ namespace RTK_HMI.ViewModels
             get => _timeInterval;
             set => Set(ref _timeInterval, value);
         }
+        #endregion
+
+        #region Время логирования
+        // Время логирования в минутах
+        private int _loggingDurationMinutes = 3;
+        public int LoggingDurationMinutes
+        {
+            get => _loggingDurationMinutes;
+            set
+            {
+                _loggingDurationMinutes = value;
+                OnPropertyChanged(nameof(LoggingDurationMinutes));
+            }
+        }
+
+        // Оставшееся время в удобном для UI виде, например "02:57"
+        private string _loggingRemainingText = "00:00";
+        public string LoggingRemainingText
+        {
+            get => _loggingRemainingText;
+            set
+            {
+                _loggingRemainingText = value;
+                OnPropertyChanged(nameof(LoggingRemainingText));
+            }
+        }
+
         #endregion
 
         #region Путь к файлу
@@ -318,38 +347,98 @@ namespace RTK_HMI.ViewModels
         private RelayCommand _startLoggingCommand;
         public RelayCommand StartLoggingCommand => _startLoggingCommand ?? (_startLoggingCommand = new RelayCommand(async par =>
         {
-            IsLogging = !IsLogging;
-            if (IsLogging)
+            if (IsLogging) return;
+
+            if (LoggingDurationMinutes <= 0)
             {
-                //Selected = MainVm.ParameterVm.Parameters.Where(p => p.LogStatus == true).ToList();
-                try
-                {
-
-                    var header = $"Дата;Уставка скорости, м/с;Влажность;Температура, °C;Абс. давление, Па;Дифф. давление, Па; Плотность, кг/м3; Скорость, м/с";
-                    header += "\n";
-                    await File.AppendAllTextAsync(SelectedFilePath,
-                        header, Encoding.UTF8);
-                    _recordingTimer = new System.Timers.Timer(TimeInterval); // Интервал в мс
-                    _recordingTimer.Elapsed += async (s, e) => await RecordData();
-                    _recordingTimer.Start();
-                }
-
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex.Message);
-                    IsLogging = false;
-                }
+                MessageBox.Show("Укажите время логирования больше 0 минут.");
+                return;
             }
 
-        }, canExec => SelectedFilePath is not null));
+            try
+            {
+                var header = "Дата;Уставка скорости, м/с;Влажность;Температура, °C;Абс. давление, Па;" +
+                             "Дифф. давление, Па;Плотность, кг/м3;Скорость, м/с\n";
+                await File.AppendAllTextAsync(SelectedFilePath, header, Encoding.UTF8);
+
+                // --- фиксируем момент окончания ---
+                _loggingEndTime = System.DateTime.Now.AddMinutes(LoggingDurationMinutes);
+                LoggingRemainingText = TimeSpan.FromMinutes(LoggingDurationMinutes).ToString(@"mm\:ss");
+
+                IsLogging = true;
+
+                // таймер записи данных (ваш существующий TimeInterval)
+                _recordingTimer = new System.Timers.Timer(TimeInterval);
+                _recordingTimer.Elapsed += async (s, e) => await RecordData();
+                _recordingTimer.Start();
+
+                // таймер обновления UI (раз в секунду)
+                _uiTimer = new System.Timers.Timer(1000);
+                _uiTimer.Elapsed += (s, e) => UpdateLoggingCountdown();
+                _uiTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                IsLogging = false;
+            }
+        }, canExec => SelectedFilePath is not null && !IsLogging));
         #endregion
 
         #region Остановить логирование
         private RelayCommand _stopLoggingCommand;
         public RelayCommand StopLoggingCommand => _stopLoggingCommand ?? (_stopLoggingCommand = new RelayCommand(par =>
         {
-            IsLogging = !IsLogging;
+            StopLoggingInternal();
         }, canExec => IsLogging));
+
+        private void StopLoggingInternal()
+        {
+            if (!IsLogging) return;
+
+            IsLogging = false;
+
+            _recordingTimer?.Stop();
+            _recordingTimer?.Dispose();
+            _recordingTimer = null;
+
+            _uiTimer?.Stop();
+            _uiTimer?.Dispose();
+            _uiTimer = null;
+
+            LoggingRemainingText = "00:00";
+        }
+
+
+        #endregion
+
+        #region Обновление счётчика времени
+
+        private void UpdateLoggingCountdown()
+        {
+            if (!IsLogging) return;
+
+            var remaining = _loggingEndTime - System.DateTime.Now;
+
+            if (remaining <= TimeSpan.Zero)
+            {
+                // Время вышло — останавливаемся (на UI-потоке)
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    StopLoggingInternal();
+                });
+                return;
+            }
+
+            var totalSeconds = (LoggingDurationMinutes * 60.0);
+            var progress = 1.0 - remaining.TotalSeconds / totalSeconds;
+
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                LoggingRemainingText = remaining.ToString(@"mm\:ss");
+            });
+        }
+
         #endregion
 
         #region Выбрать файл

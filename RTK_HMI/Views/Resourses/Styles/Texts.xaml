@@ -8,4 +8,5 @@
         <Setter Property="Background" Value="#323232"/>
     </Style>
     <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxCommonStyle}"/>
+    
 </ResourceDictionary>

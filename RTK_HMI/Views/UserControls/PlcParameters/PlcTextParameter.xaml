@@ -56,7 +56,7 @@
             <Border CornerRadius="4"
                     Height="40"
                     Name="Border"                    
-                    Width="{Binding RelativeSource={RelativeSource AncestorType=local:PlcTextParameter}, Path=ParameterWidth, TargetNullValue=165}"
+                    Width="{Binding RelativeSource={RelativeSource AncestorType=local:PlcTextParameter}, Path=ParameterWidth, TargetNullValue=100}"
                     BorderThickness="2"
                     Background="Transparent">
                 <TextBox Background="Transparent"                         

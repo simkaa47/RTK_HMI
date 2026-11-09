@@ -12,31 +12,81 @@
              d:DataContext="{d:DesignInstance Type=vm:PlcViewModel}">
     <Grid x:Name="PlcGrid"
           ColumnDefinitions="*,*" 
-          RowDefinitions="Auto, *, 0.5*">
+          RowDefinitions="Auto, *">
         <StackPanel Grid.ColumnSpan="2">
             <StackPanel  Orientation="Horizontal">
-                <TextBlock Foreground="White" Text="{Binding IsPlcConnected, Converter={StaticResource GetIfTrueConverter}, ConverterParameter={StaticResource PlcConnectStatus}}" Margin="20, 5" FontSize="24"/>
+                
                 <Button Style="{StaticResource PlcButton}" Padding="6" Width="200" Command="{Binding ConnectPlcCommand}" IsEnabled="{Binding IsPlcConnected, Converter={StaticResource InverseConverter}}" Content="ПОДКЛЮЧИТЬСЯ" Foreground="White"/>
                 <Button Style="{StaticResource PlcButton}" Padding="6" Width="200" Command="{Binding DisconnectPlcCommand}" IsEnabled="{Binding IsPlcConnected}" Content="ОТКЛЮЧИТЬСЯ" Foreground="White"/>
                 <Button Style="{StaticResource PlcButton}" Padding="6" Width="200" Command="{Binding RunCommand}" IsEnabled="{Binding IsPlcConnected}" Content="{Binding plcDevice.Run.Value, Converter={StaticResource GetIfTrueConverter}, ConverterParameter={StaticResource PlcRunStatus}}" Foreground="White"/>
-                <Button Style="{StaticResource PlcButton}" Padding="6" Width="200" Command="{Binding RstCommand}" IsEnabled="{Binding IsPlcConnected}" Content="СБРОС ЗАЩЁЛКНУТЫХ АВАРИЙ" Foreground="White"/>
-
+                <Button Style="{StaticResource PlcButton}" Padding="6" Width="200" Command="{Binding RstCommand}" IsEnabled="{Binding IsPlcConnected}" Content="СБРОС АВАРИЙ" Foreground="White"/>
+                <TextBlock HorizontalAlignment="Right" 
+                           Foreground="{Binding IsPlcConnected, Converter={StaticResource GetIfTrueConverter}, ConverterParameter={StaticResource ConnectForeground}}" 
+                           Text="{Binding IsPlcConnected, Converter={StaticResource GetIfTrueConverter}, ConverterParameter={StaticResource PlcConnectStatus}}"                            
+                           Margin="20, 5" 
+                           FontSize="24"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
                 <Button Style="{StaticResource PlcButton}" Padding="6" Width="200" Command="{Binding ChooseFileCommand}" IsEnabled="{Binding IsPlcConnected}" Content="ВЫБРАТЬ ФАЙЛ" Foreground="White"/>
+                <Border CornerRadius="4" BorderBrush="Gray" BorderThickness="2" Margin="5">
+                    <TextBlock Foreground="White" FontSize="16" VerticalAlignment="Center" Text="{Binding SelectedFilePath, TargetNullValue='Выберите файл...'}" Margin="10, 0"/>
+                </Border>
                 <Button Style="{StaticResource PlcButton}" Padding="6" Width="200" Command="{Binding StartLoggingCommand}" IsEnabled="{Binding IsPlcConnected}" Content="НАЧАТЬ ЗАПИСЬ" Foreground="White"/>
                 <Button Style="{StaticResource PlcButton}" Padding="6" Width="200" Command="{Binding StopLoggingCommand}" IsEnabled="{Binding IsLogging}" Content="ОСТАНОВИТЬ ЗАПИСЬ" Foreground="White"/>
+                <DockPanel VerticalAlignment="Center" 
+                           Visibility="{Binding IsLogging, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}">
+                    <TextBlock Text="Период логирования, с" Foreground="White" FontSize="16"/>
+                    <TextBlock Text="{Binding LoggingRemainingText}" Foreground="White" Margin="10, 0" FontSize="18"/>
+                </DockPanel>
             </StackPanel>
+            <DockPanel VerticalAlignment="Center" Margin="10, 5"  HorizontalAlignment="Left" Width="364">
+                <TextBlock Text="Частота логирования, мс" Foreground="White" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <Border CornerRadius="4" Margin="30, 0"
+                        Height="40"
+                        Width="100"
+                        BorderThickness="2"
+                        BorderBrush="#FFB0B0B0"
+                        Background="Transparent">
+                    <TextBox Background="Transparent"
+                             Text="{Binding TimeInterval}" 
+                             BorderThickness="0"
+                             FontFamily="Roboto"
+                             FontSize="16"
+                             Margin="10,0"
+                             VerticalAlignment="Center"
+                             CaretBrush="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}"
+                             FontWeight="Regular"/>
+                </Border>
+
+            </DockPanel>
+            <DockPanel  Margin="10, 5" HorizontalAlignment="Left" >
+                <TextBlock Text="Время логирования (мин):" Foreground="White" FontSize="16" VerticalAlignment="Center"/>
+                <Border CornerRadius="4" 
+                        Margin="30,0"
+                        Height="40"
+                        Width="100"
+                        BorderThickness="2"
+                        BorderBrush="#FFB0B0B0"
+                        Background="Transparent">
+                    <TextBox Background="Transparent"
+                             Text="{Binding LoggingDurationMinutes}" 
+                             BorderThickness="0"
+                             FontFamily="Roboto"
+                             FontSize="16"
+                             Margin="10,0"
+                             VerticalAlignment="Center"
+                             CaretBrush="{Binding RelativeSource={RelativeSource Self}, Path=Foreground}"
+                             FontWeight="Regular"/>
+                </Border>
+            </DockPanel>
         </StackPanel>
-        
+
         <ListBox Grid.Row="1" Grid.RowSpan="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
-            <DockPanel Margin="20">
-                <TextBlock Foreground="White" FontSize="16"> Режим управления</TextBlock>
+            <DockPanel Margin="20, 5">
+                <TextBlock VerticalAlignment="Center" Foreground="White" FontSize="16"> Режим управления</TextBlock>
                 <ComboBox Style="{StaticResource PlcComboBox}" ItemsSource="{StaticResource PlcModeStatus}" HorizontalAlignment="Right"
-                      SelectedIndex="{Binding plcDevice.Mode.WriteValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                          
+                      SelectedIndex="{Binding plcDevice.Mode.WriteValue, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"                          
                           Width="170">
-                    <!--SelectedItem="{Binding plcDevice.Mode.Value, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"-->
                     <i:Interaction.Triggers>
                         <i:EventTrigger EventName="DropDownClosed">
                             <i:InvokeCommandAction Command="{Binding ChangeModeCommand}"/>
@@ -80,70 +130,83 @@
             <par:PlcTextParameter DataContext="{Binding plcDevice.PlcParameters.DpCutoff}" DescriptionNotVisible="False" Command="{Binding ElementName=PlcGrid, Path=DataContext.WritePlcCommand}" CommanDParameter="{Binding}"/>
             <par:PlcTextParameter DataContext="{Binding plcDevice.PlcParameters.DpHyst}" DescriptionNotVisible="False" Command="{Binding ElementName=PlcGrid, Path=DataContext.WritePlcCommand}" CommanDParameter="{Binding}"/>
             <par:PlcTextParameter DataContext="{Binding plcDevice.PlcParameters.FilterT}" DescriptionNotVisible="False" Command="{Binding ElementName=PlcGrid, Path=DataContext.WritePlcCommand}" CommanDParameter="{Binding}"/>
-            
-            
-            
 
-            
-            
+
+
+
+
+
         </ListBox>
-        <Grid Grid.Column="1" Grid.Row="1" RowDefinitions="Auto, *">
-            <TextBlock Foreground="White" FontSize="18" Text="Показания приборов" HorizontalAlignment="Center"/>
-            <ListBox Grid.Row="1">
-                <TextBlock Foreground="White" FontSize="18" Text="{Binding plcDevice.FlowView.Density, StringFormat='Плотность газа {0} кг/м³'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="18" Text="{Binding plcDevice.FlowView.Velocity, StringFormat='Скорость потока {0} м/с'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="18" Text="{Binding plcDevice.FlowView.DeltaPFilter, StringFormat='ΔP после фильтра {0} Па'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="18" Text="{Binding plcDevice.FlowView.DeltaPNet, StringFormat='ΔP за вычетом нуля {0} Па'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.HummSensorView.Adc, StringFormat='Датчик влажности, значение АЦП {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.HummSensorView.Value, StringFormat='Влажность, % {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.HummSensorView.VoltageCur, StringFormat='Датчик влажности, значение тока {0} мА'}" Margin="20, 5"/>
+        <Grid Grid.Column="1" Grid.Row="1" RowDefinitions="*,Auto,*">
+            <Grid  RowDefinitions="Auto, *">
+                <TextBlock Foreground="White" FontSize="18" Text="Показания приборов" HorizontalAlignment="Center"/>
+                <ListBox Grid.Row="1">
+                    <TextBlock Foreground="White" FontSize="18" Text="{Binding plcDevice.FlowView.Density, StringFormat='Плотность газа {0} кг/м³'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="18" Text="{Binding plcDevice.FlowView.Velocity, StringFormat='Скорость потока {0} м/с'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="18" Text="{Binding plcDevice.FlowView.DeltaPFilter, StringFormat='ΔP после фильтра {0} Па'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="18" Text="{Binding plcDevice.FlowView.DeltaPNet, StringFormat='ΔP за вычетом нуля {0} Па'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.HummSensorView.Adc, StringFormat='Датчик влажности, значение АЦП {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.HummSensorView.Value, StringFormat='Влажность, % {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.HummSensorView.VoltageCur, StringFormat='Датчик влажности, значение тока {0} мА'}" Margin="20, 5"/>
 
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.TempSensorView.Adc, StringFormat='Датчик температуры, значение АЦП {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.TempSensorView.Value, StringFormat='Температура {0} °C'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.TempSensorView.VoltageCur, StringFormat='Датчик температуры, значение тока {0} мА'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.TempSensorView.Adc, StringFormat='Датчик температуры, значение АЦП {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.TempSensorView.Value, StringFormat='Температура {0} °C'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.TempSensorView.VoltageCur, StringFormat='Датчик температуры, значение тока {0} мА'}" Margin="20, 5"/>
 
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.DiffPressureView.Adc, StringFormat='Датчик дифф. давления, значение АЦП {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.DiffPressureView.Value, StringFormat='Дифференциальное давление {0} Па'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.DiffPressureView.VoltageCur, StringFormat='Датчик дифф. давления, значение тока {0} мА'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.DiffPressureView.Adc, StringFormat='Датчик дифф. давления, значение АЦП {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.DiffPressureView.Value, StringFormat='Дифференциальное давление {0} Па'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.DiffPressureView.VoltageCur, StringFormat='Датчик дифф. давления, значение тока {0} мА'}" Margin="20, 5"/>
 
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.AbsPressureView.Adc, StringFormat='Дачтик абс. давления, значение АЦП {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.AbsPressureView.Value, StringFormat='Абсолютное давление {0} Па'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.AbsPressureView.VoltageCur, StringFormat='Абсолютное давление, значение тока {0} мА'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.AbsPressureView.Adc, StringFormat='Дачтик абс. давления, значение АЦП {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.AbsPressureView.Value, StringFormat='Абсолютное давление {0} Па'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.AbsPressureView.VoltageCur, StringFormat='Абсолютное давление, значение тока {0} мА'}" Margin="20, 5"/>
 
 
 
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.Pv, StringFormat='Скорость на входе ПИД, м/с {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.State, StringFormat='Состояние ПИД {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.OutHz, StringFormat='Задание частоты в ПЧ, Гц {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.OutLast, StringFormat='Защёлка последнего достоверного выхода, % {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.OutPct, StringFormat='Выход ПИД, % {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.Tuned, StringFormat='Автонастройка ПИД выполнялась {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.ErrorBits, StringFormat='Ошибка ПИД {0}'}" Margin="20, 5"/>
-                <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.InRangeTmr, StringFormat='Счётчик выдержки допуска, с {0}'}" Margin="20, 5"/>
-            </ListBox>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.Pv, StringFormat='Скорость на входе ПИД, м/с {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.State, StringFormat='Состояние ПИД {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.OutHz, StringFormat='Задание частоты в ПЧ, Гц {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.OutLast, StringFormat='Защёлка последнего достоверного выхода, % {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.OutPct, StringFormat='Выход ПИД, % {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.Tuned, StringFormat='Автонастройка ПИД выполнялась {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.ErrorBits, StringFormat='Ошибка ПИД {0}'}" Margin="20, 5"/>
+                    <TextBlock Foreground="White" FontSize="16" Text="{Binding plcDevice.PidView.InRangeTmr, StringFormat='Счётчик выдержки допуска, с {0}'}" Margin="20, 5"/>
+                </ListBox>
+            </Grid>
+            <GridSplitter Grid.Row="1" Height="8"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Background="#262626"
+                  BorderBrush="Aqua"
+                  BorderThickness="0,1,0,0"
+                  ResizeBehavior="PreviousAndNext"
+                  ResizeDirection="Rows"/>
+            <Grid  RowDefinitions="Auto, *" Grid.Row="2" Grid.Column="1">
+                <TextBlock Foreground="White" FontSize="18" Text="Ошибки ПЛК" HorizontalAlignment="Center"/>
+                <ListBox Grid.Row="1">
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrAbsPressureSensor, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Абс. давление: сводная ошибка" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrAbsPressureSensorBreak, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Абс. давление: обрыв" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrAbsPressureSensorOutOfRange, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Абс. давление: вне диапазона" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrDiffPressureSensor, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Дифф. давление: сводная ошибка" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrDiffPressureSensorBreak, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Дифф. давление: обрыв" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrDiffPressureSensorOutOfRange, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Дифф. давление: вне диапазона" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrHumiditySensor, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Датчик влажности: сводная ошибка" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrHumiditySensorBreak, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Датчик влажности: обрыв (4..20 мА)" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrHumiditySensorOutOfRange, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Датчик влажности: вне диапазона АЦП" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrTempPressureSensor, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Температура: сводная ошибка" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrTempPressureSensorBreak, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Температура: обрыв" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrTempPressureSensorOutOfRange, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Температура: вне диапазона" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrEmergencyStop, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Аварийный стоп" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrFcComm, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Нет связи с ПЧ по Modbus" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrFcNotRdy, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="ПЧ не готов (сигнал fc_rdy отсутствует)" Margin="20, 5"/>
+                    <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrNoTuning, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Автонастройка ни разу не выполнялась (блок авто-режима)" Margin="20, 5"/>
+                </ListBox>
+
+            </Grid>
+
         </Grid>
         
-        <Grid RowDefinitions="Auto, *" Grid.Row="2" Grid.Column="1">
-            <TextBlock Foreground="White" FontSize="18" Text="Ошибки ПЛК" HorizontalAlignment="Center"/>
-            <ListBox Grid.Row="1">
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrAbsPressureSensor, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrAbsPressureSensor, StringFormat='Абс. давление: сводная ошибка '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrAbsPressureSensorBreak, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrAbsPressureSensorBreak, StringFormat='Абс. давление: обрыв '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrAbsPressureSensorOutOfRange, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrAbsPressureSensorOutOfRange, StringFormat='Абс. давление: вне диапазона '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrDiffPressureSensor, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrDiffPressureSensor, StringFormat='Дифф. давление: сводная ошибка '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrDiffPressureSensorBreak, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrDiffPressureSensorBreak, StringFormat='Дифф. давление: обрыв '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrDiffPressureSensorOutOfRange, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrDiffPressureSensorOutOfRange, StringFormat='Дифф. давление: вне диапазона '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrHumiditySensor, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="Датчик влажности: сводная ошибка" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrHumiditySensorBreak, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrHumiditySensorBreak, StringFormat='Датчик влажности: обрыв (4..20 мА) '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrHumiditySensorOutOfRange, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrHumiditySensorOutOfRange, StringFormat='Датчик влажности: вне диапазона АЦП '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrTempPressureSensor, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrTempPressureSensor, StringFormat='Температура: сводная ошибка '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrTempPressureSensorBreak, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrTempPressureSensorBreak, StringFormat='Температура: обрыв '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrTempPressureSensorOutOfRange, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrTempPressureSensorOutOfRange, StringFormat='Температура: вне диапазона '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrEmergencyStop, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrEmergencyStop, StringFormat='Аварийный стоп '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrFcComm, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrFcComm, StringFormat='Нет связи с ПЧ по Modbus '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrFcNotRdy, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrFcNotRdy, StringFormat='ПЧ не готов (сигнал fc_rdy отсутствует) '}" Margin="20, 5"/>
-                <TextBlock Foreground="White" Visibility="{Binding plcDevice.Errors.ErrNoTuning, Converter={StaticResource VisibleIfEqual}, ConverterParameter=True}" FontSize="16" Text="{Binding plcDevice.Errors.ErrNoTuning, StringFormat='Автонастройка ни разу не выполнялась (блок авто-режима) '}" Margin="20, 5"/>
-            </ListBox>                                   
-
-        </Grid>
+        
+        
     </Grid>
 </UserControl>
